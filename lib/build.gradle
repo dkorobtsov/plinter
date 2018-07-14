@@ -5,16 +5,28 @@ apply plugin: 'project-report'
 group = 'com.github.dkorobtsov'
 
 //noinspection GroovyUnusedAssignment
-sourceCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
 //noinspection GroovyUnusedAssignment
-targetCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
 }
+ext {
+    okhttpVersion = '3.9.1'
+    mockWebserverVersion = '2.7.5'
+    jsonVersion = '20180130'
+    junitVersion = '5.0.3'
+}
 
 dependencies {
-    implementation group: 'org.json', name: 'json', version: '20160810'
-    implementation group: 'com.squareup.okhttp3', name: 'logging-interceptor', version: '3.9.1'
+    implementation "org.json:json:$jsonVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+
+    testImplementation"com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
+
 }
 
