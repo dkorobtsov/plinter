@@ -183,13 +183,10 @@ public class LoggingInterceptor implements Interceptor {
   @SuppressWarnings({"unused", "SameParameterValue"})
   public static class Builder {
 
-    private static String TAG = "LoggingI";
     private final HashMap<String, String> headers;
     private final HashMap<String, String> queries;
     private boolean isDebug;
     private int type = Platform.INFO;
-    private String requestTag;
-    private String responseTag;
     private Level level = Level.BASIC;
     private LogWriter logger;
     private Executor executor;
@@ -225,16 +222,8 @@ public class LoggingInterceptor implements Interceptor {
       return queries;
     }
 
-    String getTag(boolean isRequest) {
-      if (isRequest) {
-        return TextUtils.isEmpty(requestTag) ? TAG : requestTag;
-      } else {
-        return TextUtils.isEmpty(responseTag) ? TAG : responseTag;
-      }
-    }
-
     LogWriter getLogger() {
-      return logger;
+      return logger != null ? logger : LogWriter.DEFAULT;
     }
 
     Executor getExecutor() {
@@ -264,39 +253,6 @@ public class LoggingInterceptor implements Interceptor {
     }
 
     /**
-     * Set request and response each log tag
-     *
-     * @param tag general log tag
-     * @return Builder
-     */
-    public Builder tag(String tag) {
-      TAG = tag;
-      return this;
-    }
-
-    /**
-     * Set request log tag
-     *
-     * @param tag request log tag
-     * @return Builder
-     */
-    public Builder request(String tag) {
-      this.requestTag = tag;
-      return this;
-    }
-
-    /**
-     * Set response log tag
-     *
-     * @param tag response log tag
-     * @return Builder
-     */
-    public Builder response(String tag) {
-      this.responseTag = tag;
-      return this;
-    }
-
-    /**
      * @param isDebug set can sending log output
      * @return Builder
      */
@@ -316,7 +272,7 @@ public class LoggingInterceptor implements Interceptor {
     }
 
     /**
-     * @param logger manuel logging interface
+     * @param logger manual logging interface
      * @return Builder
      * @see LogWriter
      */

@@ -50,20 +50,19 @@ class Printer {
 
   static void printJsonRequest(LoggingInterceptor.Builder builder, Request request) {
     String requestBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyToString(request);
-    String tag = builder.getTag(true);
-    builder.getLogger().log(builder.getType(), tag, REQUEST_UP_LINE);
 
-    logLines(builder.getType(), tag, new String[]{URL_TAG + request.url()}, builder.getLogger(),
+    builder.getLogger().log(builder.getType(), REQUEST_UP_LINE);
+
+    logLines(builder.getType(), new String[]{URL_TAG + request.url()}, builder.getLogger(),
         false);
-    logLines(builder.getType(), tag, getRequest(request, builder.getLevel()), builder.getLogger(),
+    logLines(builder.getType(), getRequest(request, builder.getLevel()), builder.getLogger(),
         true);
     if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(builder.getType(), tag, requestBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
+      logLines(builder.getType(), requestBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
           true);
     }
 
-    builder.getLogger().log(builder.getType(), tag, END_LINE);
-
+    builder.getLogger().log(builder.getType(), END_LINE);
   }
 
   static void printJsonResponse(LoggingInterceptor.Builder builder, long chainMs,
@@ -73,54 +72,50 @@ class Printer {
 
     final String responseBody =
         LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + getJsonString(bodyString);
-    final String tag = builder.getTag(false);
+
     final String[] urlLine = {URL_TAG + responseUrl, N};
     final String[] response = getResponse(headers, chainMs, code, isSuccessful,
         builder.getLevel(), segments, message);
 
-    builder.getLogger().log(builder.getType(), tag, RESPONSE_UP_LINE);
+    builder.getLogger().log(builder.getType(), RESPONSE_UP_LINE);
 
-    logLines(builder.getType(), tag, urlLine, builder.getLogger(), true);
-    logLines(builder.getType(), tag, response, builder.getLogger(), true);
+    logLines(builder.getType(), urlLine, builder.getLogger(), true);
+    logLines(builder.getType(), response, builder.getLogger(), true);
 
     if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(builder.getType(), tag, responseBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
+      logLines(builder.getType(), responseBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
           true);
     }
 
-    builder.getLogger().log(builder.getType(), tag, END_LINE);
+    builder.getLogger().log(builder.getType(), END_LINE);
   }
 
   static void printFileRequest(LoggingInterceptor.Builder builder, Request request) {
-    String tag = builder.getTag(true);
+    builder.getLogger().log(builder.getType(), REQUEST_UP_LINE);
 
-    builder.getLogger().log(builder.getType(), tag, REQUEST_UP_LINE);
-
-    logLines(builder.getType(), tag, new String[]{URL_TAG + request.url()}, builder.getLogger(),
+    logLines(builder.getType(), new String[]{URL_TAG + request.url()}, builder.getLogger(),
         false);
-    logLines(builder.getType(), tag, getRequest(request, builder.getLevel()), builder.getLogger(),
+    logLines(builder.getType(), getRequest(request, builder.getLevel()), builder.getLogger(),
         true);
     if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(builder.getType(), tag, OMITTED_REQUEST, builder.getLogger(), true);
+      logLines(builder.getType(), OMITTED_REQUEST, builder.getLogger(), true);
     }
 
-    builder.getLogger().log(builder.getType(), tag, END_LINE);
+    builder.getLogger().log(builder.getType(), END_LINE);
 
   }
 
   static void printFileResponse(LoggingInterceptor.Builder builder, long chainMs,
       boolean isSuccessful,
       int code, String headers, List<String> segments, String message) {
-    String tag = builder.getTag(false);
 
+    builder.getLogger().log(builder.getType(), RESPONSE_UP_LINE);
 
-    builder.getLogger().log(builder.getType(), tag, RESPONSE_UP_LINE);
-
-    logLines(builder.getType(), tag, getResponse(headers, chainMs, code, isSuccessful,
+    logLines(builder.getType(), getResponse(headers, chainMs, code, isSuccessful,
         builder.getLevel(), segments, message), builder.getLogger(), true);
-    logLines(builder.getType(), tag, OMITTED_RESPONSE, builder.getLogger(), true);
+    logLines(builder.getType(), OMITTED_RESPONSE, builder.getLogger(), true);
 
-    builder.getLogger().log(builder.getType(), tag, END_LINE);
+    builder.getLogger().log(builder.getType(), END_LINE);
   }
 
   private static String[] getRequest(Request request, Level level) {
@@ -181,7 +176,7 @@ class Printer {
     return builder.toString();
   }
 
-  private static void logLines(int type, String tag, String[] lines, LogWriter logger,
+  private static void logLines(int type, String[] lines, LogWriter logger,
       boolean withLineSize) {
     for (String line : lines) {
       int lineLength = line.length();
@@ -190,7 +185,7 @@ class Printer {
         int start = i * MAX_LONG_SIZE;
         int end = (i + 1) * MAX_LONG_SIZE;
         end = end > line.length() ? line.length() : end;
-        logger.log(type, tag, DEFAULT_LINE + line.substring(start, end));
+        logger.log(type, DEFAULT_LINE + line.substring(start, end));
       }
     }
   }
