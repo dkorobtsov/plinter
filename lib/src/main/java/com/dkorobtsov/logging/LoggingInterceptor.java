@@ -191,7 +191,7 @@ public class LoggingInterceptor implements Interceptor {
     private String requestTag;
     private String responseTag;
     private Level level = Level.BASIC;
-    private Logger logger;
+    private LogWriter logger;
     private Executor executor;
 
     public Builder() {
@@ -233,7 +233,7 @@ public class LoggingInterceptor implements Interceptor {
       }
     }
 
-    Logger getLogger() {
+    LogWriter getLogger() {
       return logger;
     }
 
@@ -318,9 +318,9 @@ public class LoggingInterceptor implements Interceptor {
     /**
      * @param logger manuel logging interface
      * @return Builder
-     * @see Logger
+     * @see LogWriter
      */
-    public Builder logger(Logger logger) {
+    public Builder logger(LogWriter logger) {
       this.logger = logger;
       return this;
     }
@@ -328,7 +328,7 @@ public class LoggingInterceptor implements Interceptor {
     /**
      * @param executor manual executor for printing
      * @return Builder
-     * @see Logger
+     * @see LogWriter
      */
     public Builder executor(Executor executor) {
       this.executor = executor;
