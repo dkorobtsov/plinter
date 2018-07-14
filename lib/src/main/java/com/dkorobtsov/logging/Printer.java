@@ -20,8 +20,8 @@ class Printer {
   private static final String REGEX_LINE_SEPARATOR = "\r?\n";
   private static final String DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR;
 
-  private static final String[] OMITTED_RESPONSE = {LINE_SEPARATOR, "Omitted response body"};
-  private static final String[] OMITTED_REQUEST = {LINE_SEPARATOR, "Omitted request body"};
+  private static final String[] OMITTED_RESPONSE = {"", "Omitted response body"};
+  private static final String[] OMITTED_REQUEST = {"", "Omitted request body"};
 
   private static final String N = "\n";
   private static final String T = "\t";
