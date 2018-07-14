@@ -1,4 +1,4 @@
-package com.ihsanbal.logging;
+package com.dkorobtsov.logging;
 
 import okhttp3.internal.platform.Platform;
 

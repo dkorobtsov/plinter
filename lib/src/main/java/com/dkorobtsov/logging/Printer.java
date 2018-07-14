@@ -1,4 +1,4 @@
-package com.ihsanbal.logging;
+package com.dkorobtsov.logging;
 
 import org.json.JSONArray;
 import org.json.JSONException;

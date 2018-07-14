@@ -1,4 +1,4 @@
-package com.ihsanbal.logging;
+package com.dkorobtsov.logging;
 
 /**
  * @author ihsan on 30/03/2017.
