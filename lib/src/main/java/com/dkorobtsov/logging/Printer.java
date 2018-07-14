@@ -131,7 +131,8 @@ class Printer {
   }
 
   private static String[] getResponse(String header, long tookMs, int code, boolean isSuccessful,
-      Level level, List<String> segments, String message) {    final String log;
+      Level level, List<String> segments, String message) {
+    final String log;
     final boolean loggableHeader = level == Level.HEADERS || level == Level.BASIC;
     final String segmentString = slashSegments(segments);
     log = (!TextUtils.isEmpty(segmentString) ? segmentString + " - "

@@ -17,7 +17,6 @@ import okhttp3.internal.platform.Platform;
 /**
  * @author ihsan on 09/02/2017.
  */
-
 public class LoggingInterceptor implements Interceptor {
 
   private final boolean isDebug;
@@ -30,47 +29,27 @@ public class LoggingInterceptor implements Interceptor {
 
   private static Runnable createPrintJsonRequestRunnable(final LoggingInterceptor.Builder builder,
       final Request request) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        Printer.printJsonRequest(builder, request);
-      }
-    };
+    return () -> Printer.printJsonRequest(builder, request);
   }
 
   private static Runnable createFileRequestRunnable(final LoggingInterceptor.Builder builder,
       final Request request) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        Printer.printFileRequest(builder, request);
-      }
-    };
+    return () -> Printer.printFileRequest(builder, request);
   }
 
   private static Runnable createPrintJsonResponseRunnable(final LoggingInterceptor.Builder builder,
       final long chainMs, final boolean isSuccessful,
       final int code, final String headers, final String bodyString, final List<String> segments,
       final String message, final String responseUrl) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        Printer
-            .printJsonResponse(builder, chainMs, isSuccessful, code, headers, bodyString, segments,
-                message, responseUrl);
-      }
-    };
+    return () -> Printer.printJsonResponse(builder, chainMs, isSuccessful,
+        code, headers, bodyString, segments, message, responseUrl);
   }
 
   private static Runnable createFileResponseRunnable(final LoggingInterceptor.Builder builder,
       final long chainMs, final boolean isSuccessful,
       final int code, final String headers, final List<String> segments, final String message) {
-    return new Runnable() {
-      @Override
-      public void run() {
-        Printer.printFileResponse(builder, chainMs, isSuccessful, code, headers, segments, message);
-      }
-    };
+    return () -> Printer.printFileResponse(builder, chainMs, isSuccessful,
+        code, headers, segments, message);
   }
 
   @Override
