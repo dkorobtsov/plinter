@@ -11,7 +11,6 @@ import org.json.JSONObject;
 /**
  * @author ihsan on 09/02/2017.
  */
-
 class Printer {
 
   private static final int JSON_INDENT = 3;
@@ -55,8 +54,10 @@ class Printer {
 
     logLines(builder.getType(), new String[]{URL_TAG + request.url()}, builder.getLogger(),
         false);
+
     logLines(builder.getType(), getRequest(request, builder.getLevel()), builder.getLogger(),
         true);
+
     if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
       logLines(builder.getType(), requestBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
           true);
@@ -97,6 +98,7 @@ class Printer {
         false);
     logLines(builder.getType(), getRequest(request, builder.getLevel()), builder.getLogger(),
         true);
+
     if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
       logLines(builder.getType(), OMITTED_REQUEST, builder.getLogger(), true);
     }
@@ -113,7 +115,10 @@ class Printer {
 
     logLines(builder.getType(), getResponse(headers, chainMs, code, isSuccessful,
         builder.getLevel(), segments, message), builder.getLogger(), true);
-    logLines(builder.getType(), OMITTED_RESPONSE, builder.getLogger(), true);
+
+    if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
+      logLines(builder.getType(), OMITTED_RESPONSE, builder.getLogger(), true);
+    }
 
     builder.getLogger().log(builder.getType(), END_LINE);
   }
