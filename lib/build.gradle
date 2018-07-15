@@ -16,17 +16,14 @@ ext {
     okhttpVersion = '3.9.1'
     mockWebserverVersion = '2.7.5'
     jsonVersion = '20180130'
-    junitVersion = '5.0.3'
+    junit4Version = '4.12'
 }
 
 dependencies {
     implementation "org.json:json:$jsonVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
 
-    testImplementation"com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:$junitVersion")
-
+    testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
+    testImplementation "junit:junit:$junit4Version"
 }
 
