@@ -12,7 +12,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.platform.Platform;
 
 /**
  * @author ihsan on 09/02/2017.
@@ -165,7 +164,6 @@ public class LoggingInterceptor implements Interceptor {
     private final HashMap<String, String> headers;
     private final HashMap<String, String> queries;
     private boolean isDebug = true;
-    private int type = Platform.INFO;
     private Level level = Level.BASIC;
     private LogWriter logger;
     private LogFormatter formatter;
@@ -215,20 +213,6 @@ public class LoggingInterceptor implements Interceptor {
     public Builder loggable(boolean isDebug) {
       this.isDebug = isDebug;
       return this;
-    }
-
-    /**
-     * @param type set sending log output type
-     * @return Builder
-     * @see Platform
-     */
-    public Builder log(int type) {
-      this.type = type;
-      return this;
-    }
-
-    int getType() {
-      return type;
     }
 
     /**

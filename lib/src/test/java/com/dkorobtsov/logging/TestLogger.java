@@ -10,7 +10,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
-import okhttp3.internal.platform.Platform;
 
 /**
  * DefaultLogger double with additional methods for testing purposes.
@@ -42,15 +41,8 @@ public class TestLogger implements LogWriter {
   }
 
   @Override
-  public void log(int type, String msg) {
-    switch (type) {
-      case Platform.INFO:
-        testLogger.log(Level.INFO, msg);
-        break;
-      default:
-        testLogger.log(Level.WARNING, msg);
-        break;
-    }
+  public void log(String msg) {
+    testLogger.log(Level.INFO, msg);
     events.add(msg);
   }
 

@@ -51,7 +51,7 @@ public class Log4j2LoggerTest {
       final Logger log = LogManager.getLogger("OkHttpLogger");
 
       @Override
-      public void log(int level, String msg) {
+      public void log(String msg) {
         log.debug(msg);
       }
     };
