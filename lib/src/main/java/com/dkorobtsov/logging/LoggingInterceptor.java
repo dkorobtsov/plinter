@@ -164,71 +164,48 @@ public class LoggingInterceptor implements Interceptor {
 
     private final HashMap<String, String> headers;
     private final HashMap<String, String> queries;
-    private boolean isDebug;
+    private boolean isDebug = true;
     private int type = Platform.INFO;
     private Level level = Level.BASIC;
     private LogWriter logger;
+    private LogFormatter formatter;
     private Executor executor;
 
     public Builder() {
       headers = new HashMap<>();
       queries = new HashMap<>();
-    }
-
-    int getType() {
-      return type;
-    }
-
-    Level getLevel() {
-      return level;
+      formatter = LogFormatter.JUL_LEVEL_MESSAGE;
     }
 
     /**
-     * @param level set log level
+     * @param logger manual logging interface
      * @return Builder
-     * @see Level
+     * @see LogWriter
      */
-    public Builder setLevel(Level level) {
-      this.level = level;
+    public Builder logger(LogWriter logger) {
+      this.logger = logger;
       return this;
-    }
-
-    HashMap<String, String> getHeaders() {
-      return headers;
-    }
-
-    HashMap<String, String> getHttpUrl() {
-      return queries;
     }
 
     LogWriter getLogger() {
-      return logger != null ? logger : LogWriter.DEFAULT;
-    }
-
-    Executor getExecutor() {
-      return executor;
-    }
-
-    /**
-     * @param name Filed
-     * @param value Value
-     * @return Builder
-     * Add a field with the specified value
-     */
-    public Builder addHeader(String name, String value) {
-      headers.put(name, value);
-      return this;
+      if (logger == null) {
+        logger = new DefaultLogger(formatter);
+      }
+      return logger;
     }
 
     /**
-     * @param name Filed
-     * @param value Value
+     * @param format set Java Utility Logger format
+     * (will be ignored in case custom logger is used)
      * @return Builder
-     * Add a field with the specified value
      */
-    public Builder addQueryParam(String name, String value) {
-      queries.put(name, value);
+    public Builder format(LogFormatter format) {
+      this.formatter = format;
       return this;
+    }
+
+    LogFormatter getFormatter() {
+      return formatter;
     }
 
     /**
@@ -250,14 +227,52 @@ public class LoggingInterceptor implements Interceptor {
       return this;
     }
 
+    int getType() {
+      return type;
+    }
+
     /**
-     * @param logger manual logging interface
+     * @param level set log level
      * @return Builder
-     * @see LogWriter
+     * @see Level
      */
-    public Builder logger(LogWriter logger) {
-      this.logger = logger;
+    public Builder level(Level level) {
+      this.level = level;
       return this;
+    }
+
+    Level getLevel() {
+      return level;
+    }
+
+    /**
+     * @param name Filed
+     * @param value Value
+     * @return Builder
+     * Add a field with the specified value
+     */
+    public Builder addHeader(String name, String value) {
+      headers.put(name, value);
+      return this;
+    }
+
+    HashMap<String, String> getHeaders() {
+      return headers;
+    }
+
+    /**
+     * @param name Filed
+     * @param value Value
+     * @return Builder
+     * Add a field with the specified value
+     */
+    public Builder addQueryParam(String name, String value) {
+      queries.put(name, value);
+      return this;
+    }
+
+    HashMap<String, String> getHttpUrl() {
+      return queries;
     }
 
     /**
@@ -268,6 +283,10 @@ public class LoggingInterceptor implements Interceptor {
     public Builder executor(Executor executor) {
       this.executor = executor;
       return this;
+    }
+
+    Executor getExecutor() {
+      return executor;
     }
 
     public LoggingInterceptor build() {
