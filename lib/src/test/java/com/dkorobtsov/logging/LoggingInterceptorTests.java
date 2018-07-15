@@ -202,6 +202,12 @@ public class LoggingInterceptorTests {
         .newCall(defaultRequest())
         .execute();
 
+    assertTrue("Request section should be present in logger output.",
+        testLogger.formattedOutput().contains("Request"));
+
+    assertTrue("Response section should be present in logger output.",
+        testLogger.formattedOutput().contains("Response"));
+
     assertTrue("Url should be logged when level set to Basic.",
         testLogger.formattedOutput().contains("URL"));
 
