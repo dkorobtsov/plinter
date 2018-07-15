@@ -12,11 +12,13 @@ targetCompatibility = JavaVersion.VERSION_1_8
 repositories {
     mavenCentral()
 }
+
 ext {
     okhttpVersion = '3.9.1'
     mockWebserverVersion = '2.7.5'
     jsonVersion = '20180130'
     junit4Version = '4.12'
+    log4j2Version = '2.11.0'
 }
 
 dependencies {
@@ -25,5 +27,7 @@ dependencies {
 
     testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
     testImplementation "junit:junit:$junit4Version"
+    testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
+
 }
 
