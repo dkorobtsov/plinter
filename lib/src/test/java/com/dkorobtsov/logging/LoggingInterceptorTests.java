@@ -212,4 +212,40 @@ public class LoggingInterceptorTests extends BaseTest {
         testLogger.formattedOutput().contains("body"));
   }
 
+  @Test
+  public void interceptorShouldBeAbleToHandleJsonBody() throws IOException {
+    server.enqueue(new MockResponse()
+        .setResponseCode(200)
+        .setHeader("Content-Type", "application/json")
+        .setBody("  {\n"
+            + "    \"id\": 431169,\n"
+            + "    \"category\": {\n"
+            + "      \"id\": 0,\n"
+            + "      \"name\": \"string\"\n"
+            + "    },\n"
+            + "    \"name\": \"doggie\",\n"
+            + "    \"photoUrls\": [\n"
+            + "      \"string\"\n"
+            + "    ],\n"
+            + "    \"tags\": [\n"
+            + "      {\n"
+            + "        \"id\": 0,\n"
+            + "        \"name\": \"string\"\n"
+            + "      }\n"
+            + "    ],\n"
+            + "    \"status\": \"available\"\n"
+            + "  }"));
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        .logger(testLogger)
+        .build();
+
+    defaultClientWithInterceptor(interceptor)
+        .newCall(defaultRequest())
+        .execute();
+
+    assertTrue("Interceptor should be able to log json body.",
+        testLogger.formattedOutput().contains("\"name\": \"doggie\","));
+  }
+
 }

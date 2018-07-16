@@ -78,7 +78,6 @@ public class Log4j2LoggerTest extends BaseTest {
       }
     };
 
-    //
     log.debug("Adding test double appender for output validation.");
     addAppender(logWriter, "TestWriter", OK_HTTP_LOG_PATTERN);
 
@@ -87,7 +86,7 @@ public class Log4j2LoggerTest extends BaseTest {
         .logger(log4j2Writer)
         .build();
 
-    log.debug("Sending response.");
+    log.debug("Sending request.");
     defaultClientWithInterceptor(interceptor)
         .newCall(defaultRequest())
         .execute();
