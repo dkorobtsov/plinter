@@ -172,7 +172,7 @@ public class LoggingInterceptor implements Interceptor {
     public Builder() {
       headers = new HashMap<>();
       queries = new HashMap<>();
-      formatter = LogFormatter.JUL_LEVEL_MESSAGE;
+      formatter = LogFormatter.JUL_MESSAGE_ONLY;
     }
 
     /**
