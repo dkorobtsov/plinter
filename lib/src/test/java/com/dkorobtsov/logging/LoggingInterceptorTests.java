@@ -1,24 +1,18 @@
 package com.dkorobtsov.logging;
 
-import static com.dkorobtsov.logging.TestUtil.defaultClientWithInterceptor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import okhttp3.Request;
-import org.junit.Rule;
 import org.junit.Test;
 
-public class LoggingInterceptorTests {
-
-  @Rule public MockWebServer server = new MockWebServer();
+public class LoggingInterceptorTests extends BaseTest {
 
   @Test
   public void loggerShouldWorkWithoutAnyAdditionalConfiguration() throws IOException {
@@ -34,12 +28,6 @@ public class LoggingInterceptorTests {
 
     assertTrue("Logger should publish events using only default configuration",
         testLogger.firstFormattedEvent().contains("Request"));
-  }
-
-  private Request defaultRequest() {
-    return new Request.Builder()
-        .url(String.valueOf(server.url("/")))
-        .build();
   }
 
   @Test
