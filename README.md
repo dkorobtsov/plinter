@@ -1,49 +1,99 @@
 LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp) with pretty logger
 --------
 
-[![Build Status](https://travis-ci.org/ihsanbal/LoggingInterceptor.svg?branch=master)](https://travis-ci.org/ihsanbal/LoggingInterceptor)
-[![](https://img.shields.io/badge/AndroidWeekly-%23272-blue.svg?style=flat-square)](http://androidweekly.net/issues/issue-272)
-[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-LoggingInterceptor-green.svg?style=flat-square)](https://android-arsenal.com/details/1/5870)
-[![API](https://img.shields.io/badge/API-9%2B-brightgreen.svg?style=flat-square)](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html)
-[![JAVA](https://img.shields.io/badge/JAVA-7-brightgreen.svg?style=flat-square)](http://www.oracle.com/technetwork/java/javase/downloads/jre7-downloads-1880261.html)
-[![SwaggerUI](https://img.shields.io/badge/Swagger-mockable.io-orange.svg?style=flat-square)](https://www.mockable.io/swagger/index.html?url=https%3A%2F%2Fdemo2961085.mockable.io%3Fopenapi#!/demo2961085)
 
-<p align="center">
-    <img src="https://github.com/ihsanbal/LoggingInterceptor/blob/master/images/logcat.png"/>
-</p>
-
-Usage
---------
+Basic Usage
+-----------
+Interceptor should work as is - without any additional parameters.
+By default JUL logger will be used with INFO level and minimal format
+displaying message only.
 
 ```java
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .build();
 
-OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.addInterceptor(new LoggingInterceptor.Builder()
-                .loggable(BuildConfig.DEBUG)
-                .setLevel(Level.BASIC)
-                .log(Platform.INFO)
-                .request("Request")
-                .response("Response")
-                .addHeader("version", BuildConfig.VERSION_NAME)
-                .addQueryParam("query", "0")
-//              .logger(new Logger() {
-//                  @Override
-//                  public void log(int level, String tag, String msg) {
-//                      Log.w(tag, msg);
-//                  }
-//              })
-//              .executor(Executors.newSingleThreadExecutor())
-               .build());
-        OkHttpClient okHttpClient = client.build();
-
-//You can use with Retrofit
-Retrofit retrofitAdapter = new Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-            .baseUrl("https://.../")
-            .client(okHttpClient)
-            .build();
+    // Interceptor can be used with retrofit
+    Retrofit retrofitAdapter = new Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .baseUrl("https://.../")
+        .client(okHttpClient)
+        .build();
 ```
+Example:
+screenshot1.png
+
+Format can be changed to one of the defined templates, for example:
+```java
+    LoggingInterceptor interceptor1 = new LoggingInterceptor.Builder()
+        .loggable(isDebug())
+        .level(Level.BASIC)
+        .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
+        .build();
+```
+
+Advanced Usage
+--------------
+Interceptor can be configured to be used with any existing Java logger -
+just need to provide own LogWriter implementation.
+
+Simple configuration for Log4j2:
+```java
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        .logger(new LogWriter() {
+          final Logger log = LogManager.getLogger("OkHttpLogger");
+
+          @Override
+          public void log(String msg) {
+            log.debug(msg);
+          }
+        })
+        .build();
+```
+
+Or more sophisticated approach with custom logging pattern.
+```java
+    LogWriter log4j2Writer = new LogWriter() {
+      final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
+      final Logger log = LogManager.getLogger("OkHttpLogger");
+
+      {
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+
+        LoggerConfig loggerConfig = new LoggerConfig("OkHttpLogger", Level.TRACE, false);
+        PatternLayout layout = PatternLayout
+            .newBuilder()
+            .withPattern(OK_HTTP_LOG_PATTERN)
+            .build();
+
+        final Appender appender = ConsoleAppender
+            .newBuilder()
+            .withName("OkHttpConsoleAppender")
+            .withLayout(layout)
+            .build();
+
+        appender.start();
+
+        loggerConfig.addAppender(appender, Level.TRACE, null);
+        config.addLogger("OkHttpLogger", loggerConfig);
+        ctx.updateLoggers();
+      }
+
+      @Override
+      public void log(String msg) {
+        log.debug(msg);
+      }
+    };
+
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        .logger(log4j2Writer)
+        .build();
+```
+Example:
+screenshot2.png
 
 Download
 --------
@@ -58,7 +108,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.ihsanbal:LoggingInterceptor:2.0.6') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:3.0.0') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -72,9 +122,9 @@ Maven:
 </repository>
 
 <dependency>
-	    <groupId>com.github.ihsanbal</groupId>
+	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>2.0.6</version>
+	    <version>3.0.0</version>
 </dependency>
 ```
 
@@ -83,49 +133,37 @@ Executor
 --------
 Add executor for allows to perform sequential concurrent print.
 
+Format
+------
+Predefined JUL logging patterns:
+```java
+.format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
+           .JUL_DATE_LEVEL_MESSAGE  // [Date][Debug] Message
+           .JUL_LEVEL_MESSAGE       // [Debug] Message
+           .JUL_DATE_MESSAGE        // [Date] Message
+           .JUL_MESSAGE_ONLY        // Message
+```
 Level
 --------
 
 ```java
 setLevel(Level.BASIC)
-	      .NONE // No logs
-	      .BASIC // Logging url,method,headers and body.
-	      .HEADERS // Logging headers
-	      .BODY // Logging body
+	      .NONE     // No logs
+	      .BASIC    // Logging url, method, headers and body.
+	      .HEADERS  // Logging url, method and headers
+	      .BODY     // Logging url, method and body
 ```	
 
 Platform - [Platform](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/platform/Platform.java)
 --------
 
 ```java
-loggable(BuildConfig.DEBUG) // enable/disable sending logs output.
-log(Platform.WARN) // setting log type
+loggable(true/false) // enable/disable sending logs output.
 ```
 
-Tag
---------
-
-```java
-tag("LoggingI") // Request & response each log tag
-request("request") // Request log tag
-response("response") // Response log tag
-
-```
-	
 Header - [Recipes](https://github.com/square/okhttp/wiki/Recipes)
 --------
 
 ```java
 addHeader("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9 ") // Adding to request
 ```
-
-Notes
---------
-Some tips about log at this blog post: [“The way to get faster on development.”](https://medium.com/@ihsanbal/the-way-to-get-faster-on-development-9d7b23ef8c10)
-
-Also use the filter & configure logcat header for a better result
-
-<p align="left">
-    <img src="https://github.com/ihsanbal/LoggingInterceptor/blob/master/images/screen_shot_5.png" width="280" height="155"/>
-    <img src="https://github.com/ihsanbal/LoggingInterceptor/blob/master/images/screen_shot_4.png" width="280" height="155"/>
-</p>
