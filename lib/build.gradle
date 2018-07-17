@@ -15,6 +15,9 @@ repositories {
     mavenCentral()
 }
 
+group = 'com.dkorobtsov.logging'
+version = '3.0.0-SNAPSHOT'
+
 ext {
     encoding = StandardCharsets.UTF_8.name()
     mockWebserverVersion = '2.7.5'
