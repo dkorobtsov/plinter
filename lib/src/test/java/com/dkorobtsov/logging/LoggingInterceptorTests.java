@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
 import org.junit.Test;
 
 public class LoggingInterceptorTests extends BaseTest {
@@ -42,8 +43,10 @@ public class LoggingInterceptorTests extends BaseTest {
         .newCall(defaultRequest())
         .execute();
 
+    //Comparing message by length since on Gradle runner characters may be different
+    //unless GradleVM executes with -Dfile.encoding=utf-8 option
     assertEquals("Logger with default formatter should publish message only",
-        testLogger.firstFormattedEvent(), testLogger.firstRawEvent());
+        testLogger.firstRawEvent().length(), testLogger.firstFormattedEvent().length());
   }
 
   @Test
@@ -104,8 +107,10 @@ public class LoggingInterceptorTests extends BaseTest {
     assertTrue("Log entry should contain severity tag.",
         entryElements[1].contains("INFO"));
 
-    assertEquals("Log entry should end with message text.",
-        entryElements[2], testLogger.lastRawEvent());
+    //Comparing message by length since on Gradle runner characters may be different
+    //unless GradleVM executes with -Dfile.encoding=utf-8 option
+    assertEquals("Log entry should contain message.",
+        testLogger.lastRawEvent().length(),  entryElements[2].length());
 
   }
 
@@ -129,7 +134,7 @@ public class LoggingInterceptorTests extends BaseTest {
   @Test
   public void loggerShouldBeDisabledWhenLevelSetToNone() throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
     LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .level(Level.NONE)
         .logger(testLogger)
@@ -146,7 +151,7 @@ public class LoggingInterceptorTests extends BaseTest {
   @Test
   public void headersShouldNotBeLoggedWhenLevelSetToBody() throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
     LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .level(Level.BODY)
         .logger(testLogger)
@@ -163,7 +168,7 @@ public class LoggingInterceptorTests extends BaseTest {
   @Test
   public void bodyShouldNotBeLoggedWhenLevelSetToHeaders() throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
     LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .level(Level.HEADERS)
         .logger(testLogger)
@@ -180,7 +185,7 @@ public class LoggingInterceptorTests extends BaseTest {
   @Test
   public void allDetailsShouldBePrintedIfLevelSetToBasic() throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
     LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .level(Level.BASIC)
         .logger(testLogger)
@@ -235,7 +240,7 @@ public class LoggingInterceptorTests extends BaseTest {
             + "    ],\n"
             + "    \"status\": \"available\"\n"
             + "  }"));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
     LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .logger(testLogger)
         .build();
@@ -246,6 +251,24 @@ public class LoggingInterceptorTests extends BaseTest {
 
     assertTrue("Interceptor should be able to log json body.",
         testLogger.formattedOutput().contains("\"name\": \"doggie\","));
+  }
+
+  @Test
+  public void userShouldBeAbleToSupplyExecutor() throws IOException {
+    server.enqueue(new MockResponse().setResponseCode(200));
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        .level(Level.BASIC)
+        .executor(Executors.newSingleThreadExecutor())
+        .logger(testLogger)
+        .build();
+
+    defaultClientWithInterceptor(interceptor)
+        .newCall(defaultRequest())
+        .execute();
+
+    assertTrue("Body should not be logged when level set to Headers.",
+        testLogger.formattedOutput().contains("thread"));
   }
 
 }
