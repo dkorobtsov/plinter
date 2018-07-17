@@ -44,7 +44,10 @@ displaying message only.
         .build();
 ```
 Example:
-screenshot1.png
+
+<p align="left">
+    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot1.png"/>
+</p>
 
 Format can be changed to one of the defined templates, for example:
 ```java
@@ -115,7 +118,9 @@ Or more sophisticated approach with custom logging pattern.
         .build();
 ```
 Example:
-screenshot2.png
+<p align="left">
+    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot2.png"/>
+</p>
 
 Download
 --------
