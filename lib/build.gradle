@@ -1,3 +1,5 @@
+import java.nio.charset.StandardCharsets
+
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'project-report'
@@ -14,11 +16,21 @@ repositories {
 }
 
 ext {
-    okhttpVersion = '3.9.1'
+    encoding = StandardCharsets.UTF_8.name()
     mockWebserverVersion = '2.7.5'
     jsonVersion = '20180130'
+    okhttpVersion = '3.9.1'
     junit4Version = '4.12'
     log4j2Version = '2.11.0'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = encoding
+    options.debug = true
+}
+
+test {
+    include 'com/dkorobtsov/logging/**/*'
 }
 
 dependencies {
@@ -26,8 +38,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
 
     testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
-    testImplementation "junit:junit:$junit4Version"
     testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
-
+    testImplementation "junit:junit:$junit4Version"
 }
 
