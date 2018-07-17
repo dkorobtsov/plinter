@@ -1,6 +1,8 @@
 LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp) with pretty logger
 --------
 
+Description
+-----------
 
 Basic Usage
 -----------
@@ -27,10 +29,11 @@ screenshot1.png
 
 Format can be changed to one of the defined templates, for example:
 ```java
-    LoggingInterceptor interceptor1 = new LoggingInterceptor.Builder()
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .loggable(isDebug())
         .level(Level.BASIC)
         .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
+        .executor(Executors.newSingleThreadExecutor())
         .build();
 ```
 
@@ -138,11 +141,15 @@ Format
 Predefined JUL logging patterns:
 ```java
 .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
-           .JUL_DATE_LEVEL_MESSAGE  // [Date][Debug] Message
-           .JUL_LEVEL_MESSAGE       // [Debug] Message
+           .JUL_FULL                // [Date][Thread][Level] Message
+           .JUL_DATE_LEVEL_MESSAGE  // [Date][Level] Message
+           .JUL_THREAD_MESSAGE      // [Thread] Message
+           .JUL_LEVEL_MESSAGE       // [Level] Message
            .JUL_DATE_MESSAGE        // [Date] Message
            .JUL_MESSAGE_ONLY        // Message
 ```
+Note that given setting works only with default JUL logger.
+
 Level
 --------
 
