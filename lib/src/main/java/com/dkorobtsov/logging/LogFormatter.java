@@ -6,6 +6,18 @@ import java.util.logging.SimpleFormatter;
 
 public enum LogFormatter {
 
+  JUL_FULL(new SimpleFormatter() {
+    @Override
+    public synchronized String format(LogRecord lr) {
+      return String.format("[%1$tF %1$tT][%2$s][%3$-7s] %4$s %n",
+          new Date(lr.getMillis()),
+          Thread.currentThread().getName(),
+          lr.getLevel().getLocalizedName(),
+          lr.getMessage()
+      );
+    }
+  }),
+
   JUL_DATE_MESSAGE(new SimpleFormatter() {
     @Override
     public synchronized String format(LogRecord lr) {
@@ -30,8 +42,18 @@ public enum LogFormatter {
   JUL_LEVEL_MESSAGE(new SimpleFormatter() {
     @Override
     public synchronized String format(LogRecord lr) {
-      return String.format("%1$s %2$s %n",
+      return String.format("[%1$s] %2$s %n",
           lr.getLevel().getLocalizedName(),
+          lr.getMessage()
+      );
+    }
+  }),
+
+  JUL_THREAD_MESSAGE(new SimpleFormatter() {
+    @Override
+    public synchronized String format(LogRecord lr) {
+      return String.format("[%1$s] %2$s %n",
+          Thread.currentThread().getName(),
           lr.getMessage()
       );
     }
