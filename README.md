@@ -1,8 +1,27 @@
 LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp) with pretty logger
+(version for use with Java logging frameworks - jul, log4j, slf4j, logback, log4j2 etc)
 --------
 
 Description
 -----------
+What is the difference from [original](https://github.com/ihsanbal/LoggingInterceptor) repository?
+Personally I find this interceptor very useful for API testing purposes but original implementation
+works well only with Android. Had to significantly rewrite original library to use it in pure Java
+project with log4j2 based logging. So, comparing to original repository, changes are following:
+
+- removed all Android specific stuff (tags, references to BuildConfig etc)
+- removed included Android app (along with existing tests)
+- updated Java level 8
+- refactored Interceptor to make it work without any additional configuration (just plug and play) :)
+- fixed some bugs (mostly output related)
+- added option to customize logger output (when default JUL logger is used)
+- removed some useless params (like option to select between JUL info or warning severity, request/response tags etc)
+- added new tests package (can be helpful to figure out how Interceptor should work)
+- added new DefaultLogger implementation (basically just manually configured JUL logger)
+- reworked builder (to support those above mentioned changes)
+
+todo:
+- correctly handle xml response body
 
 Basic Usage
 -----------
@@ -111,7 +130,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:3.0.0') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:3.0.0-SNAPSHOT') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -127,7 +146,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>3.0.0</version>
+	    <version>3.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
