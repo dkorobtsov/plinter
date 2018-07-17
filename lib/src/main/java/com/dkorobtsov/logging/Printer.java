@@ -37,6 +37,7 @@ class Printer {
   private static final String CORNER_BOTTOM = "└ ";
   private static final String CENTER_LINE = "├ ";
   private static final String DEFAULT_LINE = "│ ";
+  private static final String EMPTY_LINE = "";
 
   protected Printer() {
     throw new UnsupportedOperationException();
@@ -67,14 +68,13 @@ class Printer {
   }
 
   static void printJsonResponse(LoggingInterceptor.Builder builder, long chainMs,
-      boolean isSuccessful,
-      int code, String headers, String bodyString, List<String> segments, String message,
-      final String responseUrl) {
+      boolean isSuccessful, int code, String headers, String bodyString, List<String> segments,
+      String message, final String responseUrl) {
 
     final String responseBody =
         LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + getJsonString(bodyString);
 
-    final String[] urlLine = {URL_TAG + responseUrl, N};
+    final String[] urlLine = {URL_TAG + responseUrl, EMPTY_LINE};
     final String[] response = getResponse(headers, chainMs, code, isSuccessful,
         builder.getLevel(), segments, message);
 
@@ -84,8 +84,7 @@ class Printer {
     logLines(response, builder.getLogger(), true);
 
     if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(responseBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
-          true);
+      logLines(responseBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(), true);
     }
 
     builder.getLogger().log(END_LINE);
@@ -130,8 +129,7 @@ class Printer {
     log = METHOD_TAG + request.method()
         + DOUBLE_SEPARATOR
         + (isEmpty(header) ? ""
-        : loggableHeader ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
-            : "");
+        : loggableHeader ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header) : "");
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
@@ -146,8 +144,7 @@ class Printer {
         + STATUS_CODE_TAG + code + " / " + message
         + DOUBLE_SEPARATOR
         + (isEmpty(header) ? ""
-        : loggableHeader ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
-            : "");
+        : loggableHeader ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header) : "");
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
@@ -182,8 +179,7 @@ class Printer {
     return builder.toString();
   }
 
-  private static void logLines(String[] lines, LogWriter logger,
-      boolean withLineSize) {
+  private static void logLines(String[] lines, LogWriter logger, boolean withLineSize) {
     for (String line : lines) {
       int lineLength = line.length();
       int MAX_LONG_SIZE = withLineSize ? 110 : lineLength;
