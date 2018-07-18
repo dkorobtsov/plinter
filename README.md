@@ -46,7 +46,7 @@ displaying message only.
 Example:
 
 <p align="left">
-    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot1.png"/>
+    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot3.png"/>
 </p>
 
 Format can be changed to one of the defined templates, for example:
@@ -58,6 +58,9 @@ Format can be changed to one of the defined templates, for example:
         .executor(Executors.newSingleThreadExecutor())
         .build();
 ```
+
+**Tip:** when logger is in "message only" mode, json response can be copied
+from console and converted to POJO with [this](http://www.jsonschema2pojo.org/) service in a matter of seconds.
 
 Advanced Usage
 --------------
