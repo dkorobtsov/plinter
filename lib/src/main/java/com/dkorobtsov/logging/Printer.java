@@ -36,7 +36,7 @@ class Printer {
   private static final String CORNER_UP = "┌ ";
   private static final String CORNER_BOTTOM = "└ ";
   private static final String CENTER_LINE = "├ ";
-  private static final String DEFAULT_LINE = "│ ";
+  private static final String DEFAULT_LINE = "  ";
   private static final String EMPTY_LINE = "";
 
   protected Printer() {

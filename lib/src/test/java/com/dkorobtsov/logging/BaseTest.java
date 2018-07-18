@@ -19,7 +19,7 @@ public class BaseTest {
   @Rule public MockWebServer server = new MockWebServer();
 
   @BeforeClass
-  public static void cleanAnyExistingJavaUtiltyLoggingConfigurations() {
+  public static void cleanAnyExistingJavaUtilityLoggingConfigurations() {
     LogManager.getLogManager().reset();
     Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     globalLogger.setLevel(java.util.logging.Level.OFF);

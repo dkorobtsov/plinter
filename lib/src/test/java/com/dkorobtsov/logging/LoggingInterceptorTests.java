@@ -240,7 +240,7 @@ public class LoggingInterceptorTests extends BaseTest {
             + "    ],\n"
             + "    \"status\": \"available\"\n"
             + "  }"));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
     LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .logger(testLogger)
         .build();
