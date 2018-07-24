@@ -138,7 +138,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:3.1-SNAPSHOT') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:3.1.1') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -154,7 +154,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>3.1-SNAPSHOT</version>
+	    <version>3.1.1</version>
 </dependency>
 ```
 
