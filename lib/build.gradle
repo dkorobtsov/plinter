@@ -1,8 +1,12 @@
 import java.nio.charset.StandardCharsets
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'project-report'
+plugins {
+    id 'java-library'
+    id 'maven'
+    id 'jacoco'
+    id 'project-report'
+    id "org.sonarqube" version "2.6"
+}
 
 group = 'com.github.dkorobtsov'
 
@@ -33,7 +37,14 @@ tasks.withType(JavaCompile) {
 }
 
 test {
-    include 'com/dkorobtsov/logging/**/*'
+    useJUnit()
+
+    jacoco {
+        enabled = true
+    }
+    outputs.upToDateWhen {
+        false
+    }
 }
 
 dependencies {
