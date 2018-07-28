@@ -1,0 +1,29 @@
+# docker box definition
+box:
+  id: openjdk
+
+# defining the dev pipeline
+dev:
+  steps:
+    - script:
+      name: gradle check
+      code: |
+        ./gradlew check
+
+    - internal/watch:
+         code: |
+           ./gradlew check
+         reload: true
+
+build:
+  steps:
+    - script:
+        name: quality check
+        code: |
+          ./gradlew sonarqube --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR -Dsonar.organization=dkorobtsov-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONARCUBE_TOKEN
+
+deploy:
+  steps:
+    - handijk/github-merge@1.0.3:
+        token: $GITHUB_TOKEN
+        base: master
