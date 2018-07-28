@@ -26,4 +26,4 @@ deploy:
   steps:
     - handijk/github-merge@1.0.3:
         token: $GITHUB_TOKEN
-        base: develop
+        base: master
