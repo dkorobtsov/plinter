@@ -3,17 +3,15 @@ package com.dkorobtsov.logging;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import org.junit.Test;
 
 public class LoggingInterceptorTests extends BaseTest {
+
+
 
   @Test
   public void loggerShouldWorkWithoutAnyAdditionalConfiguration() throws IOException {
@@ -97,38 +95,9 @@ public class LoggingInterceptorTests extends BaseTest {
         .execute();
 
     String logEntry = testLogger.lastFormattedEvent();
-    String[] entryElements = extractTextFromLogEntrySeparatedByBrackets(logEntry);
 
-    assertEquals("Log event should contain 3 elements: Date, Level, Message.",
-        3, entryElements.length);
-
-    assertTextIsParsableDate(entryElements[0]);
-
-    assertTrue("Log entry should contain severity tag.",
-        entryElements[1].contains("INFO"));
-
-    //Comparing message by length since on Gradle runner characters may be different
-    //unless GradleVM executes with -Dfile.encoding=utf-8 option
-    assertEquals("Log entry should contain message.",
-        testLogger.lastRawEvent().length(),  entryElements[2].length());
-
-  }
-
-  private void assertTextIsParsableDate(String text) {
-    try {
-      new SimpleDateFormat("yyyy-MM-ddd kk:mm:ss").parse(text);
-    } catch (ParseException e) {
-      fail("Log entry should start with parsable date stamp");
-    }
-  }
-
-  @SuppressWarnings({"RegExpRedundantEscape", "RegExpSingleCharAlternation"})
-  private String[] extractTextFromLogEntrySeparatedByBrackets(String logEntry) {
-    return Arrays
-        .stream(logEntry.split("\\[|\\]"))
-        .filter(s -> s.trim().length() > 0)
-        .map(String::trim)
-        .toArray(String[]::new);
+    TestUtil.assertLogEntryElementsCount(logEntry, 3);
+    TestUtil.assertEntryStartsWithParsableDate(logEntry);
   }
 
   @Test
@@ -215,42 +184,6 @@ public class LoggingInterceptorTests extends BaseTest {
 
     assertTrue("Body should be logged when level set to Basic.",
         testLogger.formattedOutput().contains("body"));
-  }
-
-  @Test
-  public void interceptorShouldBeAbleToHandleJsonBody() throws IOException {
-    server.enqueue(new MockResponse()
-        .setResponseCode(200)
-        .setHeader("Content-Type", "application/json")
-        .setBody("  {\n"
-            + "    \"id\": 431169,\n"
-            + "    \"category\": {\n"
-            + "      \"id\": 0,\n"
-            + "      \"name\": \"string\"\n"
-            + "    },\n"
-            + "    \"name\": \"doggie\",\n"
-            + "    \"photoUrls\": [\n"
-            + "      \"string\"\n"
-            + "    ],\n"
-            + "    \"tags\": [\n"
-            + "      {\n"
-            + "        \"id\": 0,\n"
-            + "        \"name\": \"string\"\n"
-            + "      }\n"
-            + "    ],\n"
-            + "    \"status\": \"available\"\n"
-            + "  }"));
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(defaultRequest())
-        .execute();
-
-    assertTrue("Interceptor should be able to log json body.",
-        testLogger.formattedOutput().contains("\"name\": \"doggie\","));
   }
 
   @Test
