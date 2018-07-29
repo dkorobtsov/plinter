@@ -41,10 +41,15 @@ test {
 
     jacoco {
         enabled = true
+
+        reports {
+            html.enabled = true
+        }
     }
     outputs.upToDateWhen {
         false
     }
+
 }
 
 dependencies {
