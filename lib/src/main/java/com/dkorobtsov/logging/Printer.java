@@ -182,10 +182,10 @@ class Printer {
   private static void logLines(String[] lines, LogWriter logger, boolean withLineSize) {
     for (String line : lines) {
       int lineLength = line.length();
-      int MAX_LONG_SIZE = withLineSize ? 110 : lineLength;
-      for (int i = 0; i <= lineLength / MAX_LONG_SIZE; i++) {
-        int start = i * MAX_LONG_SIZE;
-        int end = (i + 1) * MAX_LONG_SIZE;
+      int maxLongSize = withLineSize ? 110 : lineLength;
+      for (int i = 0; i <= lineLength / maxLongSize; i++) {
+        int start = i * maxLongSize;
+        int end = (i + 1) * maxLongSize;
         end = end > line.length() ? line.length() : end;
         logger.log(DEFAULT_LINE + line.substring(start, end));
       }
@@ -193,9 +193,8 @@ class Printer {
   }
 
   private static String bodyToString(final Request request) {
-    try {
-      final Request copy = request.newBuilder().build();
-      final Buffer buffer = new Buffer();
+    final Request copy = request.newBuilder().build();
+    try (final Buffer buffer = new Buffer()) {
       if (copy.body() == null) {
         return "";
       }
