@@ -3,3 +3,4 @@
 .idea/
 lib/out/
 /lib/build/
+/$WERCKER_CACHE_DIR/
