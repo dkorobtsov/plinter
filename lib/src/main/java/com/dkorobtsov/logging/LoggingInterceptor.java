@@ -29,27 +29,24 @@ public class LoggingInterceptor implements Interceptor {
 
   private static Runnable createPrintJsonRequestRunnable(final LoggingInterceptor.Builder builder,
       final Request request) {
-    return () -> Printer.printJsonRequest(builder, request);
+    return () -> Printer.printJsonRequest(builder.logger, builder.level, request);
   }
 
   private static Runnable createFileRequestRunnable(final LoggingInterceptor.Builder builder,
       final Request request) {
-    return () -> Printer.printFileRequest(builder, request);
+    return () -> Printer.printFileRequest(builder.logger, builder.level, request);
   }
 
   private static Runnable createPrintJsonResponseRunnable(final LoggingInterceptor.Builder builder,
-      final long chainMs, final boolean isSuccessful,
-      final int code, final String headers, final String bodyString, final List<String> segments,
-      final String message, final String responseUrl) {
-    return () -> Printer.printJsonResponse(builder, chainMs, isSuccessful,
-        code, headers, bodyString, segments, message, responseUrl);
+      ResponseDetails
+          responseDetails) {
+    return () -> Printer.printJsonResponse(builder.logger, builder.level, responseDetails);
   }
 
   private static Runnable createFileResponseRunnable(final LoggingInterceptor.Builder builder,
-      final long chainMs, final boolean isSuccessful,
-      final int code, final String headers, final List<String> segments, final String message) {
-    return () -> Printer.printFileResponse(builder, chainMs, isSuccessful,
-        code, headers, segments, message);
+      ResponseDetails responseDetails) {
+    return () -> Printer
+        .printFileResponse(builder.logger, builder.level, responseDetails);
   }
 
   @Override
@@ -59,7 +56,6 @@ public class LoggingInterceptor implements Interceptor {
     if (headerMap.size() > 0) {
       Request.Builder requestBuilder = request.newBuilder();
       headerMap.forEach(requestBuilder::addHeader);
-
       request = requestBuilder.build();
     }
 
@@ -76,31 +72,47 @@ public class LoggingInterceptor implements Interceptor {
 
     final RequestBody requestBody = request.body();
 
-    String rSubtype = null;
+    String requestSubtype = null;
     if (requestBody != null && requestBody.contentType() != null) {
-      rSubtype = Objects.requireNonNull(requestBody.contentType()).subtype();
+      requestSubtype = Objects.requireNonNull(requestBody.contentType()).subtype();
     }
 
-    Executor executor = builder.executor;
-
-    if (isNotFileRequest(rSubtype)) {
-      if (executor != null) {
-        executor.execute(createPrintJsonRequestRunnable(builder, request));
-      } else {
-        Printer.printJsonRequest(builder, request);
-      }
+    if (isNotFileRequest(requestSubtype)) {
+      printJsonRequest(request);
     } else {
-      if (executor != null) {
-        executor.execute(createFileRequestRunnable(builder, request));
-      } else {
-        Printer.printFileRequest(builder, request);
-      }
+      printFileRequest(request);
     }
 
     final long st = System.nanoTime();
     final Response response = chain.proceed(request);
     final long chainMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - st);
 
+    String subtype = null;
+    final ResponseBody body;
+
+    if (Objects.requireNonNull(response.body()).contentType() != null) {
+      subtype = Objects.requireNonNull(response.body().contentType()).subtype();
+    }
+
+    ResponseDetails responseDetails = gatherResponseDetails(request, response, chainMs,
+        !isNotFileRequest(subtype));
+
+    if (isNotFileRequest(subtype)) {
+      printJsonResponse(responseDetails);
+      body = ResponseBody.create(responseDetails.contentType, responseDetails.bodyString);
+    } else {
+      printFileResponse(responseDetails);
+      return response;
+    }
+
+    return response.newBuilder()
+        .body(body)
+        .build();
+  }
+
+  private ResponseDetails gatherResponseDetails(Request request, Response response, long chainMs,
+      boolean isFileRequest)
+      throws IOException {
     final List<String> segmentList = request.url().encodedPathSegments();
     final String header = response.headers().toString();
     final int code = response.code();
@@ -108,43 +120,21 @@ public class LoggingInterceptor implements Interceptor {
     final String message = response.message();
     final ResponseBody responseBody = response.body();
     final MediaType contentType = Objects.requireNonNull(responseBody).contentType();
+    final String url = response.request().url().toString();
+    final String bodyString = isFileRequest ? null : Printer.getJsonString(responseBody.string());
 
-    String subtype = null;
-    final ResponseBody body;
-
-    if (contentType != null) {
-      subtype = contentType.subtype();
-    }
-
-    if (isNotFileRequest(subtype)) {
-      final String bodyString = Printer.getJsonString(responseBody.string());
-      final String url = response.request().url().toString();
-
-      if (executor != null) {
-        executor.execute(
-            createPrintJsonResponseRunnable(builder, chainMs, isSuccessful, code, header,
-                bodyString,
-                segmentList, message, url));
-      } else {
-        Printer.printJsonResponse(builder, chainMs, isSuccessful, code, header, bodyString,
-            segmentList, message, url);
-      }
-      body = ResponseBody.create(contentType, bodyString);
-    } else {
-      if (executor != null) {
-        executor.execute(
-            createFileResponseRunnable(builder, chainMs, isSuccessful, code, header, segmentList,
-                message));
-      } else {
-        Printer
-            .printFileResponse(builder, chainMs, isSuccessful, code, header, segmentList, message);
-      }
-      return response;
-    }
-
-    return response.newBuilder().
-        body(body).
-        build();
+    return ResponseDetails
+        .builder()
+        .segmentList(segmentList)
+        .header(header)
+        .code(code)
+        .isSuccessful(isSuccessful)
+        .message(message)
+        .bodyString(bodyString)
+        .contentType(contentType)
+        .url(url)
+        .chainMs(chainMs)
+        .build();
   }
 
   private boolean isNotFileRequest(final String subtype) {
@@ -152,6 +142,38 @@ public class LoggingInterceptor implements Interceptor {
         || subtype.contains("xml")
         || subtype.contains("plain")
         || subtype.contains("html"));
+  }
+
+  private void printFileResponse(ResponseDetails responseDetails) {
+    if (builder.executor != null) {
+      builder.executor.execute(createFileResponseRunnable(builder, responseDetails));
+    } else {
+      Printer.printFileResponse(builder.getLogger(), builder.getLevel(), responseDetails);
+    }
+  }
+
+  private void printJsonResponse(ResponseDetails responseDetails) {
+    if (builder.executor != null) {
+      builder.executor.execute(createPrintJsonResponseRunnable(builder, responseDetails));
+    } else {
+      Printer.printJsonResponse(builder.logger, builder.level, responseDetails);
+    }
+  }
+
+  private void printFileRequest(Request request) {
+    if (builder.executor != null) {
+      builder.executor.execute(createFileRequestRunnable(builder, request));
+    } else {
+      Printer.printFileRequest(builder.logger, builder.level, request);
+    }
+  }
+
+  private void printJsonRequest(Request request) {
+    if (builder.executor != null) {
+      builder.executor.execute(createPrintJsonRequestRunnable(builder, request));
+    } else {
+      Printer.printJsonRequest(builder.logger, builder.level, request);
+    }
   }
 
   @SuppressWarnings({"unused", "SameParameterValue"})
@@ -196,10 +218,6 @@ public class LoggingInterceptor implements Interceptor {
     public Builder format(LogFormatter format) {
       this.formatter = format;
       return this;
-    }
-
-    LogFormatter getFormatter() {
-      return formatter;
     }
 
     /**
