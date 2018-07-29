@@ -6,17 +6,17 @@ import java.util.logging.Logger;
 
 public class DefaultLogger implements LogWriter {
 
-  private static Logger defaultLogger = Logger.getLogger("DefaultLogger");
+  private static final Logger logger = Logger.getLogger("DefaultLogger");
 
   DefaultLogger(LogFormatter logFormatter) {
-    defaultLogger.setUseParentHandlers(false);
+    logger.setUseParentHandlers(false);
     ConsoleHandler handler = new ConsoleHandler();
     handler.setFormatter(logFormatter.formatter);
-    defaultLogger.addHandler(handler);
+    logger.addHandler(handler);
   }
 
   @Override
   public void log(String msg) {
-    defaultLogger.log(Level.INFO, msg);
+    logger.log(Level.INFO, msg);
   }
 }

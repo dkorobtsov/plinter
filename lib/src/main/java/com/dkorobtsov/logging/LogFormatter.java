@@ -68,7 +68,7 @@ public enum LogFormatter {
     }
   });
 
-  SimpleFormatter formatter;
+  final SimpleFormatter formatter;
   LogFormatter defaultFormat;
 
   LogFormatter(SimpleFormatter simpleFormatter) {
