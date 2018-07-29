@@ -33,7 +33,7 @@ public class Log4j2LoggerTest extends BaseTest {
   private final Logger log = LogManager.getLogger(Log4j2LoggerTest.class);
 
   private static final String ROOT_LOG_PATTERN = "%d{HH:mm:ss.SSS} [%t] %-5level %c{0}:%L - %msg%n";
-  private static StringWriter logWriter = new StringWriter();
+  private static final StringWriter logWriter = new StringWriter();
 
   @BeforeClass
   public static void configureLogger() throws IOException {
@@ -108,7 +108,7 @@ public class Log4j2LoggerTest extends BaseTest {
 
   }
 
-  private static void initializeBaseLog4j2Configuration() throws IOException {
+  private static void initializeBaseLog4j2Configuration() {
     ConfigurationBuilder<BuiltConfiguration> builder
         = ConfigurationBuilderFactory.newConfigurationBuilder();
 

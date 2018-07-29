@@ -17,7 +17,7 @@ import java.util.logging.StreamHandler;
  */
 public class TestLogger implements LogWriter {
 
-  private List<String> events = new ArrayList<>(Collections.emptyList());
+  private final List<String> events = new ArrayList<>(Collections.emptyList());
   private StreamHandler logOutputHandler;
   private OutputStream logOut;
   private Logger testLogger = Logger.getLogger("TestLogger");
@@ -50,7 +50,7 @@ public class TestLogger implements LogWriter {
    * @return Returns raw messages
    * (in case we want to check content only and  don't care about format)
    */
-  List<String> rawMessages() {
+  private List<String> rawMessages() {
     return events;
   }
 

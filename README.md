@@ -3,6 +3,7 @@ LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp)
 --------
 [![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
 ![quality gate](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=alert_status)
+![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Alib&metric=reliability_rating)
 ![security](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=security_rating)
 ![coverage](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=coverage)
 
@@ -143,7 +144,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:3.1.1') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:3.2') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -159,7 +160,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>3.1.1</version>
+	    <version>3.2</version>
 </dependency>
 ```
 

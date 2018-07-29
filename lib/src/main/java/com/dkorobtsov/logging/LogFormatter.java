@@ -68,14 +68,10 @@ public enum LogFormatter {
     }
   });
 
-  SimpleFormatter formatter;
-  LogFormatter defaultFormat;
+  final SimpleFormatter formatter;
 
   LogFormatter(SimpleFormatter simpleFormatter) {
     this.formatter = simpleFormatter;
   }
 
-  void setDefault(LogFormatter formatter){
-    this.defaultFormat = formatter;
-  }
 }

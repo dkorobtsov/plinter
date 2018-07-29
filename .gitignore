@@ -1,9 +1,6 @@
 *.iml
 .gradle
-local.properties
-.DS_Store
-build
-captures
-.externalNativeBuild
 .idea/
 lib/out/
+/lib/build/
+/$WERCKER_CACHE_DIR/

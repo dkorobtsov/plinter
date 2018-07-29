@@ -48,104 +48,94 @@ class Printer {
         .isEmpty(line.trim());
   }
 
-  static void printJsonRequest(LoggingInterceptor.Builder builder, Request request) {
+  static void printJsonRequest(LogWriter logWriter, Level level, Request request) {
+    logWriter.log(REQUEST_UP_LINE);
+
+    logLines(new String[]{URL_TAG + request.url()}, logWriter, false);
+    logLines(getRequest(request, level), logWriter, true);
+
     String requestBody = LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + bodyToString(request);
-
-    builder.getLogger().log(REQUEST_UP_LINE);
-
-    logLines(new String[]{URL_TAG + request.url()}, builder.getLogger(),
-        false);
-
-    logLines(getRequest(request, builder.getLevel()), builder.getLogger(),
-        true);
-
-    if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(requestBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(),
-          true);
+    if (level == Level.BASIC || level == Level.BODY) {
+      logLines(requestBody.split(REGEX_LINE_SEPARATOR), logWriter, true);
     }
 
-    builder.getLogger().log(END_LINE);
+    logWriter.log(END_LINE);
   }
 
-  static void printJsonResponse(LoggingInterceptor.Builder builder, long chainMs,
-      boolean isSuccessful, int code, String headers, String bodyString, List<String> segments,
-      String message, final String responseUrl) {
+  static void printJsonResponse(LogWriter logWriter, Level level, ResponseDetails responseDetails) {
+    logWriter.log(RESPONSE_UP_LINE);
+
+    final String[] urlLine = {URL_TAG + responseDetails.url, EMPTY_LINE};
+    logLines(urlLine, logWriter, true);
+
+    final String[] response = getResponse(level, responseDetails);
+    logLines(response, logWriter, true);
 
     final String responseBody =
-        LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + getJsonString(bodyString);
-
-    final String[] urlLine = {URL_TAG + responseUrl, EMPTY_LINE};
-    final String[] response = getResponse(headers, chainMs, code, isSuccessful,
-        builder.getLevel(), segments, message);
-
-    builder.getLogger().log(RESPONSE_UP_LINE);
-
-    logLines(urlLine, builder.getLogger(), true);
-    logLines(response, builder.getLogger(), true);
-
-    if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(responseBody.split(REGEX_LINE_SEPARATOR), builder.getLogger(), true);
+        LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + getJsonString(responseDetails.bodyString);
+    if (level == Level.BASIC || level == Level.BODY) {
+      logLines(responseBody.split(REGEX_LINE_SEPARATOR), logWriter, true);
     }
 
-    builder.getLogger().log(END_LINE);
+    logWriter.log(END_LINE);
   }
 
-  static void printFileRequest(LoggingInterceptor.Builder builder, Request request) {
-    builder.getLogger().log(REQUEST_UP_LINE);
+  static void printFileRequest(LogWriter logWriter, Level level, Request request) {
+    logWriter.log(REQUEST_UP_LINE);
 
-    logLines(new String[]{URL_TAG + request.url()}, builder.getLogger(),
+    logLines(new String[]{URL_TAG + request.url()}, logWriter,
         false);
-    logLines(getRequest(request, builder.getLevel()), builder.getLogger(),
+    logLines(getRequest(request, level), logWriter,
         true);
 
-    if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(OMITTED_REQUEST, builder.getLogger(), true);
+    if (level == Level.BASIC || level == Level.BODY) {
+      logLines(OMITTED_REQUEST, logWriter, true);
     }
 
-    builder.getLogger().log(END_LINE);
+    logWriter.log(END_LINE);
 
   }
 
-  static void printFileResponse(LoggingInterceptor.Builder builder, long chainMs,
-      boolean isSuccessful,
-      int code, String headers, List<String> segments, String message) {
+  static void printFileResponse(LogWriter logWriter, Level level, ResponseDetails responseDetails) {
 
-    builder.getLogger().log(RESPONSE_UP_LINE);
+    logWriter.log(RESPONSE_UP_LINE);
 
-    logLines(getResponse(headers, chainMs, code, isSuccessful,
-        builder.getLevel(), segments, message), builder.getLogger(), true);
+    final String[] urlLine = {URL_TAG + responseDetails.url, EMPTY_LINE};
+    logLines(urlLine, logWriter, true);
 
-    if (builder.getLevel() == Level.BASIC || builder.getLevel() == Level.BODY) {
-      logLines(OMITTED_RESPONSE, builder.getLogger(), true);
+    logLines(getResponse(level, responseDetails), logWriter, true);
+
+    if (level == Level.BASIC || level == Level.BODY) {
+      logLines(OMITTED_RESPONSE, logWriter, true);
     }
 
-    builder.getLogger().log(END_LINE);
+    logWriter.log(END_LINE);
   }
 
   private static String[] getRequest(Request request, Level level) {
-    String log;
     String header = request.headers().toString();
-    boolean loggableHeader = level == Level.HEADERS || level == Level.BASIC;
-    log = METHOD_TAG + request.method()
+    boolean isLoggable = level == Level.HEADERS || level == Level.BASIC;
+    String log = METHOD_TAG + request.method()
         + DOUBLE_SEPARATOR
-        + (isEmpty(header) ? ""
-        : loggableHeader ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header) : "");
+        + printHeaderIfLoggable(header, isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
-  private static String[] getResponse(String header, long tookMs, int code, boolean isSuccessful,
-      Level level, List<String> segments, String message) {
-    final String log;
-    final boolean loggableHeader = level == Level.HEADERS || level == Level.BASIC;
-    final String segmentString = slashSegments(segments);
-    log = (!TextUtils.isEmpty(segmentString) ? segmentString + " - "
-        : "") + "is success : " + isSuccessful + " - " + RECEIVED_TAG + tookMs + "ms"
+  private static String[] getResponse(Level level, ResponseDetails responseDetails) {
+    final boolean isLoggable = level == Level.HEADERS || level == Level.BASIC;
+    final String segmentString = slashSegments(responseDetails.segmentList);
+    final String log = (!TextUtils.isEmpty(segmentString) ? segmentString + " - "
+        : "") + "is success : "
+        + responseDetails.isSuccessful + " - " + RECEIVED_TAG + responseDetails.chainMs + "ms"
         + DOUBLE_SEPARATOR
-        + STATUS_CODE_TAG + code + " / " + message
+        + STATUS_CODE_TAG + responseDetails.code + " / " + responseDetails.message
         + DOUBLE_SEPARATOR
-        + (isEmpty(header) ? ""
-        : loggableHeader ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header) : "");
+        + printHeaderIfLoggable(responseDetails.header, isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
+  }
+
+  private static String printHeaderIfLoggable(String header, boolean loggable) {
+    return !isEmpty(header) && loggable ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header) : "";
   }
 
   private static String slashSegments(List<String> segments) {
@@ -182,10 +172,10 @@ class Printer {
   private static void logLines(String[] lines, LogWriter logger, boolean withLineSize) {
     for (String line : lines) {
       int lineLength = line.length();
-      int MAX_LONG_SIZE = withLineSize ? 110 : lineLength;
-      for (int i = 0; i <= lineLength / MAX_LONG_SIZE; i++) {
-        int start = i * MAX_LONG_SIZE;
-        int end = (i + 1) * MAX_LONG_SIZE;
+      int maxLongSize = withLineSize ? 110 : lineLength;
+      for (int i = 0; i <= lineLength / maxLongSize; i++) {
+        int start = i * maxLongSize;
+        int end = (i + 1) * maxLongSize;
         end = end > line.length() ? line.length() : end;
         logger.log(DEFAULT_LINE + line.substring(start, end));
       }
@@ -193,9 +183,8 @@ class Printer {
   }
 
   private static String bodyToString(final Request request) {
-    try {
-      final Request copy = request.newBuilder().build();
-      final Buffer buffer = new Buffer();
+    final Request copy = request.newBuilder().build();
+    try (final Buffer buffer = new Buffer()) {
       if (copy.body() == null) {
         return "";
       }
