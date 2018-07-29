@@ -3,6 +3,7 @@ package com.dkorobtsov.logging;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import okhttp3.HttpUrl;
@@ -57,20 +58,15 @@ public class LoggingInterceptor implements Interceptor {
     HashMap<String, String> headerMap = builder.getHeaders();
     if (headerMap.size() > 0) {
       Request.Builder requestBuilder = request.newBuilder();
-      for (String key : headerMap.keySet()) {
-        String value = headerMap.get(key);
-        requestBuilder.addHeader(key, value);
-      }
+      headerMap.forEach(requestBuilder::addHeader);
+
       request = requestBuilder.build();
     }
 
     HashMap<String, String> queryMap = builder.getHttpUrl();
     if (queryMap.size() > 0) {
       HttpUrl.Builder httpUrlBuilder = request.url().newBuilder(request.url().toString());
-      for (String key : queryMap.keySet()) {
-        String value = queryMap.get(key);
-        httpUrlBuilder.addQueryParameter(key, value);
-      }
+      queryMap.forEach(Objects.requireNonNull(httpUrlBuilder)::addQueryParameter);
       request = request.newBuilder().url(httpUrlBuilder.build()).build();
     }
 
@@ -82,7 +78,7 @@ public class LoggingInterceptor implements Interceptor {
 
     String rSubtype = null;
     if (requestBody != null && requestBody.contentType() != null) {
-      rSubtype = requestBody.contentType().subtype();
+      rSubtype = Objects.requireNonNull(requestBody.contentType()).subtype();
     }
 
     Executor executor = builder.executor;
@@ -111,7 +107,7 @@ public class LoggingInterceptor implements Interceptor {
     final boolean isSuccessful = response.isSuccessful();
     final String message = response.message();
     final ResponseBody responseBody = response.body();
-    final MediaType contentType = responseBody.contentType();
+    final MediaType contentType = Objects.requireNonNull(responseBody).contentType();
 
     String subtype = null;
     final ResponseBody body;
