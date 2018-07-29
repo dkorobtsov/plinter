@@ -11,7 +11,7 @@ import okhttp3.Request;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 
-public class BaseTest {
+public abstract class BaseTest {
 
   private static final ConnectionPool connectionPool = new ConnectionPool();
   private static final Dispatcher dispatcher = new Dispatcher();
