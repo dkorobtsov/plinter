@@ -267,7 +267,7 @@ public class LoggingInterceptorTests extends BaseTest {
         .newCall(defaultRequest())
         .execute();
 
-    assertTrue("Body should not be logged when level set to Headers.",
+    assertTrue("User should be able to supply executor.",
         testLogger.formattedOutput().contains("thread"));
   }
 
