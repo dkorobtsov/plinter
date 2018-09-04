@@ -26,7 +26,7 @@ project with log4j2 based logging. So, comparing to original repository, changes
 - added new tests package (can be helpful to figure out how Interceptor should work)
 - added new DefaultLogger implementation (basically just manually configured JUL logger)
 - reworked builder (to support those above mentioned changes)
-- Interceptor now pretty prints XML files as well
+- Interceptor now pretty prints XML body as well
 
 
 Basic Usage
