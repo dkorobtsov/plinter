@@ -1,12 +1,10 @@
 package com.dkorobtsov.logging;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -14,9 +12,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-/**
- * @author ihsan on 09/02/2017.
- */
 public class LoggingInterceptor implements Interceptor {
 
   private final boolean isDebug;
@@ -52,19 +47,6 @@ public class LoggingInterceptor implements Interceptor {
   @Override
   public Response intercept(Chain chain) throws IOException {
     Request request = chain.request();
-    HashMap<String, String> headerMap = builder.getHeaders();
-    if (headerMap.size() > 0) {
-      Request.Builder requestBuilder = request.newBuilder();
-      headerMap.forEach(requestBuilder::addHeader);
-      request = requestBuilder.build();
-    }
-
-    HashMap<String, String> queryMap = builder.getHttpUrl();
-    if (queryMap.size() > 0) {
-      HttpUrl.Builder httpUrlBuilder = request.url().newBuilder(request.url().toString());
-      queryMap.forEach(Objects.requireNonNull(httpUrlBuilder)::addQueryParameter);
-      request = request.newBuilder().url(httpUrlBuilder.build()).build();
-    }
 
     if (!isDebug || builder.getLevel() == Level.NONE) {
       return chain.proceed(request);
@@ -179,8 +161,6 @@ public class LoggingInterceptor implements Interceptor {
   @SuppressWarnings({"unused", "SameParameterValue"})
   public static class Builder {
 
-    private final HashMap<String, String> headers;
-    private final HashMap<String, String> queries;
     private boolean isDebug = true;
     private Level level = Level.BASIC;
     private LogWriter logger;
@@ -188,8 +168,6 @@ public class LoggingInterceptor implements Interceptor {
     private Executor executor;
 
     public Builder() {
-      headers = new HashMap<>();
-      queries = new HashMap<>();
       formatter = LogFormatter.JUL_MESSAGE_ONLY;
     }
 
@@ -211,8 +189,7 @@ public class LoggingInterceptor implements Interceptor {
     }
 
     /**
-     * @param format set Java Utility Logger format
-     * (will be ignored in case custom logger is used)
+     * @param format set Java Utility Logger format (will be ignored in case custom logger is used)
      * @return Builder
      */
     public Builder format(LogFormatter format) {
@@ -241,36 +218,6 @@ public class LoggingInterceptor implements Interceptor {
 
     Level getLevel() {
       return level;
-    }
-
-    /**
-     * @param name Filed
-     * @param value Value
-     * @return Builder
-     * Add a field with the specified value
-     */
-    public Builder addHeader(String name, String value) {
-      headers.put(name, value);
-      return this;
-    }
-
-    HashMap<String, String> getHeaders() {
-      return headers;
-    }
-
-    /**
-     * @param name Filed
-     * @param value Value
-     * @return Builder
-     * Add a field with the specified value
-     */
-    public Builder addQueryParam(String name, String value) {
-      queries.put(name, value);
-      return this;
-    }
-
-    HashMap<String, String> getHttpUrl() {
-      return queries;
     }
 
     /**

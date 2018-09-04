@@ -237,7 +237,8 @@ class Printer {
 
       return writer.writeToString(document);
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      //If failed to parse - just showing as is.
+      return xml;
     }
   }
 

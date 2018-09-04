@@ -17,7 +17,8 @@ project with log4j2 based logging. So, comparing to original repository, changes
 
 - removed all Android specific stuff (tags, references to BuildConfig etc)
 - removed included Android app (along with existing tests)
-- updated Java level 8
+- removed option to add custom headers / queries
+- updated to Java level 8
 - refactored Interceptor to make it work without any additional configuration (just plug and play) :)
 - fixed some bugs (mostly output related)
 - added option to customize logger output (when default JUL logger is used)
@@ -25,9 +26,8 @@ project with log4j2 based logging. So, comparing to original repository, changes
 - added new tests package (can be helpful to figure out how Interceptor should work)
 - added new DefaultLogger implementation (basically just manually configured JUL logger)
 - reworked builder (to support those above mentioned changes)
+- Interceptor now pretty prints XML files as well
 
-todo:
-- correctly handle xml response body
 
 Basic Usage
 -----------
@@ -144,7 +144,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:3.2') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:3.3') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -160,7 +160,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>3.2</version>
+	    <version>3.3</version>
 </dependency>
 ```
 
@@ -194,16 +194,9 @@ setLevel(Level.BASIC)
 	      .BODY     // Logging url, method and body
 ```	
 
-Platform - [Platform](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/platform/Platform.java)
+Loggable
 --------
 
 ```java
 loggable(true/false) // enable/disable sending logs output.
-```
-
-Header - [Recipes](https://github.com/square/okhttp/wiki/Recipes)
---------
-
-```java
-addHeader("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9 ") // Adding to request
 ```
