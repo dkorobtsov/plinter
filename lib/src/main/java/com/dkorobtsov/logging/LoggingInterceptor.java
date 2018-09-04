@@ -121,7 +121,7 @@ public class LoggingInterceptor implements Interceptor {
     final ResponseBody responseBody = response.body();
     final MediaType contentType = Objects.requireNonNull(responseBody).contentType();
     final String url = response.request().url().toString();
-    final String bodyString = isFileRequest ? null : Printer.getJsonString(responseBody.string());
+    final String bodyString = isFileRequest ? null : Printer.formattedBody(responseBody.string());
 
     return ResponseDetails
         .builder()

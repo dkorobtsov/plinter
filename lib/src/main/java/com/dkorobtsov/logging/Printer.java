@@ -1,12 +1,20 @@
 package com.dkorobtsov.logging;
 
+
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilderFactory;
 import okhttp3.Request;
 import okio.Buffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 /**
  * @author ihsan on 09/02/2017.
@@ -39,7 +47,7 @@ class Printer {
   private static final String DEFAULT_LINE = "  ";
   private static final String EMPTY_LINE = "";
 
-  protected Printer() {
+  Printer() {
     throw new UnsupportedOperationException();
   }
 
@@ -72,7 +80,7 @@ class Printer {
     logLines(response, logWriter, true);
 
     final String responseBody =
-        LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + getJsonString(responseDetails.bodyString);
+        LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + formattedBody(responseDetails.bodyString);
     if (level == Level.BASIC || level == Level.BODY) {
       logLines(responseBody.split(REGEX_LINE_SEPARATOR), logWriter, true);
     }
@@ -189,21 +197,21 @@ class Printer {
         return "";
       }
       copy.body().writeTo(buffer);
-      return getJsonString(buffer.readUtf8());
+      return formattedBody(buffer.readUtf8());
     } catch (final IOException e) {
       return "{\"err\": \"" + e.getMessage() + "\"}";
     }
   }
 
-  static String getJsonString(final String msg) {
+  static String formattedBody(final String msg) {
     String message;
     try {
       if (msg.startsWith("{")) {
-        JSONObject jsonObject = new JSONObject(msg);
-        message = jsonObject.toString(JSON_INDENT);
+        message = new JSONObject(msg).toString(JSON_INDENT);
       } else if (msg.startsWith("[")) {
-        JSONArray jsonArray = new JSONArray(msg);
-        message = jsonArray.toString(JSON_INDENT);
+        message = new JSONArray(msg).toString(JSON_INDENT);
+      } else if (msg.startsWith("<?xml")) {
+        message = formatAsXml(msg);
       } else {
         message = msg;
       }
@@ -212,4 +220,25 @@ class Printer {
     }
     return message;
   }
+
+  private static String formatAsXml(String xml) {
+    try {
+      final InputSource src = new InputSource(new StringReader(xml));
+      final Node document = DocumentBuilderFactory.newInstance()
+          .newDocumentBuilder().parse(src).getDocumentElement();
+      final boolean keepDeclaration = xml.startsWith("<?xml");
+
+      final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+      final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+      final LSSerializer writer = impl.createLSSerializer();
+
+      writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
+      writer.getDomConfig().setParameter("xml-declaration", keepDeclaration);
+
+      return writer.writeToString(document);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
 }
