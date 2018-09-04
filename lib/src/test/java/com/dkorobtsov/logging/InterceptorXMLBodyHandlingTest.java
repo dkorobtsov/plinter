@@ -8,9 +8,7 @@ import java.util.Arrays;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 
 public class InterceptorXMLBodyHandlingTest extends BaseTest {
 
@@ -18,9 +16,6 @@ public class InterceptorXMLBodyHandlingTest extends BaseTest {
       "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
       "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
       "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
-
-  @Rule
-  public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   @Test
   public void interceptorAbleToHandleBody_XmlResponse() throws IOException {
