@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -18,6 +19,16 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class InterceptorBodyHandlingTest extends BaseTest {
+
+  private static final String XML_BODY = "<?xml version=\"1.0\"?><mammals>" +
+      "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
+      "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
+      "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
+
+  private static final String MALFORMED_XML_BODY = "<?xml version=\"1.0\"?><mammals>" +
+      "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
+      "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
+      "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
 
   private static final String JSON_BODY = ""
       + "  {\n"
@@ -42,90 +53,87 @@ public class InterceptorBodyHandlingTest extends BaseTest {
   @Rule public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
   @Test
-  public void interceptorAbleToHandleBody_JsonResponse() throws IOException {
-    server.enqueue(new MockResponse()
-        .setResponseCode(200)
-        .setHeader("Content-Type", "application/json")
-        .setBody(JSON_BODY));
-
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(defaultRequest())
-        .execute();
+  public void interceptorAbleToHandleBody_JsonRequest() throws IOException {
+    final String[] loggerOutput = interceptedRequest(RequestBody
+        .create(MediaType.parse("application/json"), JSON_BODY));
 
     assertTrue("Interceptor should be able to log json body.",
-        testLogger.formattedOutput().contains("\"name\": \"doggie\","));
+        Arrays.asList(loggerOutput).contains("      \"name\": \"doggie\", "));
   }
 
   @Test
-  public void interceptorAbleToHandleBody_JsonRequest() throws IOException {
-    server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    Request request = new Request.Builder()
-        .url(String.valueOf(server.url("/")))
-        .put(RequestBody.create(MediaType.parse("application/json"), JSON_BODY))
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(request)
-        .execute();
+  public void interceptorAbleToHandleBody_JsonResponse() throws IOException {
+    final String[] loggerOutput = interceptedResponse("application/json", JSON_BODY);
 
     assertTrue("Interceptor should be able to log json body.",
-        testLogger.formattedOutput().contains("\"name\": \"doggie\","));
+        Arrays.asList(loggerOutput).contains("      \"name\": \"doggie\", "));
+  }
+
+  @Test
+  public void interceptorAbleToHandleBody_XmlRequest() throws IOException {
+    final String[] loggerOutput = interceptedRequest(RequestBody
+        .create(MediaType.parse("application/xml"), XML_BODY));
+
+    assertTrue("Interceptor should be able to handle xml request body.",
+        Arrays.asList(loggerOutput)
+            .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?> "));
+    assertTrue("Interceptor should be able to handle xml request body.",
+        Arrays.asList(loggerOutput).contains("  </mammals> "));
+  }
+
+  @Test
+  public void interceptorAbleToHandleBody_XmlResponse() throws IOException {
+    final String[] loggerOutput = interceptedResponse("application/xml", XML_BODY);
+
+    assertTrue("Interceptor should be able to handle xml response body.",
+        Arrays.asList(loggerOutput)
+            .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?> "));
+    assertTrue("Interceptor should be able to handle xml response body.",
+        Arrays.asList(loggerOutput).contains("  </mammals> "));
+  }
+
+  @Test
+  public void interceptorAbleToHandleBody_MalformedXmlRequest() throws IOException {
+    final String[] loggerOutput = interceptedRequest(RequestBody
+        .create(MediaType.parse("application/xml"), MALFORMED_XML_BODY));
+
+    assertTrue("Interceptor should be able to handle malformed xml body.",
+        Arrays.asList(loggerOutput)
+            .contains("  <?xml version=\"1.0\"?><mammals><animal id=\"0\" "
+                + "species=\"Capra hircus\">Goat</animal>animal id=\"1\" species=\"Panthe "));
+  }
+
+  @Test
+  public void interceptorAbleToHandleBody_MalformedXmlResponse() throws IOException {
+    final String[] loggerOutput = interceptedResponse("application/xml", MALFORMED_XML_BODY);
+
+    assertTrue("Interceptor should be able to handle xml response body.",
+        Arrays.asList(loggerOutput)
+            .contains("  <?xml version=\"1.0\"?><mammals><animal id=\"0\" "
+                + "species=\"Capra hircus\">Goat</animal>animal id=\"1\" species=\"Panthe "));
   }
 
   @Test
   public void interceptorAbleToHandleBody_FileRequest() throws IOException {
-    server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    RequestBody body = RequestBody.create(MediaType.parse("application/zip"),
+        createFileFromString(JSON_BODY));
 
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    Request request = new Request.Builder()
-        .url(String.valueOf(server.url("/")))
-        .put(RequestBody.create(MediaType.parse("application/zip"),
-                createFileFromString(JSON_BODY)))
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(request)
-        .execute();
+    final String[] loggerOutput = interceptedRequest(body);
 
     assertTrue("Interceptor should not log file request body.",
-        testLogger.formattedOutput().contains("Omitted request body "));
+        Arrays.asList(loggerOutput).contains("  Omitted response body "));
   }
 
   @Test
   public void interceptorAbleToHandleBody_FileResponse() throws IOException {
-    server.enqueue(new MockResponse()
-        .setResponseCode(200)
-        .setHeader("Content-Type", "application/zip")
-        .setBody(String.valueOf(createFileFromString(JSON_BODY))));
-
-    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(defaultRequest())
-        .execute();
+    final String[] loggerOutput = interceptedResponse("application/zip",
+        String.valueOf(createFileFromString(JSON_BODY)));
 
     assertTrue("Interceptor should not log file response body.",
-        testLogger.formattedOutput().contains("Omitted response body"));
+        Arrays.asList(loggerOutput).contains("  Omitted response body "));
   }
 
+  @SuppressWarnings("SameParameterValue")
   private File createFileFromString(String val) throws IOException {
     File file = temporaryFolder.newFile();
     byte[] bytes = val.getBytes(StandardCharsets.UTF_8);
@@ -134,6 +142,42 @@ public class InterceptorBodyHandlingTest extends BaseTest {
       b.writeAll(source);
     }
     return file;
+  }
+
+  private String[] interceptedRequest(RequestBody body) throws IOException {
+    server.enqueue(new MockResponse().setResponseCode(200));
+    final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        .logger(testLogger)
+        .build();
+
+    Request request = new Request.Builder()
+        .url(String.valueOf(server.url("/")))
+        .put(body)
+        .build();
+
+    defaultClientWithInterceptor(interceptor)
+        .newCall(request)
+        .execute();
+    return testLogger.outputAsArray();
+  }
+
+  private String[] interceptedResponse(String contentType, String body) throws IOException {
+    server.enqueue(new MockResponse()
+        .setResponseCode(200)
+        .setHeader("Content-Type", contentType)
+        .setBody(body));
+
+    TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        .logger(testLogger)
+        .build();
+
+    defaultClientWithInterceptor(interceptor)
+        .newCall(defaultRequest())
+        .execute();
+    return testLogger.outputAsArray();
   }
 
 }
