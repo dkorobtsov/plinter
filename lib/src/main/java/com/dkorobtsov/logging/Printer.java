@@ -71,11 +71,8 @@ class Printer {
   static void printJsonResponse(LogWriter logWriter, Level level, ResponseDetails responseDetails) {
     logWriter.log(RESPONSE_UP_LINE);
 
-    final String[] urlLine = {URL_TAG + responseDetails.url, EMPTY_LINE};
-    logLines(urlLine, logWriter, true);
-
-    final String[] response = getResponse(level, responseDetails);
-    logLines(response, logWriter, true);
+    logLines(new String[]{URL_TAG + responseDetails.url}, logWriter, false);
+    logLines(getResponse(level, responseDetails), logWriter, true);
 
     final String responseBody =
         LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + formattedBody(responseDetails.bodyString);
@@ -88,11 +85,8 @@ class Printer {
 
   static void printFileRequest(LogWriter logWriter, Level level, Request request) {
     logWriter.log(REQUEST_UP_LINE);
-
-    logLines(new String[]{URL_TAG + request.url()}, logWriter,
-        false);
-    logLines(getRequest(request, level), logWriter,
-        true);
+    logLines(new String[]{URL_TAG + request.url()}, logWriter, false);
+    logLines(getRequest(request, level), logWriter, true);
 
     if (level == Level.BASIC || level == Level.BODY) {
       logLines(OMITTED_REQUEST, logWriter, true);
@@ -103,12 +97,8 @@ class Printer {
   }
 
   static void printFileResponse(LogWriter logWriter, Level level, ResponseDetails responseDetails) {
-
     logWriter.log(RESPONSE_UP_LINE);
-
-    final String[] urlLine = {URL_TAG + responseDetails.url, EMPTY_LINE};
-    logLines(urlLine, logWriter, true);
-
+    logLines(new String[]{URL_TAG + responseDetails.url}, logWriter, false );
     logLines(getResponse(level, responseDetails), logWriter, true);
 
     if (level == Level.BASIC || level == Level.BODY) {
@@ -177,13 +167,17 @@ class Printer {
 
   private static void logLines(String[] lines, LogWriter logger, boolean withLineSize) {
     for (String line : lines) {
-      int lineLength = line.length();
-      int maxLongSize = withLineSize ? 110 : lineLength;
-      for (int i = 0; i <= lineLength / maxLongSize; i++) {
-        int start = i * maxLongSize;
-        int end = (i + 1) * maxLongSize;
-        end = end > line.length() ? line.length() : end;
-        logger.log(DEFAULT_LINE + line.substring(start, end));
+      if (line.isEmpty()){
+        logger.log(line);
+      } else {
+        int lineLength = line.length();
+        int maxLongSize = withLineSize ? 110 : lineLength;
+        for (int i = 0; i <= lineLength / maxLongSize; i++) {
+          int start = i * maxLongSize;
+          int end = (i + 1) * maxLongSize;
+          end = end > line.length() ? line.length() : end;
+          logger.log(DEFAULT_LINE + line.substring(start, end));
+        }
       }
     }
   }
