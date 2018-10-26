@@ -168,7 +168,7 @@ public class Okhttp3LoggingInterceptor implements Interceptor {
     private LogFormatter formatter;
     private Executor executor;
 
-    Builder() {
+    public Builder() {
       formatter = LogFormatter.JUL_MESSAGE_ONLY;
     }
 
