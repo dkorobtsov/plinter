@@ -34,9 +34,9 @@ Basic Usage
 Interceptor should work as is - without any additional parameters.
 By default JUL logger will be used with INFO level and minimal format
 displaying message only.
-
+`okhttp3` version:
 ```java
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder().build();
+    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder().build();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .build();
@@ -49,6 +49,14 @@ displaying message only.
         .client(okHttpClient)
         .build();
 ```
+
+`okhttp` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
+```java
+    OkhttpLoggingInterceptor interceptor = new OkhttpLoggingInterceptor.Builder().build();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .build();
+```
 Example:
 
 <p align="left">
@@ -57,7 +65,7 @@ Example:
 
 Format can be changed to one of the defined templates, for example:
 ```java
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder()
         .loggable(isDebug())
         .level(Level.BASIC)
         .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
@@ -75,7 +83,7 @@ just need to provide own LogWriter implementation.
 
 Simple configuration for Log4j2:
 ```java
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder()
         .logger(new LogWriter() {
           final Logger log = LogManager.getLogger("OkHttpLogger");
 
@@ -122,7 +130,7 @@ Or more sophisticated approach with custom logging pattern.
       }
     };
 
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder()
         .logger(log4j2Writer)
         .build();
 ```

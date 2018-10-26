@@ -1,47 +1,52 @@
 package com.dkorobtsov.logging;
 
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
-public class LoggingInterceptor implements Interceptor {
+import static com.dkorobtsov.logging.OkhttpTypesConverter.convertOkhttp3MediaType;
+import static com.dkorobtsov.logging.OkhttpTypesConverter.convertOkhttpRequestTo3;
+
+public class OkhttpLoggingInterceptor implements Interceptor {
 
   private final boolean isDebug;
   private final Builder builder;
 
-  private LoggingInterceptor(Builder builder) {
+  private OkhttpLoggingInterceptor(Builder builder) {
     this.builder = builder;
     this.isDebug = builder.isDebug;
   }
 
-  private static Runnable createPrintJsonRequestRunnable(final LoggingInterceptor.Builder builder,
+
+  private static Runnable createPrintJsonRequestRunnable(final OkhttpLoggingInterceptor.Builder builder,
       final Request request) {
-    return () -> Printer.printJsonRequest(builder.logger, builder.level, request);
+    return () -> Printer.printJsonRequest(builder.getLogger(), builder.level, convertOkhttpRequestTo3(request));
   }
 
-  private static Runnable createFileRequestRunnable(final LoggingInterceptor.Builder builder,
+  private static Runnable createFileRequestRunnable(final OkhttpLoggingInterceptor.Builder builder,
       final Request request) {
-    return () -> Printer.printFileRequest(builder.logger, builder.level, request);
+    return () -> Printer.printFileRequest(builder.getLogger(), builder.level, convertOkhttpRequestTo3(request));
   }
 
-  private static Runnable createPrintJsonResponseRunnable(final LoggingInterceptor.Builder builder,
+  private static Runnable createPrintJsonResponseRunnable(final OkhttpLoggingInterceptor.Builder builder,
       ResponseDetails
           responseDetails) {
-    return () -> Printer.printJsonResponse(builder.logger, builder.level, responseDetails);
+    return () -> Printer.printJsonResponse(builder.getLogger(), builder.level, responseDetails);
   }
 
-  private static Runnable createFileResponseRunnable(final LoggingInterceptor.Builder builder,
+  private static Runnable createFileResponseRunnable(final OkhttpLoggingInterceptor.Builder builder,
       ResponseDetails responseDetails) {
     return () -> Printer
-        .printFileResponse(builder.logger, builder.level, responseDetails);
+        .printFileResponse(builder.getLogger(), builder.level, responseDetails);
   }
 
   @Override
@@ -81,7 +86,9 @@ public class LoggingInterceptor implements Interceptor {
 
     if (isNotFileRequest(subtype)) {
       printJsonResponse(responseDetails);
-      body = ResponseBody.create(responseDetails.contentType, responseDetails.bodyString);
+      final okhttp3.MediaType okhttp3MediaType = responseDetails.contentType;
+      final MediaType mediaType = convertOkhttp3MediaType(okhttp3MediaType);
+      body = ResponseBody.create(mediaType, responseDetails.bodyString);
     } else {
       printFileResponse(responseDetails);
       return response;
@@ -92,10 +99,10 @@ public class LoggingInterceptor implements Interceptor {
         .build();
   }
 
-  private ResponseDetails gatherResponseDetails(Request request, Response response, long chainMs,
+    private ResponseDetails gatherResponseDetails(Request request, Response response, long chainMs,
       boolean isFileRequest)
       throws IOException {
-    final List<String> segmentList = request.url().encodedPathSegments();
+    final List<String> segmentList = request.httpUrl().encodedPathSegments();
     final String header = response.headers().toString();
     final int code = response.code();
     final boolean isSuccessful = response.isSuccessful();
@@ -113,7 +120,7 @@ public class LoggingInterceptor implements Interceptor {
         .isSuccessful(isSuccessful)
         .message(message)
         .bodyString(bodyString)
-        .contentType(contentType)
+        .contentType(OkhttpTypesConverter.convertOkhttpMediaTypeTo3(contentType))
         .url(url)
         .chainMs(chainMs)
         .build();
@@ -138,7 +145,7 @@ public class LoggingInterceptor implements Interceptor {
     if (builder.executor != null) {
       builder.executor.execute(createPrintJsonResponseRunnable(builder, responseDetails));
     } else {
-      Printer.printJsonResponse(builder.logger, builder.level, responseDetails);
+      Printer.printJsonResponse(builder.getLogger(), builder.level, responseDetails);
     }
   }
 
@@ -146,7 +153,7 @@ public class LoggingInterceptor implements Interceptor {
     if (builder.executor != null) {
       builder.executor.execute(createFileRequestRunnable(builder, request));
     } else {
-      Printer.printFileRequest(builder.logger, builder.level, request);
+      Printer.printFileRequest(builder.getLogger(), builder.level, convertOkhttpRequestTo3(request));
     }
   }
 
@@ -154,7 +161,7 @@ public class LoggingInterceptor implements Interceptor {
     if (builder.executor != null) {
       builder.executor.execute(createPrintJsonRequestRunnable(builder, request));
     } else {
-      Printer.printJsonRequest(builder.logger, builder.level, request);
+      Printer.printJsonRequest(builder.getLogger(), builder.level, convertOkhttpRequestTo3(request));
     }
   }
 
@@ -234,8 +241,8 @@ public class LoggingInterceptor implements Interceptor {
       return executor;
     }
 
-    public LoggingInterceptor build() {
-      return new LoggingInterceptor(this);
+    public OkhttpLoggingInterceptor build() {
+      return new OkhttpLoggingInterceptor(this);
     }
   }
 

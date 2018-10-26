@@ -68,7 +68,7 @@ public enum LogFormatter {
     }
   });
 
-  final SimpleFormatter formatter;
+  public final SimpleFormatter formatter;
 
   LogFormatter(SimpleFormatter simpleFormatter) {
     this.formatter = simpleFormatter;

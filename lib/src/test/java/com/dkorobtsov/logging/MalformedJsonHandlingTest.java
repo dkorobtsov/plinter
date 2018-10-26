@@ -1,74 +1,74 @@
 package com.dkorobtsov.logging;
 
-import static org.junit.Assert.assertTrue;
-
 import com.squareup.okhttp.mockwebserver.MockResponse;
-import java.io.IOException;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
+@RunWith(JUnitParamsRunner.class)
 public class MalformedJsonHandlingTest extends BaseTest {
 
   @Test
-  public void interceptorAbleToHandleBody_malformedJsonResponse() throws IOException {
+  @Parameters({
+      "okhttp", "okhttp3"
+  })
+  public void interceptorAbleToHandleBody_malformedJsonResponse(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse()
         .setResponseCode(200)
         .setHeader("Content-Type", "application/json")
         .setBody("? \"test\" : \"test1\"}"));
 
     TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(defaultRequest())
-        .execute();
+    attachLoggerToInterceptorWithDefaultRequest(interceptorVersion, testLogger);
 
     assertTrue("Interceptor should be able to log malformed json body.",
         testLogger.formattedOutput().contains("? \"test\" : \"test1\"}"));
   }
 
   @Test
-  public void interceptorAbleToHandleBody_malformedJsonRequest() throws IOException {
+  @Parameters({
+      "okhttp", "okhttp3"
+  })
+  public void interceptorAbleToHandleBody_malformedJsonRequest(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
     final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    Request request = new Request.Builder()
+    if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
+      Request okhttp3Request = new Request.Builder()
+          .url(String.valueOf(server.url("/")))
+          .put(RequestBody.create(MediaType.parse("application/json"),
+              "? \"test\" : \"test1\"}"))
+          .build();
+      attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null);
+    } else {
+      com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
         .url(String.valueOf(server.url("/")))
-        .put(RequestBody.create(MediaType.parse("application/json"),
-            "? \"test\" : \"test1\"}"))
+        .put(com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType.parse("application/json"), "? \"test\" : \"test1\"}"))
         .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(request)
-        .execute();
-
+      attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest);
+    }
     assertTrue("Interceptor should be able to log malformed json body.",
         testLogger.formattedOutput().contains("? \"test\" : \"test1\"}"));
   }
 
   @Test
-  public void interceptorAbleToHandleBody_jsonArrayResponse() throws IOException {
+  @Parameters({
+      "okhttp", "okhttp3"
+  })
+  public void interceptorAbleToHandleBody_jsonArrayResponse(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse()
         .setResponseCode(200)
         .setHeader("Content-Type", "application/json")
         .setBody("[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"));
 
     TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(defaultRequest())
-        .execute();
+    attachLoggerToInterceptorWithDefaultRequest(interceptorVersion, testLogger);
 
     assertTrue("Interceptor should be able to log malformed json body.",
         testLogger.formattedOutput()
@@ -79,23 +79,28 @@ public class MalformedJsonHandlingTest extends BaseTest {
   }
 
   @Test
-  public void interceptorAbleToHandleBody_jsonArrayRequest() throws IOException {
+  @Parameters({
+      "okhttp", "okhttp3"
+  })
+  public void interceptorAbleToHandleBody_jsonArrayRequest(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
     final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
 
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(testLogger)
-        .build();
-
-    Request request = new Request.Builder()
-        .url(String.valueOf(server.url("/")))
-        .put(RequestBody.create(MediaType.parse("application/json"),
-            "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"))
-        .build();
-
-    defaultClientWithInterceptor(interceptor)
-        .newCall(request)
-        .execute();
+    if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
+      Request okhttp3Request = new Request.Builder()
+          .url(String.valueOf(server.url("/")))
+          .put(RequestBody.create(MediaType.parse("application/json"),
+              "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"))
+          .build();
+      attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null);
+    } else {
+      com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
+          .url(String.valueOf(server.url("/")))
+          .put(com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType.parse("application/json"),
+              "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"))
+          .build();
+      attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest);
+    }
 
     assertTrue("Interceptor should be able to log malformed json body.",
         testLogger.formattedOutput()

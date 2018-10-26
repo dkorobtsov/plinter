@@ -1,9 +1,10 @@
 package com.dkorobtsov.logging;
 
-import java.util.List;
 import okhttp3.MediaType;
 
-final class ResponseDetails {
+import java.util.List;
+
+public final class ResponseDetails {
 
   final List<String> segmentList;
   final String header;
@@ -11,7 +12,7 @@ final class ResponseDetails {
   final boolean isSuccessful;
   final String message;
   final MediaType contentType;
-  final String url;
+  public final String url;
   final String bodyString;
   final long chainMs;
 
@@ -29,7 +30,7 @@ final class ResponseDetails {
     this.chainMs = chainMs;
   }
 
-  static ResponseDetailsBuilder builder() {
+  public static ResponseDetailsBuilder builder() {
     return new ResponseDetailsBuilder();
   }
 
@@ -78,7 +79,7 @@ final class ResponseDetails {
       return this;
     }
 
-    ResponseDetailsBuilder url(String url) {
+    public ResponseDetailsBuilder url(String url) {
       this.url = url;
       return this;
     }
@@ -93,7 +94,7 @@ final class ResponseDetails {
       return this;
     }
 
-    ResponseDetails build() {
+    public ResponseDetails build() {
       return new ResponseDetails(segmentList, header, code, isSuccessful, message,
           contentType, url, bodyString, chainMs);
     }

@@ -1,12 +1,8 @@
 package com.dkorobtsov.logging;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.squareup.okhttp.mockwebserver.MockResponse;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +23,16 @@ import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+@RunWith(JUnitParamsRunner.class)
 public class Log4j2LoggerTest extends BaseTest {
 
   private final Logger log = LogManager.getLogger(Log4j2LoggerTest.class);
@@ -36,12 +41,15 @@ public class Log4j2LoggerTest extends BaseTest {
   private static final StringWriter logWriter = new StringWriter();
 
   @BeforeClass
-  public static void configureLogger() throws IOException {
+  public static void configureLogger() {
     initializeBaseLog4j2Configuration();
   }
 
   @Test
-  public void interceptorCanBeConfiguredToPrintLogWithLog4j2() throws IOException {
+  @Parameters({
+      "okhttp", "okhttp3"
+  })
+  public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
     final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
 
@@ -82,14 +90,7 @@ public class Log4j2LoggerTest extends BaseTest {
     addAppender(logWriter, "TestWriter", OK_HTTP_LOG_PATTERN);
 
     log.debug("Attaching custom logger to interceptor.");
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(log4j2Writer)
-        .build();
-
-    log.debug("Sending request.");
-    defaultClientWithInterceptor(interceptor)
-        .newCall(defaultRequest())
-        .execute();
+    attachLoggerToInterceptorWithDefaultRequest(interceptorVersion, log4j2Writer);
 
     log.debug("Retrieving logger output for validation.");
     final String logOutput = logWriter.toString();

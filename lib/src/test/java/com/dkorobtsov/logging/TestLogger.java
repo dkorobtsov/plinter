@@ -22,7 +22,7 @@ public class TestLogger implements LogWriter {
   private OutputStream logOut;
   private Logger testLogger = Logger.getLogger("TestLogger");
 
-  public TestLogger(LogFormatter logFormatter) {
+  TestLogger(LogFormatter logFormatter) {
     testLogger.setUseParentHandlers(false);
 
     // Removing existing handlers for new instance
@@ -79,7 +79,7 @@ public class TestLogger implements LogWriter {
   /**
    * @return Returns all formatted events published by current logger as String array
    */
-  public String[] outputAsArray() {
+  String[] outputAsArray() {
     return formattedOutput().split("\r?\n");
   }
 
