@@ -1,10 +1,6 @@
 package com.dkorobtsov.logging;
 
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.List;
-import javax.xml.parsers.DocumentBuilderFactory;
 import okhttp3.Request;
 import okio.Buffer;
 import org.json.JSONArray;
@@ -16,9 +12,11 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
-/**
- * @author ihsan on 09/02/2017.
- */
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.List;
+
 class Printer {
 
   private static final int JSON_INDENT = 3;

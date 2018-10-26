@@ -26,9 +26,11 @@ ext {
     encoding = StandardCharsets.UTF_8.name()
     mockWebserverVersion = '2.7.5'
     jsonVersion = '20180130'
-    okhttpVersion = '3.9.1'
+    okhttp3Version = '3.9.1'
+    okhttpVersion = '2.7.5'
     junit4Version = '4.12'
     log4j2Version = '2.11.0'
+    junitParamsVersion = '1.1.1'
 }
 
 tasks.withType(JavaCompile) {
@@ -54,10 +56,11 @@ test {
 
 dependencies {
     implementation "org.json:json:$jsonVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
+    implementation "com.squareup.okhttp:logging-interceptor:$okhttpVersion"
 
     testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
     testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
     testImplementation "junit:junit:$junit4Version"
+    testCompile "pl.pragmatists:JUnitParams:$junitParamsVersion"
 }
-

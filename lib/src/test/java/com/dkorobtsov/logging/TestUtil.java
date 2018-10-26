@@ -1,11 +1,12 @@
 package com.dkorobtsov.logging;
 
-import static org.junit.Assert.fail;
+import org.junit.Assert;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import org.junit.Assert;
+
+import static org.junit.Assert.fail;
 
 final class TestUtil {
 
