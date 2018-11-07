@@ -1,8 +1,18 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.converters.ToOkhttp3Converter;
 import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+import org.apache.http.HttpResponse;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class ResponseDetails {
 
@@ -11,9 +21,9 @@ public final class ResponseDetails {
   final int code;
   final boolean isSuccessful;
   final String message;
-  final MediaType contentType;
+  public final MediaType contentType;
   public final String url;
-  final String bodyString;
+  public final String bodyString;
   final long chainMs;
 
   ResponseDetails(List<String> segmentList, String header, int code, boolean isSuccessful,
@@ -28,6 +38,58 @@ public final class ResponseDetails {
     this.url = url;
     this.bodyString = bodyString;
     this.chainMs = chainMs;
+  }
+
+  public static ResponseDetails from(Request request, Response response, long chainMs, boolean isFileRequest) throws IOException {
+    final List<String> segmentList = request.url().encodedPathSegments();
+    final String header = response.headers().toString();
+    final int code = response.code();
+    final boolean isSuccessful = response.isSuccessful();
+    final String message = response.message();
+    final ResponseBody responseBody = response.body();
+    final MediaType contentType = Objects.requireNonNull(responseBody).contentType();
+    final String url = response.request().url().toString();
+    final String bodyString = isFileRequest ? null : Printer.formattedBody(responseBody.string());
+
+    return ResponseDetails
+        .builder()
+        .segmentList(segmentList)
+        .header(header)
+        .code(code)
+        .isSuccessful(isSuccessful)
+        .message(message)
+        .bodyString(bodyString)
+        .contentType(contentType)
+        .url(url)
+        .chainMs(chainMs)
+        .build();
+  }
+
+  public static ResponseDetails from(HttpResponse response, boolean isFileRequest) throws IOException {
+    final List<String> stringifiedHeaders = Arrays.stream(response
+        .getAllHeaders())
+        .map(headerElement -> String.format("%s=%s", headerElement.getName(), headerElement.getValue()))
+        .collect(Collectors.toList());
+    final String header = String.join(";", stringifiedHeaders);
+    final int code = response.getStatusLine().getStatusCode();
+    final boolean isSuccessful = code >= 200 && code <= 300;
+    final String message = HttpStatusCodes.findMessage(code);
+    final ResponseBody responseBody = ToOkhttp3Converter.convertApacheHttpResponseBodyTo3(response);
+    final MediaType contentType = responseBody.contentType();
+    final String url = "";
+    final String bodyString = isFileRequest ? null : Printer.formattedBody(responseBody.string());
+
+    return ResponseDetails
+        .builder()
+        .segmentList(Collections.emptyList())
+        .header(header)
+        .code(code)
+        .isSuccessful(isSuccessful)
+        .message(message)
+        .bodyString(bodyString)
+        .contentType(contentType)
+        .url(url)
+        .build();
   }
 
   public static ResponseDetailsBuilder builder() {

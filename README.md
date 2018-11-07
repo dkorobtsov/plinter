@@ -36,7 +36,8 @@ By default JUL logger will be used with INFO level and minimal format
 displaying message only.
 `okhttp3` version:
 ```java
-    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder().build();
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()                    
+                    .buildForOkhttp3();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .build();
@@ -52,10 +53,27 @@ displaying message only.
 
 `okhttp` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
 ```java
-    OkhttpLoggingInterceptor interceptor = new OkhttpLoggingInterceptor.Builder().build();
+    final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()                    
+                    .buildForOkhttp();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .build();
+```
+
+`apache httpclient` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
+```java
+    final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()                    
+                    .buildForApacheHttpClientRequest();
+    final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()        
+        .builFordApacheHttpClientResponse();
+
+    return HttpClientBuilder
+            .create()
+            .addInterceptorFirst(requestInterceptor)
+            .addInterceptorFirst(responseInterceptor)
+            .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
+            .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+            .build();    
 ```
 Example:
 
@@ -65,12 +83,12 @@ Example:
 
 Format can be changed to one of the defined templates, for example:
 ```java
-    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .loggable(isDebug())
         .level(Level.BASIC)
         .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
         .executor(Executors.newSingleThreadExecutor())
-        .build();
+        .buildForOkhttp3();
 ```
 
 **Tip:** when logger is in "message only" mode, json response can be copied
@@ -83,7 +101,7 @@ just need to provide own LogWriter implementation.
 
 Simple configuration for Log4j2:
 ```java
-    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .logger(new LogWriter() {
           final Logger log = LogManager.getLogger("OkHttpLogger");
 
@@ -92,7 +110,7 @@ Simple configuration for Log4j2:
             log.debug(msg);
           }
         })
-        .build();
+        .buildForOkhttp3();
 ```
 
 Or more sophisticated approach with custom logging pattern.
@@ -130,9 +148,9 @@ Or more sophisticated approach with custom logging pattern.
       }
     };
 
-    Okhttp3LoggingInterceptor interceptor = new Okhttp3LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .logger(log4j2Writer)
-        .build();
+        .buildForOkhttp3();
 ```
 Example:
 <p align="left">
