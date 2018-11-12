@@ -1,11 +1,22 @@
 package com.dkorobtsov.logging;
 
+import static com.dkorobtsov.logging.converters.ToOkhttpConverter.convertOkhtt3pRequestBody;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import com.dkorobtsov.logging.converters.ToApacheHttpClientConverter;
 import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.Okhttp3LoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.OkhttpLoggingInterceptor;
 import com.squareup.okhttp.mockwebserver.MockResponse;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.concurrent.Executors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import okhttp3.MediaType;
@@ -22,18 +33,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.concurrent.Executors;
-
-import static com.dkorobtsov.logging.converters.ToOkhttpConverter.convertOkhtt3pRequestBody;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(JUnitParamsRunner.class)
 public class InterceptorBodyHandlingTest extends BaseTest {
@@ -72,39 +71,47 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_JsonRequest(String loggerVersion, boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_JsonRequest(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
         final String[] loggerOutput = interceptedRequest(RequestBody
-            .create(MediaType.parse("application/json"), JSON_BODY), loggerVersion, provideExecutor);
+                .create(MediaType.parse("application/json"), JSON_BODY), loggerVersion,
+            provideExecutor);
 
         assertTrue("Interceptor should be able to log json body.",
             Arrays.asList(loggerOutput).contains("      \"name\": \"doggie\", "));
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_JsonResponse(String loggerVersion, boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/json", JSON_BODY, loggerVersion, provideExecutor);
+    public void interceptorAbleToHandleBody_JsonResponse(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final String[] loggerOutput = interceptedResponse("application/json", JSON_BODY,
+            loggerVersion,
+            provideExecutor);
 
         assertTrue("Interceptor should be able to log json body.",
             Arrays.asList(loggerOutput).contains("      \"name\": \"doggie\", "));
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_XmlRequest(String loggerVersion, boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_XmlRequest(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
         final String[] loggerOutput = interceptedRequest(RequestBody
             .create(MediaType.parse("application/xml"), XML_BODY), loggerVersion, provideExecutor);
 
@@ -116,28 +123,35 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_XmlResponse(String loggerVersion, boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/xml", XML_BODY, loggerVersion, provideExecutor);
+    public void interceptorAbleToHandleBody_XmlResponse(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
+        final String[] loggerOutput = interceptedResponse("application/xml", XML_BODY,
+            loggerVersion,
+            provideExecutor);
 
-        assertTrue("Interceptor should be able to handle xml response body.", Arrays.asList(loggerOutput).contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?> "));
+        assertTrue("Interceptor should be able to handle xml response body.",
+            Arrays.asList(loggerOutput).contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?> "));
         assertTrue("Interceptor should be able to handle xml response body.",
             Arrays.asList(loggerOutput).contains("  </mammals> "));
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_MalformedXmlRequest(String loggerVersion, boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_MalformedXmlRequest(String loggerVersion,
+        boolean provideExecutor) throws IOException {
         final String[] loggerOutput = interceptedRequest(RequestBody
-            .create(MediaType.parse("application/xml"), MALFORMED_XML_BODY), loggerVersion, provideExecutor);
+                .create(MediaType.parse("application/xml"), MALFORMED_XML_BODY), loggerVersion,
+            provideExecutor);
 
         assertTrue("Interceptor should be able to handle malformed xml body.",
             Arrays.asList(loggerOutput)
@@ -146,13 +160,15 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_MalformedXmlResponse(String loggerVersion, boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/xml", MALFORMED_XML_BODY, loggerVersion, provideExecutor);
+    public void interceptorAbleToHandleBody_MalformedXmlResponse(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final String[] loggerOutput = interceptedResponse("application/xml", MALFORMED_XML_BODY,
+            loggerVersion, provideExecutor);
 
         assertTrue("Interceptor should be able to handle xml response body.",
             Arrays.asList(loggerOutput)
@@ -161,12 +177,14 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_FileRequest(String loggerVersion, boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_FileRequest(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
         RequestBody body = RequestBody.create(MediaType.parse("application/zip"),
             createFileFromString(JSON_BODY));
 
@@ -177,12 +195,13 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp, true", "okhttp, false",
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_FileResponse(String loggerVersion, boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_FileResponse(String loggerVersion,
+        boolean provideExecutor) throws IOException {
         final String[] loggerOutput = interceptedResponse("application/zip",
             String.valueOf(createFileFromString(JSON_BODY)), loggerVersion, provideExecutor);
 
@@ -201,7 +220,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         return file;
     }
 
-    private String[] interceptedRequest(RequestBody body, String interceptorVersion, boolean provideExecutor) throws IOException {
+    private String[] interceptedRequest(RequestBody body, String interceptorVersion,
+        boolean provideExecutor) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
 
@@ -236,7 +256,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .newCall(request)
                 .execute();
             return testLogger.outputAsArray();
-        } else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = builder
                 .buildForApacheHttpClientRequest();
 
@@ -244,10 +265,16 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .builFordApacheHttpClientResponse();
 
             final HttpPut httpPut = new HttpPut(server.url("/").uri());
-            final MediaType mediaType = body.contentType() == null ? MediaType.parse(ContentType.APPLICATION_JSON.toString()) : body.contentType();
+            final MediaType mediaType =
+                body.contentType() == null ? MediaType
+                    .parse(ContentType.APPLICATION_JSON.toString())
+                    : body.contentType();
 
-            ContentType contentType = ContentType.create(String.format("%s/%s", Objects.requireNonNull(mediaType).type(), mediaType.subtype()));
-            final HttpEntity entity = ToApacheHttpClientConverter.okhttp3RequestBodyToStringEntity(body, contentType);
+            ContentType contentType = ContentType.create(
+                String.format("%s/%s", Objects.requireNonNull(mediaType).type(),
+                    mediaType.subtype()));
+            final HttpEntity entity = ToApacheHttpClientConverter
+                .okhttp3RequestBodyToStringEntity(body, contentType);
 
             httpPut.setEntity(entity);
             httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
@@ -255,12 +282,15 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .execute(httpPut);
             return testLogger.outputAsArray();
         } else {
-            fail(String.format("I didn't recognize %s version. I support 'okhttp' and 'okhttp3' versions", interceptorVersion));
+            fail(String
+                .format("I didn't recognize %s version. I support 'okhttp' and 'okhttp3' versions",
+                    interceptorVersion));
             return new String[1];
         }
     }
 
-    private String[] interceptedResponse(String contentType, String body, String interceptorVersion, boolean provideExecutors) throws IOException {
+    private String[] interceptedResponse(String contentType, String body, String interceptorVersion,
+        boolean provideExecutors) throws IOException {
         server.enqueue(new MockResponse()
             .setResponseCode(200)
             .setHeader("Content-Type", contentType)
@@ -276,16 +306,17 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             OkhttpLoggingInterceptor interceptor = builder
                 .buildForOkhttp();
             defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttRequest())
+                .newCall(defaultOkhttpRequest())
                 .execute();
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             Okhttp3LoggingInterceptor interceptor = builder
                 .buildForOkhttp3();
 
             defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhtt3Request())
+                .newCall(defaultOkhttp3Request())
                 .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = builder
                 .buildForApacheHttpClientRequest();
 
@@ -295,7 +326,9 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());
         } else {
-            fail(String.format("I couldn't recognize %s interceptor version. I only support okhttp and okhttp3 versions at the moment", interceptorVersion));
+            fail(String.format(
+                "I couldn't recognize %s interceptor version. I only support okhttp and okhttp3 versions at the moment",
+                interceptorVersion));
             return new String[1];
         }
         return testLogger.outputAsArray();

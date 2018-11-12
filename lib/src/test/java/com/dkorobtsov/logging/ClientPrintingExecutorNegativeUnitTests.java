@@ -1,14 +1,13 @@
 package com.dkorobtsov.logging;
 
+import java.util.concurrent.Executors;
 import okhttp3.Request;
 import org.junit.Test;
-
-import java.util.concurrent.Executors;
 
 public class ClientPrintingExecutorNegativeUnitTests {
 
     @Test
-    public void testInteruptingPrintingJsonRequestDoesntCrashProcess() {
+    public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
         final Request request = new Request.Builder()
             .get()
             .url("http://google.com")
@@ -20,7 +19,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
     }
 
     @Test
-    public void testInteruptingPrintingFileRequestDoesntCrashProcess() {
+    public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
         final Request request = new Request.Builder()
             .get()
             .url("http://google.com")
@@ -32,7 +31,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
     }
 
     @Test
-    public void testInteruptingPrintingJsonResponseDoesntCrashProcess() {
+    public void testInterruptingPrintingJsonResponseDoesntCrashProcess() {
         final ResponseDetails responseDetails = ResponseDetails.builder().build();
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
             .executor(Executors.newCachedThreadPool());
@@ -41,7 +40,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
     }
 
     @Test
-    public void testInteruptingPrintingFileResponseDoesntCrashProcess() {
+    public void testInterruptingPrintingFileResponseDoesntCrashProcess() {
         final ResponseDetails responseDetails = ResponseDetails.builder().build();
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
             .executor(Executors.newCachedThreadPool());

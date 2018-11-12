@@ -1,10 +1,24 @@
 package com.dkorobtsov.logging.converters;
 
+import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
+
 import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.cert.Certificate;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import okhttp3.Headers;
 import okhttp3.TlsVersion;
 import okio.Buffer;
@@ -18,29 +32,16 @@ import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.security.cert.Certificate;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
-
 public class ToOkhttp3Converter {
 
     private static okhttp3.MediaType convertOkhttpMediaTypeTo3(MediaType okhttpMediaType) {
-        return okhttpMediaType == null ? okhttp3.MediaType.parse("") : okhttp3.MediaType.parse(okhttpMediaType.toString());
+        return okhttpMediaType == null ? okhttp3.MediaType.parse("")
+            : okhttp3.MediaType.parse(okhttpMediaType.toString());
     }
 
     public static okhttp3.RequestBody convertOkhttpRequestBodyTo3(Request request) {
-        final okhttp3.MediaType contentType = request.body() == null ? okhttp3.MediaType.parse("") : convertOkhttpMediaTypeTo3(request.body().contentType());
+        final okhttp3.MediaType contentType = request.body() == null ? okhttp3.MediaType.parse("")
+            : convertOkhttpMediaTypeTo3(request.body().contentType());
         try {
             final Request requestCopy = request.newBuilder().build();
             String requestBodyString = "";
@@ -51,7 +52,8 @@ public class ToOkhttp3Converter {
             }
             return okhttp3.RequestBody.create(contentType, requestBodyString);
         } catch (final IOException e) {
-            return okhttp3.RequestBody.create(contentType, "[LoggingInterceptorError] : could not parse request body");
+            return okhttp3.RequestBody
+                .create(contentType, "[LoggingInterceptorError] : could not parse request body");
         }
     }
 
@@ -66,18 +68,25 @@ public class ToOkhttp3Converter {
                         requestBodyString = readApacheHttpEntity(entity);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        return okhttp3.RequestBody.create(okhttp3.MediaType.parse("application/json"), "[LoggingInterceptorError] : could not parse request body");
+                        return okhttp3.RequestBody
+                            .create(okhttp3.MediaType.parse("application/json"),
+                                "[LoggingInterceptorError] : could not parse request body");
                     }
 
-                    final HttpEntity newEntity = recreateHttpEntityFromString(requestBodyString, entity);
-                    ((HttpEntityEnclosingRequestBase) ((HttpRequestWrapper) request).getOriginal()).setEntity(newEntity);
+                    final HttpEntity newEntity = recreateHttpEntityFromString(requestBodyString,
+                        entity);
+                    ((HttpEntityEnclosingRequestBase) ((HttpRequestWrapper) request).getOriginal())
+                        .setEntity(newEntity);
 
-                    final Header contentTypeHeader = Arrays.stream(((HttpRequestWrapper) request).getOriginal().getAllHeaders())
+                    final Header contentTypeHeader = Arrays
+                        .stream(((HttpRequestWrapper) request).getOriginal().getAllHeaders())
                         .filter(header -> header.getName().equals("Content-Type"))
                         .findFirst()
                         .orElse(new BasicHeader("Content-Type", "application/json"));
 
-                    return okhttp3.RequestBody.create(okhttp3.MediaType.parse(contentTypeHeader.getValue()), requestBodyString);
+                    return okhttp3.RequestBody
+                        .create(okhttp3.MediaType.parse(contentTypeHeader.getValue()),
+                            requestBodyString);
                 }
             }
         }
@@ -92,13 +101,16 @@ public class ToOkhttp3Converter {
                 requestBodyString = readApacheHttpEntity(entity);
             } catch (IOException e) {
                 e.printStackTrace();
-                return okhttp3.ResponseBody.create(okhttp3.MediaType.parse("application/json"), "[LoggingInterceptorError] : could not parse response body");
+                return okhttp3.ResponseBody.create(okhttp3.MediaType.parse("application/json"),
+                    "[LoggingInterceptorError] : could not parse response body");
             }
             final Header contentType = response.getEntity().getContentType();
-            final String contentTypeString = contentType == null ? "" : String.format("%s, %s", contentType.getName(), contentType.getValue());
+            final String contentTypeString = contentType == null ? ""
+                : String.format("%s, %s", contentType.getName(), contentType.getValue());
             final HttpEntity newEntity = recreateHttpEntityFromString(requestBodyString, entity);
             response.setEntity(newEntity);
-            return okhttp3.ResponseBody.create(okhttp3.MediaType.parse(contentTypeString), requestBodyString);
+            return okhttp3.ResponseBody
+                .create(okhttp3.MediaType.parse(contentTypeString), requestBodyString);
         }
         return okhttp3.ResponseBody.create(okhttp3.MediaType.parse("application/json"), "");
     }
@@ -119,9 +131,11 @@ public class ToOkhttp3Converter {
         }
     }
 
-    private static HttpEntity recreateHttpEntityFromString(String httpEntityContent, HttpEntity entity) {
+    private static HttpEntity recreateHttpEntityFromString(String httpEntityContent,
+        HttpEntity entity) {
         final Header contentType = entity.getContentType();
-        final String contentTypeString = contentType == null ? "Content-Type=application/json" : String.format("%s=%s", contentType.getName(), contentType.getValue());
+        final String contentTypeString = contentType == null ? "Content-Type=application/json"
+            : String.format("%s=%s", contentType.getName(), contentType.getValue());
         final Header contentEncodingHeader = entity.getContentEncoding();
         final EntityBuilder entityBuilder = EntityBuilder
             .create()
@@ -129,7 +143,9 @@ public class ToOkhttp3Converter {
             .setStream(new ByteArrayInputStream(httpEntityContent.getBytes()));
         if (contentEncodingHeader != null) {
             return entityBuilder
-                .setContentEncoding(String.format("%s/%s", contentEncodingHeader.getName(), contentEncodingHeader.getValue()))
+                .setContentEncoding(String
+                    .format("%s/%s", contentEncodingHeader.getName(),
+                        contentEncodingHeader.getValue()))
                 .build();
         }
         return entityBuilder.build();
@@ -139,9 +155,12 @@ public class ToOkhttp3Converter {
     public static okhttp3.CacheControl convertOkhttpCacheControlTo3(CacheControl cacheControl) {
         return new okhttp3.CacheControl
             .Builder()
-            .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(), TimeUnit.SECONDS)
-            .maxStale(cacheControl.maxStaleSeconds() == -1 ? 0 : cacheControl.maxStaleSeconds(), TimeUnit.SECONDS)
-            .minFresh(cacheControl.minFreshSeconds() == -1 ? 9 : cacheControl.minFreshSeconds(), TimeUnit.SECONDS)
+            .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),
+                TimeUnit.SECONDS)
+            .maxStale(cacheControl.maxStaleSeconds() == -1 ? 0 : cacheControl.maxStaleSeconds(),
+                TimeUnit.SECONDS)
+            .minFresh(cacheControl.minFreshSeconds() == -1 ? 9 : cacheControl.minFreshSeconds(),
+                TimeUnit.SECONDS)
             .build();
     }
 
@@ -150,7 +169,9 @@ public class ToOkhttp3Converter {
             .Builder();
         builder.url(request.url());
         final Map<String, List<String>> headersMap = request.headers().toMultimap();
-        headersMap.forEach((String name, List<String> values) -> builder.addHeader(name, String.join(";", values)));
+        headersMap.forEach(
+            (String name, List<String> values) -> builder
+                .addHeader(name, String.join(";", values)));
         if (permitsRequestBody(request.method())) {
             builder.method(request.method(), convertOkhttpRequestBodyTo3(request));
         } else {
@@ -161,7 +182,8 @@ public class ToOkhttp3Converter {
         return builder.build();
     }
 
-    private static okhttp3.Handshake convertOkhttpHandshakeTo3(com.squareup.okhttp.Handshake handshake) {
+    private static okhttp3.Handshake convertOkhttpHandshakeTo3(
+        com.squareup.okhttp.Handshake handshake) {
         if (handshake == null) {
             return null;
         } else {
@@ -182,7 +204,8 @@ public class ToOkhttp3Converter {
         return headersBuilder.build();
     }
 
-    private static okhttp3.ResponseBody convertOkhttpResponseBodyTo3(com.squareup.okhttp.ResponseBody responseBody) {
+    private static okhttp3.ResponseBody convertOkhttpResponseBodyTo3(
+        com.squareup.okhttp.ResponseBody responseBody) {
         if (responseBody == null) {
             return null;
         } else {
@@ -193,7 +216,8 @@ public class ToOkhttp3Converter {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return okhttp3.ResponseBody.create(convertOkhttpMediaTypeTo3(mediaType), responseBodyString);
+            return okhttp3.ResponseBody
+                .create(convertOkhttpMediaTypeTo3(mediaType), responseBodyString);
         }
     }
 

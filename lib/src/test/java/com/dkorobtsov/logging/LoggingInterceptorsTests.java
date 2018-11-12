@@ -1,31 +1,31 @@
 package com.dkorobtsov.logging;
 
-import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
-import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.Okhttp3LoggingInterceptor;
-import com.dkorobtsov.logging.interceptors.OkhttpLoggingInterceptor;
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.concurrent.Executors;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
+import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
+import com.dkorobtsov.logging.interceptors.Okhttp3LoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.OkhttpLoggingInterceptor;
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import java.io.IOException;
+import java.util.concurrent.Executors;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 @RunWith(JUnitParamsRunner.class)
 public class LoggingInterceptorsTests extends BaseTest {
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptorVersion) throws IOException {
+    public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
         intercepWithSimpleInterceptor(interceptorVersion, testLogger);
@@ -35,10 +35,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptorVersion) throws IOException {
+    public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
         intercepWithSimpleInterceptor(interceptorVersion, testLogger);
@@ -49,23 +50,25 @@ public class LoggingInterceptorsTests extends BaseTest {
             testLogger.firstRawEvent().length(), testLogger.firstFormattedEvent().length());
     }
 
-    private void intercepWithSimpleInterceptor(String interceptorVersion, TestLogger testLogger) throws IOException {
+    private void intercepWithSimpleInterceptor(String interceptorVersion, TestLogger testLogger)
+        throws IOException {
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .buildForOkhttp3();
 
             defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhtt3Request())
+                .newCall(defaultOkhttp3Request())
                 .execute();
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .buildForOkhttp();
             defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttRequest())
+                .newCall(defaultOkhttpRequest())
                 .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .buildForApacheHttpClientRequest();
@@ -80,10 +83,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptorVersion) throws IOException {
+    public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, false);
@@ -93,10 +97,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptorVersion) throws IOException {
+    public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, true);
@@ -106,7 +111,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
     public void defaultLoggerFormatCanBeModified(String interceptorVersion) throws IOException {
@@ -120,7 +125,8 @@ public class LoggingInterceptorsTests extends BaseTest {
         TestUtil.assertEntryStartsWithParsableDate(logEntry);
     }
 
-    private void interceptWithSimpleLoggableInterceptor(String interceptorVersion, TestLogger testLogger, boolean loggable) throws IOException {
+    private void interceptWithSimpleLoggableInterceptor(String interceptorVersion,
+        TestLogger testLogger, boolean loggable) throws IOException {
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
                 .loggable(loggable)
@@ -128,7 +134,7 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .buildForOkhttp3();
 
             defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhtt3Request())
+                .newCall(defaultOkhttp3Request())
                 .execute();
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
@@ -136,9 +142,10 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .loggable(loggable)
                 .buildForOkhttp();
             defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttRequest())
+                .newCall(defaultOkhttpRequest())
                 .execute();
-        }  else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .loggable(loggable)
@@ -155,10 +162,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptorVersion) throws IOException {
+    public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.NONE);
@@ -168,10 +176,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptorVersion) throws IOException {
+    public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.BODY);
@@ -181,10 +190,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptorVersion) throws IOException {
+    public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.HEADERS);
@@ -194,10 +204,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void allDetailsShouldBePrintedIfLevelSetToBasic(String interceptorVersion) throws IOException {
+    public void allDetailsShouldBePrintedIfLevelSetToBasic(String interceptorVersion)
+        throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.BASIC);
@@ -224,7 +235,8 @@ public class LoggingInterceptorsTests extends BaseTest {
             testLogger.formattedOutput().contains("body"));
     }
 
-    private void interceptWithLogLevelInterceptor(String interceptorVersion, TestLogger testLogger, Level level) throws IOException {
+    private void interceptWithLogLevelInterceptor(String interceptorVersion, TestLogger testLogger,
+        Level level) throws IOException {
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
                 .level(level)
@@ -232,7 +244,7 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .buildForOkhttp3();
 
             defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhtt3Request())
+                .newCall(defaultOkhttp3Request())
                 .execute();
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
@@ -240,9 +252,10 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .level(level)
                 .buildForOkhttp();
             defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttRequest())
+                .newCall(defaultOkhttpRequest())
                 .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .level(level)
@@ -259,7 +272,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
     public void userShouldBeAbleToSupplyExecutor(String interceptorVersion) throws IOException {
@@ -273,7 +286,7 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .buildForOkhttp3();
 
             defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhtt3Request())
+                .newCall(defaultOkhttp3Request())
                 .execute();
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
@@ -282,9 +295,10 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .executor(Executors.newSingleThreadExecutor())
                 .buildForOkhttp();
             defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttRequest())
+                .newCall(defaultOkhttpRequest())
                 .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .level(Level.BASIC)
@@ -306,7 +320,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     }
 
     @Test
-    @Parameters( {
+    @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
     public void userShouldBeAbleToUseDefaultLogger(String interceptorVersion) throws IOException {
@@ -318,7 +332,7 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .buildForOkhttp3();
 
             defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhtt3Request())
+                .newCall(defaultOkhttp3Request())
                 .execute();
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
@@ -326,9 +340,10 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .executor(Executors.newSingleThreadExecutor())
                 .buildForOkhttp();
             defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttRequest())
+                .newCall(defaultOkhttpRequest())
                 .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
+        } else if (interceptorVersion
+            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
                 .level(Level.BASIC)
                 .executor(Executors.newSingleThreadExecutor())

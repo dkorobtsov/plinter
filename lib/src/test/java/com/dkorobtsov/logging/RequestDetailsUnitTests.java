@@ -33,7 +33,9 @@ public class RequestDetailsUnitTests {
         final okhttp3.Request builtRequest = new RequestDetails.Builder()
             .from(request)
             .build();
-        Assert.assertEquals("Content-Type header", request.headers().get("Content-Type"), builtRequest.headers().get("Content-Type"));
-        Assert.assertEquals("Authorization header", request.headers().get("Authorization"), builtRequest.headers().get("Authorization"));
+        Assert.assertEquals("Content-Type header", request.headers().get("Content-Type"),
+            builtRequest.headers().get("Content-Type"));
+        Assert.assertEquals("Authorization header", request.headers().get("Authorization"),
+            builtRequest.headers().get("Authorization"));
     }
 }

@@ -1,37 +1,37 @@
 package com.dkorobtsov.logging;
 
-import okhttp3.Request;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import okhttp3.Request;
 
 public class ClientPrintingExecutor {
 
     private static Runnable createPrintJsonRequestRunnable(final LoggingInterceptor.Builder builder,
-                                                           final Request request) {
+        final Request request) {
         return () -> Printer.printJsonRequest(builder.getLogger(), builder.getLevel(), request);
     }
 
     private static Runnable createFileRequestRunnable(final LoggingInterceptor.Builder builder,
-                                                      final Request request) {
+        final Request request) {
         return () -> Printer.printFileRequest(builder.getLogger(), builder.getLevel(), request);
     }
 
-    private static Runnable createPrintJsonResponseRunnable(final LoggingInterceptor.Builder builder,
-                                                            ResponseDetails
-                                                                responseDetails) {
-        return () -> Printer.printJsonResponse(builder.getLogger(), builder.getLevel(), responseDetails);
+    private static Runnable createPrintJsonResponseRunnable(
+        final LoggingInterceptor.Builder builder,
+        ResponseDetails
+            responseDetails) {
+        return () -> Printer
+            .printJsonResponse(builder.getLogger(), builder.getLevel(), responseDetails);
     }
 
     private static Runnable createFileResponseRunnable(final LoggingInterceptor.Builder builder,
-                                                       ResponseDetails responseDetails) {
+        ResponseDetails responseDetails) {
         return () -> Printer
             .printFileResponse(builder.getLogger(), builder.getLevel(), responseDetails);
     }
 
-
-
-    public static void printFileResponse(ResponseDetails responseDetails, LoggingInterceptor.Builder builder) {
+    public static void printFileResponse(ResponseDetails responseDetails,
+        LoggingInterceptor.Builder builder) {
         final ExecutorService executor = (ExecutorService) builder.getExecutor();
         if (executor != null) {
             executor.execute(createFileResponseRunnable(builder, responseDetails));
@@ -45,7 +45,8 @@ public class ClientPrintingExecutor {
         }
     }
 
-    public static void printJsonResponse(ResponseDetails responseDetails, LoggingInterceptor.Builder builder) {
+    public static void printJsonResponse(ResponseDetails responseDetails,
+        LoggingInterceptor.Builder builder) {
         final ExecutorService executor = (ExecutorService) builder.getExecutor();
         if (executor != null) {
             executor.execute(createPrintJsonResponseRunnable(builder, responseDetails));

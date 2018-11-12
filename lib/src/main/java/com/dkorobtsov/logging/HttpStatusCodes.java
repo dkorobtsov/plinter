@@ -73,8 +73,9 @@ public enum HttpStatusCodes {
         return Arrays.stream(values())
             .filter(httpStatusCode -> httpStatusCode.getStatusCode() == code)
             .findFirst()
-            .orElseThrow(() -> new FileSystemNotFoundException(String.format("Couldn't find %s http status code", code)))
+            .orElseThrow(() -> new FileSystemNotFoundException(
+                String.format("Couldn't find %s http status code", code)))
             .getMessage();
-
     }
+
 }

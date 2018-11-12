@@ -8,7 +8,8 @@ public class LogginInterceptorUnitTests {
     @Test
     public void testDefaultLogFormatterIsMessageOnly() {
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder();
-        Assert.assertEquals("Default logger", builder.getFormatter(), LogFormatter.JUL_MESSAGE_ONLY);
+        Assert
+            .assertEquals("Default logger", builder.getFormatter(), LogFormatter.JUL_MESSAGE_ONLY);
     }
 
     @Test
