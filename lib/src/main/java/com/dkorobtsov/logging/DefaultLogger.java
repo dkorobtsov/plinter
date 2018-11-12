@@ -10,7 +10,7 @@ public class DefaultLogger implements LogWriter {
 
     DefaultLogger(LogFormatter logFormatter) {
         logger.setUseParentHandlers(false);
-        ConsoleHandler handler = new ConsoleHandler();
+        final ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(logFormatter.formatter);
         logger.addHandler(handler);
     }

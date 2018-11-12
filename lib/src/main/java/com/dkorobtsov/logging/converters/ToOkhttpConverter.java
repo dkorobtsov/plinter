@@ -7,6 +7,9 @@ import okio.Buffer;
 
 public class ToOkhttpConverter {
 
+    private ToOkhttpConverter() {
+    }
+
     public static MediaType convertOkhttp3MediaType(okhttp3.MediaType okhttp3MediaType) {
         return okhttp3MediaType == null ? MediaType.parse("")
             : MediaType.parse(okhttp3MediaType.toString());

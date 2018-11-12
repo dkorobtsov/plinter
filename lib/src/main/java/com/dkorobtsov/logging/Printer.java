@@ -43,8 +43,7 @@ class Printer {
     private static final String CENTER_LINE = "├ ";
     private static final String DEFAULT_LINE = "  ";
 
-    Printer() {
-        throw new UnsupportedOperationException();
+    private Printer() {
     }
 
     private static boolean isEmpty(String line) {

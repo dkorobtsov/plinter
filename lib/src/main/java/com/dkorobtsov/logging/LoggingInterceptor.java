@@ -8,6 +8,9 @@ import java.util.concurrent.Executor;
 
 public class LoggingInterceptor {
 
+    private LoggingInterceptor() {
+    }
+
     @SuppressWarnings({"unused", "SameParameterValue"})
     public static class Builder {
 

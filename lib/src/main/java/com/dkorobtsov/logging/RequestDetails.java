@@ -16,14 +16,14 @@ import org.apache.http.client.methods.HttpRequestWrapper;
 
 public class RequestDetails {
 
+    private RequestDetails() {
+    }
+
     public static class Builder {
 
         private int numberOfClientsInitialized = 0;
         private com.squareup.okhttp.Request okhttpRequest;
         private HttpRequest apacheHttpRequest;
-
-        public Builder() {
-        }
 
         public Builder from(com.squareup.okhttp.Request okhttpRequest) {
             this.okhttpRequest = okhttpRequest;
@@ -50,13 +50,12 @@ public class RequestDetails {
         }
 
         private Request buildFromOkhttp() {
-            final okhttp3.Request.Builder builder = new okhttp3.Request
-                .Builder();
+            final okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
             builder.url(this.okhttpRequest.url());
             final Map<String, List<String>> headersMap = this.okhttpRequest.headers().toMultimap();
-            headersMap.forEach((String name, List<String> values) -> {
-                builder.addHeader(name, String.join(";", values));
-            });
+            headersMap.forEach((String name, List<String> values)
+                -> builder.addHeader(name, String.join(";", values)));
+
             if (permitsRequestBody(this.okhttpRequest.method())) {
                 builder
                     .method(this.okhttpRequest.method(),
@@ -85,14 +84,14 @@ public class RequestDetails {
             return builder.build();
         }
 
-    }
+        private static String buildUrlFromApacheHttpRequest(HttpRequest request) {
+            final HttpHost target = ((HttpRequestWrapper) request).getTarget();
+            final String portString = target.getPort() == 80 ? "" : ":" + target.getPort();
+            return String
+                .format("%s://%s%s%s", target.getSchemeName(), target.getHostName(), portString,
+                    ((HttpRequestWrapper) request).getURI());
+        }
 
-    private static String buildUrlFromApacheHttpRequest(HttpRequest request) {
-        final HttpHost target = ((HttpRequestWrapper) request).getTarget();
-        final String portString = target.getPort() == 80 ? "" : ":" + target.getPort();
-        return String
-            .format("%s://%s%s%s", target.getSchemeName(), target.getHostName(), portString,
-                ((HttpRequestWrapper) request).getURI());
     }
 
 }

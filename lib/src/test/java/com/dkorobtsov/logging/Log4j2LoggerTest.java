@@ -40,7 +40,7 @@ public class Log4j2LoggerTest extends BaseTest {
     private static final StringWriter logWriter = new StringWriter();
 
     @BeforeClass
-    public static void configureLogger() {
+    public static void configureLogger() throws IOException {
         initializeBaseLog4j2Configuration();
     }
 
@@ -55,6 +55,7 @@ public class Log4j2LoggerTest extends BaseTest {
 
         log.debug("Configuring custom Log4j2 logger for intercepted OkHttp traffic.");
         LogWriter log4j2Writer = new LogWriter() {
+
             final Logger log = LogManager.getLogger("OkHttpLogger");
 
             {
@@ -109,7 +110,7 @@ public class Log4j2LoggerTest extends BaseTest {
 
     }
 
-    private static void initializeBaseLog4j2Configuration() {
+    private static void initializeBaseLog4j2Configuration() throws IOException {
         ConfigurationBuilder<BuiltConfiguration> builder
             = ConfigurationBuilderFactory.newConfigurationBuilder();
 
@@ -123,7 +124,7 @@ public class Log4j2LoggerTest extends BaseTest {
         rootLogger.add(builder.newAppenderRef("stdout"));
         builder.add(rootLogger);
 
-        //builder.writeXmlConfiguration(System.out);
+        builder.writeXmlConfiguration(System.out);
         Configurator.initialize(builder.build());
     }
 

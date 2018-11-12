@@ -9,14 +9,22 @@ import org.apache.http.entity.StringEntity;
 
 public class ToApacheHttpClientConverter {
 
+    private ToApacheHttpClientConverter() {
+    }
+
     public static HttpEntity okhttp3RequestBodyToStringEntity(RequestBody requestBody,
         ContentType contentType) throws IOException {
-        final Buffer buffer = new Buffer();
+
         if (requestBody == null) {
             return new StringEntity("");
         }
-        requestBody.writeTo(buffer);
-        final String responseString = buffer.readUtf8();
+
+        final String responseString;
+        try (final Buffer buffer = new Buffer()) {
+            requestBody.writeTo(buffer);
+            responseString = buffer.readUtf8();
+        }
+
         return new StringEntity(responseString, contentType);
     }
 }
