@@ -3,12 +3,13 @@ package com.dkorobtsov.logging;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class LogginInterceptorUnitTests {
+public class LoggingInterceptorUnitTests {
 
     @Test
     public void testDefaultLogFormatterIsMessageOnly() {
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder();
-        Assert.assertEquals("Default logger", builder.getFormatter(), LogFormatter.JUL_MESSAGE_ONLY);
+        Assert
+            .assertEquals("Default logger", LogFormatter.JUL_MESSAGE_ONLY, builder.getFormatter());
     }
 
     @Test

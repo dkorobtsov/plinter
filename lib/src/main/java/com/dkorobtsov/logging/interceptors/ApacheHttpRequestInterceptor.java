@@ -1,19 +1,18 @@
 package com.dkorobtsov.logging.interceptors;
 
+import static com.dkorobtsov.logging.ClientPrintingExecutor.printFileRequest;
+import static com.dkorobtsov.logging.ClientPrintingExecutor.printJsonRequest;
+import static com.dkorobtsov.logging.TextUtils.isFileRequest;
+
 import com.dkorobtsov.logging.Level;
 import com.dkorobtsov.logging.LoggingInterceptor;
 import com.dkorobtsov.logging.RequestDetails;
+import java.util.Objects;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
-
-import java.util.Objects;
-
-import static com.dkorobtsov.logging.ClientPrintingExecutor.printFileRequest;
-import static com.dkorobtsov.logging.ClientPrintingExecutor.printJsonRequest;
-import static com.dkorobtsov.logging.TextUtils.isFileRequest;
 
 public class ApacheHttpRequestInterceptor implements HttpRequestInterceptor {
 

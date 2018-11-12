@@ -4,11 +4,14 @@ import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.Okhttp3LoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.OkhttpLoggingInterceptor;
-
 import java.util.concurrent.Executor;
 
 public class LoggingInterceptor {
-    @SuppressWarnings( {"unused", "SameParameterValue"})
+
+    private LoggingInterceptor() {
+    }
+
+    @SuppressWarnings({"unused", "SameParameterValue"})
     public static class Builder {
 
         public boolean isDebug() {
@@ -48,7 +51,8 @@ public class LoggingInterceptor {
         }
 
         /**
-         * @param format set Java Utility Logger format (will be ignored in case custom logger is used)
+         * @param format set Java Utility Logger format (will be ignored in case custom logger is
+         * used)
          * @return Builder
          */
         public Builder format(LogFormatter format) {
@@ -92,7 +96,6 @@ public class LoggingInterceptor {
         Executor getExecutor() {
             return executor;
         }
-
 
         OkhttpLoggingInterceptor buildForOkhttp() {
             return new OkhttpLoggingInterceptor(this);
