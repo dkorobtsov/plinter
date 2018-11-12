@@ -6,6 +6,9 @@ import junitparams.Parameters;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +20,7 @@ public class MalformedJsonHandlingTest extends BaseTest {
 
   @Test
   @Parameters({
-      "okhttp", "okhttp3"
+      "okhttp", "okhttp3", "apacheHttpclientRequest"
   })
   public void interceptorAbleToHandleBody_malformedJsonResponse(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse()
@@ -34,32 +37,38 @@ public class MalformedJsonHandlingTest extends BaseTest {
 
   @Test
   @Parameters({
-      "okhttp", "okhttp3"
+      "okhttp", "okhttp3", "apacheHttpclientRequest"
   })
   public void interceptorAbleToHandleBody_malformedJsonRequest(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
     final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
-    if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
+      final String content = "? \"test\" : \"test1\"}";
+      if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
       Request okhttp3Request = new Request.Builder()
           .url(String.valueOf(server.url("/")))
           .put(RequestBody.create(MediaType.parse("application/json"),
-              "? \"test\" : \"test1\"}"))
+              content))
           .build();
-      attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null);
-    } else {
+      attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null, null);
+    } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())){
       com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
         .url(String.valueOf(server.url("/")))
-        .put(com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType.parse("application/json"), "? \"test\" : \"test1\"}"))
+        .put(com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType.parse("application/json"), content))
         .build();
-      attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest);
+      attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest, null);
+    } else {
+      final HttpPut httpPut = new HttpPut(server.url("/").uri());
+      httpPut.setEntity(new StringEntity(content));
+      httpPut.setHeader(new BasicHeader("Content-Type", "application/json"));
+      attachLoggerToInterceptor(interceptorVersion, testLogger, null, null, httpPut);
     }
     assertTrue("Interceptor should be able to log malformed json body.",
-        testLogger.formattedOutput().contains("? \"test\" : \"test1\"}"));
+        testLogger.formattedOutput().contains(content));
   }
 
   @Test
   @Parameters({
-      "okhttp", "okhttp3"
+      "okhttp", "okhttp3", "apacheHttpclientRequest"
   })
   public void interceptorAbleToHandleBody_jsonArrayResponse(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse()
@@ -80,26 +89,32 @@ public class MalformedJsonHandlingTest extends BaseTest {
 
   @Test
   @Parameters({
-      "okhttp", "okhttp3"
+      "okhttp", "okhttp3", "apacheHttpclientRequest"
   })
   public void interceptorAbleToHandleBody_jsonArrayRequest(String interceptorVersion) throws IOException {
     server.enqueue(new MockResponse().setResponseCode(200));
     final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
 
-    if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
+      final String content = "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]";
+      if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
       Request okhttp3Request = new Request.Builder()
           .url(String.valueOf(server.url("/")))
           .put(RequestBody.create(MediaType.parse("application/json"),
-              "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"))
+              content))
           .build();
-      attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null);
-    } else {
+      attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null, null);
+    } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())){
       com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
           .url(String.valueOf(server.url("/")))
           .put(com.squareup.okhttp.RequestBody.create(com.squareup.okhttp.MediaType.parse("application/json"),
-              "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"))
+              content))
           .build();
-      attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest);
+      attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest, null);
+    } else {
+      final HttpPut httpPut = new HttpPut(server.url("/").uri());
+      httpPut.setEntity(new StringEntity(content));
+      httpPut.setHeader(new BasicHeader("Contety-Tyoe", "application/json"));
+      attachLoggerToInterceptor(interceptorVersion, testLogger, null, null, httpPut);
     }
 
     assertTrue("Interceptor should be able to log malformed json body.",

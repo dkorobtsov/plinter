@@ -31,6 +31,9 @@ ext {
     junit4Version = '4.12'
     log4j2Version = '2.11.0'
     junitParamsVersion = '1.1.1'
+    apacheHttpClientVersion = '4.5.1'
+    apacheHttpAsyncClientVersion = '4.1.4'
+    apacheHttpMimeTypeVersion = '4.5.6'
 }
 
 tasks.withType(JavaCompile) {
@@ -63,4 +66,10 @@ dependencies {
     testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
     testImplementation "junit:junit:$junit4Version"
     testCompile "pl.pragmatists:JUnitParams:$junitParamsVersion"
+    compile "org.apache.httpcomponents:httpclient:$apacheHttpClientVersion"
+    compile "org.apache.httpcomponents:httpasyncclient:$apacheHttpAsyncClientVersion"
+    compile "org.apache.httpcomponents:httpmime:$apacheHttpMimeTypeVersion"
+
+
+
 }

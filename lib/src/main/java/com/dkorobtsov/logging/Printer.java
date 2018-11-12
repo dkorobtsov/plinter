@@ -43,7 +43,6 @@ class Printer {
   private static final String CORNER_BOTTOM = "└ ";
   private static final String CENTER_LINE = "├ ";
   private static final String DEFAULT_LINE = "  ";
-  private static final String EMPTY_LINE = "";
 
   Printer() {
     throw new UnsupportedOperationException();
@@ -120,9 +119,10 @@ class Printer {
   private static String[] getResponse(Level level, ResponseDetails responseDetails) {
     final boolean isLoggable = level == Level.HEADERS || level == Level.BASIC;
     final String segmentString = slashSegments(responseDetails.segmentList);
+    final String receivedTags = responseDetails.chainMs == 0 ? "" : " - " + RECEIVED_TAG + responseDetails.chainMs + "ms";
     final String log = (!TextUtils.isEmpty(segmentString) ? segmentString + " - "
         : "") + "is success : "
-        + responseDetails.isSuccessful + " - " + RECEIVED_TAG + responseDetails.chainMs + "ms"
+        + responseDetails.isSuccessful + receivedTags
         + DOUBLE_SEPARATOR
         + STATUS_CODE_TAG + responseDetails.code + " / " + responseDetails.message
         + DOUBLE_SEPARATOR

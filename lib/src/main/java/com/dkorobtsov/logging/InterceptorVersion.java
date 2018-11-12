@@ -1,7 +1,9 @@
 package com.dkorobtsov.logging;
 
 public enum InterceptorVersion {
-    OKHTTP("okhttp"), OKHTTP3("okhttp3");
+    OKHTTP("okhttp"),
+    OKHTTP3("okhttp3"),
+    APACHE_HTTPCLIENT_REQUEST("apacheHttpclientRequest");
 
     private String name;
 
