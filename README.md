@@ -170,7 +170,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:4.3.1') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:4.3.2') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -186,7 +186,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>4.3.1</version>
+	    <version>4.3.2</version>
 </dependency>
 ```
 
