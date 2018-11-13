@@ -170,7 +170,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:4.1') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:4.2') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -186,14 +186,14 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>4.1</version>
+	    <version>4.2</version>
 </dependency>
 ```
 
 
 Executor
 --------
-Add executor for allows to perform sequential concurrent print.
+Add executor that allows to perform sequential concurrent print.
 
 Format
 ------
