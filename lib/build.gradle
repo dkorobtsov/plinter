@@ -51,9 +51,15 @@ test {
             html.enabled = true
         }
     }
+    
     outputs.upToDateWhen {
         false
     }
+
+    testLogging {
+        showStandardStreams = true
+    }
+
 }
 
 dependencies {
