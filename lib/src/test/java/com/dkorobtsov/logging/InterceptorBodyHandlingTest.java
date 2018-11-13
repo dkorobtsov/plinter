@@ -161,8 +161,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
         assertTrue("Interceptor should be able to handle malformed xml body.",
             Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\"1\" species=\"Panthe "));
+                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
+                    + "species=\"Capra hircus\">Goat</animal>animal id=\" "));
     }
 
     @Test
@@ -178,8 +178,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
         assertTrue("Interceptor should be able to handle xml response body.",
             Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\"1\" species=\"Panthe "));
+                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
+                    + "species=\"Capra hircus\">Goat</animal>animal id=\" "));
     }
 
     @Test
