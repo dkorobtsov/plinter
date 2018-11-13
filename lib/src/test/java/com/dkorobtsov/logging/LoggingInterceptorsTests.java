@@ -31,7 +31,8 @@ public class LoggingInterceptorsTests extends BaseTest {
         intercepWithSimpleInterceptor(interceptorVersion, testLogger);
 
         assertTrue("Logger should publish events using only default configuration",
-            testLogger.firstFormattedEvent().contains("Request"));
+            testLogger.firstFormattedEvent(true)
+                .contains("Request"));
     }
 
     @Test
@@ -47,7 +48,8 @@ public class LoggingInterceptorsTests extends BaseTest {
         //Comparing message by length since on Gradle runner characters may be different
         //unless GradleVM executes with -Dfile.encoding=utf-8 option
         assertEquals("Logger with default formatter should publish message only",
-            testLogger.firstRawEvent().length(), testLogger.firstFormattedEvent().length());
+            testLogger.firstRawEvent().length(),
+            testLogger.firstFormattedEvent(false).length());
     }
 
     private void intercepWithSimpleInterceptor(String interceptorVersion, TestLogger testLogger)
@@ -107,7 +109,8 @@ public class LoggingInterceptorsTests extends BaseTest {
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, true);
 
         assertTrue("Logger should publish intercepted events if debug mode is on.",
-            testLogger.firstFormattedEvent().contains("Request"));
+            testLogger.firstFormattedEvent(true)
+                .contains("Request"));
     }
 
     @Test
@@ -119,7 +122,7 @@ public class LoggingInterceptorsTests extends BaseTest {
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_DATE_LEVEL_MESSAGE);
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, true);
 
-        String logEntry = testLogger.lastFormattedEvent();
+        String logEntry = testLogger.lastFormattedEvent(true);
 
         TestUtil.assertLogEntryElementsCount(logEntry, 3);
         TestUtil.assertEntryStartsWithParsableDate(logEntry);

@@ -10,6 +10,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
+import java.util.stream.Collectors;
 
 /**
  * DefaultLogger double with additional methods for testing purposes. All published events are
@@ -79,22 +80,28 @@ public class TestLogger implements LogWriter {
     /**
      * @return Returns all formatted events published by current logger as String array
      */
-    String[] outputAsArray() {
-        return formattedOutput().split("\r?\n");
+    List<String> loggerOutput(boolean preserveTrailingSpaces) {
+        if (preserveTrailingSpaces) {
+            return Arrays.asList(formattedOutput().split("\r?\n"));
+        }
+        return Arrays.stream(formattedOutput()
+            .split("\r?\n"))
+            .map(String::trim).collect(Collectors.toList());
     }
 
     /**
      * @return Returns first formatted event published by current logger
      */
-    String firstFormattedEvent() {
-        return outputAsArray()[0].trim();
+    String firstFormattedEvent(boolean preserveTrailingSpaces) {
+        return loggerOutput(preserveTrailingSpaces).get(0);
     }
 
     /**
      * @return Returns last formatted event published by current logger
      */
-    String lastFormattedEvent() {
-        return outputAsArray()[outputAsArray().length - 1].trim();
+    String lastFormattedEvent(boolean preserveTrailingSpaces) {
+        return loggerOutput(preserveTrailingSpaces)
+            .get(loggerOutput(preserveTrailingSpaces).size() - 1);
     }
 
 }
