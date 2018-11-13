@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import junitparams.JUnitParamsRunner;
@@ -85,12 +86,12 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     public void interceptorAbleToHandleBody_JsonRequest(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
-        final String[] loggerOutput = interceptedRequest(RequestBody
-                .create(MediaType.parse("application/json"), JSON_BODY), loggerVersion,
-            provideExecutor);
+        final List<String> loggerOutput = interceptedRequest(RequestBody
+                .create(MediaType.parse("application/json"), JSON_BODY),
+            loggerVersion, provideExecutor, true);
 
         assertTrue("Interceptor should be able to log json body.",
-            Arrays.asList(loggerOutput).contains("      \"name\": \"doggie\", "));
+            loggerOutput.contains("      \"name\": \"doggie\", "));
     }
 
     @Test
@@ -101,12 +102,11 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     })
     public void interceptorAbleToHandleBody_JsonResponse(String loggerVersion,
         boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/json", JSON_BODY,
-            loggerVersion,
-            provideExecutor);
+        final List<String> loggerOutput = interceptedResponse("application/json", JSON_BODY,
+            loggerVersion, provideExecutor, true);
 
         assertTrue("Interceptor should be able to log json body.",
-            Arrays.asList(loggerOutput).contains("      \"name\": \"doggie\", "));
+            loggerOutput.contains("      \"name\": \"doggie\", "));
     }
 
     @Test
@@ -118,14 +118,15 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     public void interceptorAbleToHandleBody_XmlRequest(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
-        final String[] loggerOutput = interceptedRequest(RequestBody
-            .create(MediaType.parse("application/xml"), XML_BODY), loggerVersion, provideExecutor);
+        final List<String> loggerOutput = interceptedRequest(RequestBody
+                .create(MediaType.parse("application/xml"), XML_BODY),
+            loggerVersion, provideExecutor, false);
 
         assertTrue("Interceptor should be able to handle xml request body.",
-            Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?> "));
+            loggerOutput
+                .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>"));
         assertTrue("Interceptor should be able to handle xml request body.",
-            Arrays.asList(loggerOutput).contains("  </mammals> "));
+            loggerOutput.contains("</mammals>"));
     }
 
     @Test
@@ -137,14 +138,14 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     public void interceptorAbleToHandleBody_XmlResponse(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/xml", XML_BODY,
+        final List<String> loggerOutput = interceptedResponse("application/xml", XML_BODY,
             loggerVersion,
-            provideExecutor);
+            provideExecutor, false);
 
         assertTrue("Interceptor should be able to handle xml response body.",
-            Arrays.asList(loggerOutput).contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?> "));
+            loggerOutput.contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>"));
         assertTrue("Interceptor should be able to handle xml response body.",
-            Arrays.asList(loggerOutput).contains("  </mammals> "));
+            loggerOutput.contains("</mammals>"));
     }
 
     @Test
@@ -155,14 +156,14 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     })
     public void interceptorAbleToHandleBody_MalformedXmlRequest(String loggerVersion,
         boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedRequest(RequestBody
+        final List<String> loggerOutput = interceptedRequest(RequestBody
                 .create(MediaType.parse("application/xml"), MALFORMED_XML_BODY), loggerVersion,
-            provideExecutor);
+            provideExecutor, false);
 
         assertTrue("Interceptor should be able to handle malformed xml body.",
-            Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\" "));
+            loggerOutput
+                .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
+                    + "species=\"Capra hircus\">Goat</animal>animal id=\""));
     }
 
     @Test
@@ -173,13 +174,13 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     })
     public void interceptorAbleToHandleBody_MalformedXmlResponse(String loggerVersion,
         boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/xml", MALFORMED_XML_BODY,
-            loggerVersion, provideExecutor);
+        final List<String> loggerOutput = interceptedResponse("application/xml", MALFORMED_XML_BODY,
+            loggerVersion, provideExecutor, false);
 
         assertTrue("Interceptor should be able to handle xml response body.",
-            Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\" "));
+            loggerOutput
+                .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
+                    + "species=\"Capra hircus\">Goat</animal>animal id=\""));
     }
 
     @Test
@@ -194,10 +195,11 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         RequestBody body = RequestBody.create(MediaType.parse("application/zip"),
             createFileFromString(JSON_BODY));
 
-        final String[] loggerOutput = interceptedRequest(body, loggerVersion, provideExecutor);
+        final List<String> loggerOutput = interceptedRequest(body, loggerVersion, provideExecutor,
+            true);
 
         assertTrue("Interceptor should not log file request body.",
-            Arrays.asList(loggerOutput).contains("  Omitted response body "));
+            loggerOutput.contains("  Omitted response body "));
     }
 
     @Test
@@ -208,11 +210,11 @@ public class InterceptorBodyHandlingTest extends BaseTest {
     })
     public void interceptorAbleToHandleBody_FileResponse(String loggerVersion,
         boolean provideExecutor) throws IOException {
-        final String[] loggerOutput = interceptedResponse("application/zip",
-            String.valueOf(createFileFromString(JSON_BODY)), loggerVersion, provideExecutor);
+        final List<String> loggerOutput = interceptedResponse("application/zip",
+            String.valueOf(createFileFromString(JSON_BODY)), loggerVersion, provideExecutor, true);
 
         assertTrue("Interceptor should not log file response body.",
-            Arrays.asList(loggerOutput).contains("  Omitted response body "));
+            loggerOutput.contains("  Omitted response body "));
     }
 
     @SuppressWarnings("SameParameterValue")
@@ -226,8 +228,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         return file;
     }
 
-    private String[] interceptedRequest(RequestBody body, String interceptorVersion,
-        boolean provideExecutor) throws IOException {
+    private List<String> interceptedRequest(RequestBody body, String interceptorVersion,
+        boolean provideExecutor, boolean preserveTrailingSpaces) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
 
@@ -248,7 +250,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             defaultOkhttp3ClientWithInterceptor(interceptor)
                 .newCall(okhttp3Request)
                 .execute();
-            return testLogger.outputAsArray();
+            return testLogger.loggerOutput(preserveTrailingSpaces);
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             OkhttpLoggingInterceptor interceptor = builder
                 .buildForOkhttp();
@@ -261,7 +263,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             defaultOkhttpClientWithInterceptor(interceptor)
                 .newCall(request)
                 .execute();
-            return testLogger.outputAsArray();
+            return testLogger.loggerOutput(preserveTrailingSpaces);
         } else if (interceptorVersion
             .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = builder
@@ -286,17 +288,18 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(httpPut);
-            return testLogger.outputAsArray();
+            return testLogger.loggerOutput(preserveTrailingSpaces);
         } else {
             fail(String
                 .format("I didn't recognize %s version. I support 'okhttp' and 'okhttp3' versions",
                     interceptorVersion));
-            return new String[1];
+            return Arrays.asList(new String[1]);
         }
     }
 
-    private String[] interceptedResponse(String contentType, String body, String interceptorVersion,
-        boolean provideExecutors) throws IOException {
+    private List<String> interceptedResponse(String contentType, String body,
+        String interceptorVersion,
+        boolean provideExecutors, boolean preserveTrailingSpaces) throws IOException {
         server.enqueue(new MockResponse()
             .setResponseCode(200)
             .setHeader("Content-Type", contentType)
@@ -335,9 +338,9 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             fail(String.format(
                 "I couldn't recognize %s interceptor version. I only support okhttp and okhttp3 versions at the moment",
                 interceptorVersion));
-            return new String[1];
+            return Arrays.asList(new String[1]);
         }
-        return testLogger.outputAsArray();
+        return testLogger.loggerOutput(preserveTrailingSpaces);
     }
 
 }
