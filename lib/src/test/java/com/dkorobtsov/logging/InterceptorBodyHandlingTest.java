@@ -37,15 +37,21 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class InterceptorBodyHandlingTest extends BaseTest {
 
-    private static final String XML_BODY = "<?xml version=\"1.0\"?><mammals>" +
-        "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
-        "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
-        "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
+    private static final String XML_BODY =
+        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+            + "<mammals>"
+            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
+            + "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
+            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
+            + "</mammals>";
 
-    private static final String MALFORMED_XML_BODY = "<?xml version=\"1.0\"?><mammals>" +
-        "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
-        "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
-        "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
+    private static final String MALFORMED_XML_BODY =
+        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+            + "<mammals>"
+            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
+            + "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
+            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
+            + "</mammals>";
 
     private static final String JSON_BODY = ""
         + "  {\n"
