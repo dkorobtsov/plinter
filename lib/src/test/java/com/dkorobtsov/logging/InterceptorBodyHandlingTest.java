@@ -262,7 +262,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .buildForApacheHttpClientRequest();
 
             final ApacheHttpResponseInterceptor responseInterceptor = builder
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
 
             final HttpPut httpPut = new HttpPut(server.url("/").uri());
             final MediaType mediaType =
@@ -321,7 +321,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .buildForApacheHttpClientRequest();
 
             final ApacheHttpResponseInterceptor responseInterceptor = builder
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
 
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());

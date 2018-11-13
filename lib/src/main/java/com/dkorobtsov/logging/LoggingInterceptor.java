@@ -38,7 +38,7 @@ public class LoggingInterceptor {
          * @return Builder
          * @see LogWriter
          */
-        Builder logger(LogWriter logger) {
+        public Builder logger(LogWriter logger) {
             this.logger = logger;
             return this;
         }
@@ -64,7 +64,7 @@ public class LoggingInterceptor {
          * @param isDebug set can sending log output
          * @return Builder
          */
-        Builder loggable(boolean isDebug) {
+        public Builder loggable(boolean isDebug) {
             this.isDebug = isDebug;
             return this;
         }
@@ -88,7 +88,7 @@ public class LoggingInterceptor {
          * @return Builder
          * @see LogWriter
          */
-        Builder executor(Executor executor) {
+        public Builder executor(Executor executor) {
             this.executor = executor;
             return this;
         }
@@ -97,19 +97,19 @@ public class LoggingInterceptor {
             return executor;
         }
 
-        OkhttpLoggingInterceptor buildForOkhttp() {
+        public OkhttpLoggingInterceptor buildForOkhttp() {
             return new OkhttpLoggingInterceptor(this);
         }
 
-        Okhttp3LoggingInterceptor buildForOkhttp3() {
+        public Okhttp3LoggingInterceptor buildForOkhttp3() {
             return new Okhttp3LoggingInterceptor(this);
         }
 
-        ApacheHttpRequestInterceptor buildForApacheHttpClientRequest() {
+        public ApacheHttpRequestInterceptor buildForApacheHttpClientRequest() {
             return new ApacheHttpRequestInterceptor(this);
         }
 
-        ApacheHttpResponseInterceptor builFordApacheHttpClientResponse() {
+        public ApacheHttpResponseInterceptor buildFordApacheHttpClientResponse() {
             return new ApacheHttpResponseInterceptor(this);
         }
     }
