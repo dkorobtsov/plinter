@@ -86,7 +86,7 @@ public class RequestDetails {
 
         private static String buildUrlFromApacheHttpRequest(HttpRequest request) {
             final HttpHost target = ((HttpRequestWrapper) request).getTarget();
-            final String portString = target.getPort() == 80 ? "" : ":" + target.getPort();
+            final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
             return String
                 .format("%s://%s%s%s", target.getSchemeName(), target.getHostName(), portString,
                     ((HttpRequestWrapper) request).getURI());
