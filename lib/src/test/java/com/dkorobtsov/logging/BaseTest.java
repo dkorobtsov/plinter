@@ -175,7 +175,7 @@ public abstract class BaseTest {
 
         final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
             .logger(logWriter)
-            .builFordApacheHttpClientResponse();
+            .buildFordApacheHttpClientResponse();
         log.debug("Sending request.");
         defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
             .execute(request);

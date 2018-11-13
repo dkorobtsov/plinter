@@ -37,15 +37,21 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class InterceptorBodyHandlingTest extends BaseTest {
 
-    private static final String XML_BODY = "<?xml version=\"1.0\"?><mammals>" +
-        "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
-        "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
-        "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
+    private static final String XML_BODY =
+        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+            + "<mammals>"
+            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
+            + "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
+            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
+            + "</mammals>";
 
-    private static final String MALFORMED_XML_BODY = "<?xml version=\"1.0\"?><mammals>" +
-        "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>" +
-        "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>" +
-        "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> </mammals>";
+    private static final String MALFORMED_XML_BODY =
+        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+            + "<mammals>"
+            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
+            + "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
+            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
+            + "</mammals>";
 
     private static final String JSON_BODY = ""
         + "  {\n"
@@ -155,8 +161,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
         assertTrue("Interceptor should be able to handle malformed xml body.",
             Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\"1\" species=\"Panthe "));
+                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
+                    + "species=\"Capra hircus\">Goat</animal>animal id=\" "));
     }
 
     @Test
@@ -172,8 +178,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
         assertTrue("Interceptor should be able to handle xml response body.",
             Arrays.asList(loggerOutput)
-                .contains("  <?xml version=\"1.0\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\"1\" species=\"Panthe "));
+                .contains("  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
+                    + "species=\"Capra hircus\">Goat</animal>animal id=\" "));
     }
 
     @Test
@@ -262,7 +268,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .buildForApacheHttpClientRequest();
 
             final ApacheHttpResponseInterceptor responseInterceptor = builder
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
 
             final HttpPut httpPut = new HttpPut(server.url("/").uri());
             final MediaType mediaType =
@@ -321,7 +327,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .buildForApacheHttpClientRequest();
 
             final ApacheHttpResponseInterceptor responseInterceptor = builder
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
 
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());

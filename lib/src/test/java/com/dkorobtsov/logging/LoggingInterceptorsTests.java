@@ -74,7 +74,7 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .buildForApacheHttpClientRequest();
             final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());
         } else {
@@ -153,7 +153,7 @@ public class LoggingInterceptorsTests extends BaseTest {
             final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .loggable(loggable)
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());
         } else {
@@ -263,7 +263,7 @@ public class LoggingInterceptorsTests extends BaseTest {
             final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
                 .logger(testLogger)
                 .level(level)
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());
         } else {
@@ -308,7 +308,7 @@ public class LoggingInterceptorsTests extends BaseTest {
                 .logger(testLogger)
                 .level(Level.BASIC)
                 .executor(Executors.newSingleThreadExecutor())
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());
         } else {
@@ -351,7 +351,7 @@ public class LoggingInterceptorsTests extends BaseTest {
             final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
                 .level(Level.BASIC)
                 .executor(Executors.newSingleThreadExecutor())
-                .builFordApacheHttpClientResponse();
+                .buildFordApacheHttpClientResponse();
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(defaultApacheHttpRequest());
         } else {
