@@ -9,33 +9,33 @@ import org.junit.Assert;
 
 final class TestUtil {
 
-  static void assertEntryStartsWithParsableDate(String rawEntry) {
-    String[] entryElements = TestUtil
-        .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
+    static void assertEntryStartsWithParsableDate(String rawEntry) {
+        String[] entryElements = TestUtil
+            .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
 
-    try {
-      new SimpleDateFormat("yyyy-MM-ddd kk:mm:ss").parse(entryElements[0]);
-    } catch (ParseException e) {
-      fail("Log entry expected to start with parsable date stamp. But was: \n" + rawEntry);
+        try {
+            new SimpleDateFormat("yyyy-MM-ddd kk:mm:ss").parse(entryElements[0]);
+        } catch (ParseException e) {
+            fail("Log entry expected to start with parsable date stamp. But was: \n" + rawEntry);
+        }
     }
-  }
 
-  @SuppressWarnings({"RegExpRedundantEscape", "RegExpSingleCharAlternation"})
-  static String[] extractTextFromLogEntrySeparatedByBrackets(String logEntry) {
-    return Arrays
-        .stream(logEntry.split("\\[|\\]"))
-        .filter(s -> s.trim().length() > 0)
-        .map(String::trim)
-        .toArray(String[]::new);
-  }
+    @SuppressWarnings({"RegExpRedundantEscape", "RegExpSingleCharAlternation"})
+    static String[] extractTextFromLogEntrySeparatedByBrackets(String logEntry) {
+        return Arrays
+            .stream(logEntry.split("\\[|\\]"))
+            .filter(s -> s.trim().length() > 0)
+            .map(String::trim)
+            .toArray(String[]::new);
+    }
 
-  static void assertLogEntryElementsCount(String entrySeparatedByBrackets, int expectedCount) {
-    String[] entryElements = TestUtil
-        .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
+    static void assertLogEntryElementsCount(String entrySeparatedByBrackets, int expectedCount) {
+        String[] entryElements = TestUtil
+            .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
 
-    Assert.assertEquals(
-        "Log event expected to contain " + expectedCount + " of elements. But was: \n"
-            + entryElements.length, expectedCount, entryElements.length);
-  }
+        Assert.assertEquals(
+            "Log event expected to contain " + expectedCount + " of elements. But was: \n"
+                + entryElements.length, expectedCount, entryElements.length);
+    }
 
 }

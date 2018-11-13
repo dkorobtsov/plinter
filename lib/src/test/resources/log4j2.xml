@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+  <Properties>
+    <Property name="ROOT_PATTERN">%d{HH:mm:ss.SSS} [%t] %-5level %c{0}:%L - %msg%n</Property>
+  </Properties>
+
+  <Appenders>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${ROOT_PATTERN}"/>
+    </Console>
+
+  </Appenders>
+
+  <Loggers>
+
+    <Root additivity="false" level="debug">
+      <!--AppenderRef ref="ReporterAppender"/-->
+      <AppenderRef ref="Console"/>
+    </Root>
+
+  </Loggers>
+
+</Configuration>

@@ -17,7 +17,8 @@ project with log4j2 based logging. So, comparing to original repository, changes
 
 - removed all Android specific stuff (tags, references to BuildConfig etc)
 - removed included Android app (along with existing tests)
-- updated Java level 8
+- removed option to add custom headers / queries
+- updated to Java level 8
 - refactored Interceptor to make it work without any additional configuration (just plug and play) :)
 - fixed some bugs (mostly output related)
 - added option to customize logger output (when default JUL logger is used)
@@ -25,18 +26,18 @@ project with log4j2 based logging. So, comparing to original repository, changes
 - added new tests package (can be helpful to figure out how Interceptor should work)
 - added new DefaultLogger implementation (basically just manually configured JUL logger)
 - reworked builder (to support those above mentioned changes)
+- Interceptor now pretty prints XML body as well
 
-todo:
-- correctly handle xml response body
 
 Basic Usage
 -----------
 Interceptor should work as is - without any additional parameters.
 By default JUL logger will be used with INFO level and minimal format
 displaying message only.
-
+`okhttp3` version:
 ```java
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder().build();
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()                    
+                    .buildForOkhttp3();
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .build();
@@ -49,6 +50,31 @@ displaying message only.
         .client(okHttpClient)
         .build();
 ```
+
+`okhttp` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
+```java
+    final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()                    
+                    .buildForOkhttp();
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .build();
+```
+
+`apache httpclient` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
+```java
+    final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()                    
+                    .buildForApacheHttpClientRequest();
+    final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()        
+        .builFordApacheHttpClientResponse();
+
+    return HttpClientBuilder
+            .create()
+            .addInterceptorFirst(requestInterceptor)
+            .addInterceptorFirst(responseInterceptor)
+            .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
+            .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+            .build();    
+```
 Example:
 
 <p align="left">
@@ -57,12 +83,12 @@ Example:
 
 Format can be changed to one of the defined templates, for example:
 ```java
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .loggable(isDebug())
         .level(Level.BASIC)
         .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
         .executor(Executors.newSingleThreadExecutor())
-        .build();
+        .buildForOkhttp3();
 ```
 
 **Tip:** when logger is in "message only" mode, json response can be copied
@@ -75,7 +101,7 @@ just need to provide own LogWriter implementation.
 
 Simple configuration for Log4j2:
 ```java
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .logger(new LogWriter() {
           final Logger log = LogManager.getLogger("OkHttpLogger");
 
@@ -84,7 +110,7 @@ Simple configuration for Log4j2:
             log.debug(msg);
           }
         })
-        .build();
+        .buildForOkhttp3();
 ```
 
 Or more sophisticated approach with custom logging pattern.
@@ -122,9 +148,9 @@ Or more sophisticated approach with custom logging pattern.
       }
     };
 
-    LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
         .logger(log4j2Writer)
-        .build();
+        .buildForOkhttp3();
 ```
 Example:
 <p align="left">
@@ -144,7 +170,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:3.2') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:4.3.1') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -160,14 +186,14 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>3.2</version>
+	    <version>4.3.1</version>
 </dependency>
 ```
 
 
 Executor
 --------
-Add executor for allows to perform sequential concurrent print.
+Add executor that allows to perform sequential concurrent print.
 
 Format
 ------
@@ -194,16 +220,9 @@ setLevel(Level.BASIC)
 	      .BODY     // Logging url, method and body
 ```	
 
-Platform - [Platform](https://github.com/square/okhttp/blob/master/okhttp/src/main/java/okhttp3/internal/platform/Platform.java)
+Loggable
 --------
 
 ```java
 loggable(true/false) // enable/disable sending logs output.
-```
-
-Header - [Recipes](https://github.com/square/okhttp/wiki/Recipes)
---------
-
-```java
-addHeader("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9 ") // Adding to request
 ```
