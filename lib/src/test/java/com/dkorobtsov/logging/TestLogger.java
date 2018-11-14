@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 public class TestLogger implements LogWriter {
 
     private final List<String> events = new ArrayList<>(Collections.emptyList());
+    private ThreadLocal<OutputStream> logOut = new ThreadLocal<>();
     private StreamHandler logOutputHandler;
-    private OutputStream logOut;
     private Logger testLogger = Logger.getLogger("TestLogger");
 
     TestLogger(LogFormatter logFormatter) {
@@ -35,8 +35,8 @@ public class TestLogger implements LogWriter {
         testLogger.addHandler(consoleHandler);
 
         // Configuring output to stream
-        logOut = new ByteArrayOutputStream();
-        logOutputHandler = new StreamHandler(logOut, logFormatter.formatter);
+        logOut.set(new ByteArrayOutputStream());
+        logOutputHandler = new StreamHandler(logOut.get(), logFormatter.formatter);
 
         testLogger.addHandler(logOutputHandler);
     }
@@ -74,7 +74,7 @@ public class TestLogger implements LogWriter {
      */
     String formattedOutput() {
         logOutputHandler.flush();
-        return logOut.toString();
+        return logOut.get().toString();
     }
 
     /**
