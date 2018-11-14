@@ -231,9 +231,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         assertTrue("Interceptor should be able to handle html request body.",
             loggerOutput
                 .contains(
-                    "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"Content-Type\"/>"));
-        assertTrue("Interceptor should be able to handle html request body.",
-            loggerOutput.contains("<div style=\"font-family:Arial,Helvetica,sans-serif;\">"));
+                    "<title>Error 404 Not Found</title>"));
     }
 
     @Test
@@ -251,9 +249,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         assertTrue("Interceptor should be able to handle html request body.",
             loggerOutput
                 .contains(
-                    "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"Content-Type\"/>"));
-        assertTrue("Interceptor should be able to handle html request body.",
-            loggerOutput.contains("<div style=\"font-family:Arial,Helvetica,sans-serif;\">"));
+                    "<title>Error 404 Not Found</title>"));
     }
 
     @Test
