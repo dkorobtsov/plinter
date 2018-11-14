@@ -435,9 +435,11 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
             .logger(testLogger);
+
         if (provideExecutor) {
-            builder.executor(Executors.newSingleThreadExecutor());
+            builder.executor(Executors.newCachedThreadPool());
         }
+
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             Okhttp3LoggingInterceptor interceptor = builder
                 .buildForOkhttp3();
@@ -459,6 +461,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .newCall(request)
                 .execute();
             return testLogger.loggerOutput(preserveTrailingSpaces);
+
         } else if (interceptorVersion
             .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
             final ApacheHttpRequestInterceptor requestInterceptor = builder
@@ -476,6 +479,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             ContentType contentType = ContentType.create(
                 String.format("%s/%s", Objects.requireNonNull(mediaType).type(),
                     mediaType.subtype()));
+
             final HttpEntity entity = ToApacheHttpClientConverter
                 .okhttp3RequestBodyToStringEntity(body, contentType);
 
@@ -483,7 +487,9 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
             defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                 .execute(httpPut);
+
             return testLogger.loggerOutput(preserveTrailingSpaces);
+
         } else {
             fail(String
                 .format("I didn't recognize %s version. I support 'okhttp' and 'okhttp3' versions",
