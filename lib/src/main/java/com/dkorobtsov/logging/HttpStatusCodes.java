@@ -1,6 +1,5 @@
 package com.dkorobtsov.logging;
 
-import java.nio.file.FileSystemNotFoundException;
 import java.util.Arrays;
 
 public enum HttpStatusCodes {
@@ -73,7 +72,7 @@ public enum HttpStatusCodes {
         return Arrays.stream(values())
             .filter(httpStatusCode -> httpStatusCode.getStatusCode() == code)
             .findFirst()
-            .orElseThrow(() -> new FileSystemNotFoundException(
+            .orElseThrow(() -> new IllegalArgumentException(
                 String.format("Couldn't find %s http status code", code)))
             .getMessage();
     }
