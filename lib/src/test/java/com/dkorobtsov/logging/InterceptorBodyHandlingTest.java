@@ -38,23 +38,9 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class InterceptorBodyHandlingTest extends BaseTest {
 
-    private static final String XML_BODY =
-        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
-            + "<mammals>"
-            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
-            + "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
-            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
-            + "</mammals>";
+    private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
 
-    private static final String MALFORMED_XML_BODY =
-        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
-            + "<mammals>"
-            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
-            + "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
-            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
-            + "</mammals>";
-
-    private static final String JSON_BODY = ""
+    private static final String PREFORMATTED_JSON_BODY = ""
         + "  {\n"
         + "    \"id\": 431169,\n"
         + "    \"category\": {\n"
@@ -74,6 +60,52 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         + "    \"status\": \"available\"\n"
         + "  }";
 
+    private static final String MALFORMED_JSON_BODY = ""
+        + "  {\n"
+        + "    \"id\": 431169,\n"
+        + "    \"category\": {\n"
+        + "      \"id\": 0,\n"
+        + "      \"name\": \"string\"\n"
+        + "    \"name\": \"doggie\",\n"
+        + "    \"photoUrls\": [\n"
+        + "      \"string\"\n"
+        + "    \"tags\": [\n"
+        + "      {\n"
+        + "        \"id\": 0,\n"
+        + "        \"name\": \"string\"\n"
+        + "      }\n"
+        + "    ],\n"
+        + "    \"status\": \"available\"\n"
+        + "  }";
+
+    private static final String XML_BODY =
+        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+            + "<mammals>"
+            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
+            + "<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
+            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
+            + "</mammals>";
+
+    private static final String MALFORMED_XML_BODY =
+        "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
+            + "<mammals>"
+            + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
+            + "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
+            + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
+            + "</mammals>";
+
+    private static final String HTML_BODY = ""
+        + "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"
+        + "<title>Error 404 Not Found</title></head><body>"
+        + "<div style=\"font-family:Arial,Helvetica,sans-serif;\"><h2>HTTP ERROR 404</h2>"
+        + "<pre>Not Found</pre></div><tr><th></th><th></th><th></th><th></th></tr></body></html>";
+
+    private static final String MALFORMED_HTML_BODY = ""
+        + "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"
+        + "<title>Error 404 Not Found</title></head><body>"
+        + "<div style=\"font-family:Arial,Helvetica,sans-serif;\"><h2>HTTP ERROR 404</h2>"
+        + "<pre>Not Found</pre></div><tr><th></th><th><th></th><th></th></tr></body></html>";
+
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -83,15 +115,15 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_JsonRequest(String loggerVersion,
+    public void interceptorAbleToHandleBody_simpleJsonRequest(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
         final List<String> loggerOutput = interceptedRequest(RequestBody
-                .create(MediaType.parse("application/json"), JSON_BODY),
+                .create(MediaType.parse("application/json"), SIMPLE_JSON),
             loggerVersion, provideExecutor, true);
 
-        assertTrue("Interceptor should be able to log json body.",
-            loggerOutput.contains("      \"name\": \"doggie\", "));
+        assertTrue("Interceptor should be able to log simple json body.",
+            loggerOutput.contains("     \"city\": \"New York\", "));
     }
 
     @Test
@@ -100,13 +132,13 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_JsonResponse(String loggerVersion,
+    public void interceptorAbleToHandleBody_simpleJsonResponse(String loggerVersion,
         boolean provideExecutor) throws IOException {
-        final List<String> loggerOutput = interceptedResponse("application/json", JSON_BODY,
+        final List<String> loggerOutput = interceptedResponse("application/json", SIMPLE_JSON,
             loggerVersion, provideExecutor, true);
 
         assertTrue("Interceptor should be able to log json body.",
-            loggerOutput.contains("      \"name\": \"doggie\", "));
+            loggerOutput.contains("     \"city\": \"New York\", "));
     }
 
     @Test
@@ -115,7 +147,165 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_XmlRequest(String loggerVersion,
+    public void interceptorAbleToHandleBody_preformattedJsonRequest(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
+        final List<String> loggerOutput = interceptedRequest(RequestBody
+                .create(MediaType.parse("application/json"), PREFORMATTED_JSON_BODY),
+            loggerVersion, provideExecutor, true);
+
+        assertTrue("Interceptor should be able to log json body.",
+            loggerOutput.contains("     \"name\": \"doggie\", "));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_preformattedJsonResponse(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final List<String> loggerOutput = interceptedResponse("application/json",
+            PREFORMATTED_JSON_BODY,
+            loggerVersion, provideExecutor, true);
+
+        assertTrue("Interceptor should be able to log json body.",
+            loggerOutput.contains("     \"name\": \"doggie\", "));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_malformedJsonRequest(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final List<String> loggerOutput = interceptedRequest(RequestBody
+                .create(MediaType.parse("application/json"), MALFORMED_JSON_BODY), loggerVersion,
+            provideExecutor, false);
+
+        loggerOutput
+            .stream()
+            .filter(it ->
+                it.startsWith("\"status\": \"available\""))
+            .findFirst()
+            .orElseThrow(() ->
+                new AssertionError("Interceptor should be able to handle xml response body."));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_malformedJsonResponse(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final List<String> loggerOutput = interceptedResponse(
+            "application/json", MALFORMED_JSON_BODY, loggerVersion, provideExecutor, false);
+
+        loggerOutput
+            .stream()
+            .filter(it ->
+                it.startsWith("\"status\": \"available\""))
+            .findFirst()
+            .orElseThrow(() ->
+                new AssertionError("Interceptor should be able to handle xml response body."));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_htmlRequest(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
+        final List<String> loggerOutput = interceptedRequest(RequestBody
+                .create(MediaType.parse("text/html"), HTML_BODY),
+            loggerVersion, provideExecutor, false);
+
+        assertTrue("Interceptor should be able to handle html request body.",
+            loggerOutput
+                .contains(
+                    "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"Content-Type\"/>"));
+        assertTrue("Interceptor should be able to handle html request body.",
+            loggerOutput.contains("<div style=\"font-family:Arial,Helvetica,sans-serif;\">"));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_htmlResponse(String loggerVersion,
+        boolean provideExecutor)
+        throws IOException {
+        final List<String> loggerOutput = interceptedResponse(
+            "text/html", HTML_BODY, loggerVersion, provideExecutor, false);
+
+        assertTrue("Interceptor should be able to handle html request body.",
+            loggerOutput
+                .contains(
+                    "<meta content=\"text/html; charset=ISO-8859-1\" http-equiv=\"Content-Type\"/>"));
+        assertTrue("Interceptor should be able to handle html request body.",
+            loggerOutput.contains("<div style=\"font-family:Arial,Helvetica,sans-serif;\">"));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_malformedHtmlRequest(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final List<String> loggerOutput = interceptedRequest(RequestBody
+                .create(MediaType.parse("text/html"), MALFORMED_HTML_BODY), loggerVersion,
+            provideExecutor, false);
+
+        loggerOutput
+            .stream()
+            .filter(it ->
+                it.startsWith(
+                    "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"))
+            .findFirst()
+            .orElseThrow(() ->
+                new AssertionError("Interceptor should be able to handle html request body."));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_malformedHtmlResponse(String loggerVersion,
+        boolean provideExecutor) throws IOException {
+        final List<String> loggerOutput = interceptedResponse(
+            "text/html", MALFORMED_HTML_BODY, loggerVersion, provideExecutor, false);
+
+        loggerOutput
+            .stream()
+            .filter(it ->
+                it.startsWith(
+                    "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"))
+            .findFirst()
+            .orElseThrow(() ->
+                new AssertionError("Interceptor should be able to handle html response body."));
+    }
+
+    @Test
+    @Parameters({
+        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",
+        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+    })
+    public void interceptorAbleToHandleBody_xmlRequest(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
         final List<String> loggerOutput = interceptedRequest(RequestBody
@@ -135,7 +325,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_XmlResponse(String loggerVersion,
+    public void interceptorAbleToHandleBody_xmlResponse(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
         final List<String> loggerOutput = interceptedResponse("application/xml", XML_BODY,
@@ -154,16 +344,20 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_MalformedXmlRequest(String loggerVersion,
+    public void interceptorAbleToHandleBody_malformedXmlRequest(String loggerVersion,
         boolean provideExecutor) throws IOException {
         final List<String> loggerOutput = interceptedRequest(RequestBody
                 .create(MediaType.parse("application/xml"), MALFORMED_XML_BODY), loggerVersion,
             provideExecutor, false);
 
-        assertTrue("Interceptor should be able to handle malformed xml body.",
-            loggerOutput
-                .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\""));
+        loggerOutput
+            .stream()
+            .filter(it ->
+                it.startsWith(
+                    "<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
+            .findFirst()
+            .orElseThrow(() ->
+                new AssertionError("Interceptor should be able to handle xml request body."));
     }
 
     @Test
@@ -172,15 +366,19 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_MalformedXmlResponse(String loggerVersion,
+    public void interceptorAbleToHandleBody_malformedXmlResponse(String loggerVersion,
         boolean provideExecutor) throws IOException {
         final List<String> loggerOutput = interceptedResponse("application/xml", MALFORMED_XML_BODY,
             loggerVersion, provideExecutor, false);
 
-        assertTrue("Interceptor should be able to handle xml response body.",
-            loggerOutput
-                .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals><animal id=\"0\" "
-                    + "species=\"Capra hircus\">Goat</animal>animal id=\""));
+        loggerOutput
+            .stream()
+            .filter(it ->
+                it.startsWith(
+                    "<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
+            .findFirst()
+            .orElseThrow(() ->
+                new AssertionError("Interceptor should be able to handle xml response body."));
     }
 
     @Test
@@ -189,11 +387,11 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_FileRequest(String loggerVersion,
+    public void interceptorAbleToHandleBody_fileRequest(String loggerVersion,
         boolean provideExecutor)
         throws IOException {
         RequestBody body = RequestBody.create(MediaType.parse("application/zip"),
-            createFileFromString(JSON_BODY));
+            createFileFromString(PREFORMATTED_JSON_BODY));
 
         final List<String> loggerOutput = interceptedRequest(body, loggerVersion, provideExecutor,
             true);
@@ -208,10 +406,11 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_FileResponse(String loggerVersion,
+    public void interceptorAbleToHandleBody_fileResponse(String loggerVersion,
         boolean provideExecutor) throws IOException {
         final List<String> loggerOutput = interceptedResponse("application/zip",
-            String.valueOf(createFileFromString(JSON_BODY)), loggerVersion, provideExecutor, true);
+            String.valueOf(createFileFromString(PREFORMATTED_JSON_BODY)), loggerVersion,
+            provideExecutor, true);
 
         assertTrue("Interceptor should not log file response body.",
             loggerOutput.contains("  Omitted response body "));
