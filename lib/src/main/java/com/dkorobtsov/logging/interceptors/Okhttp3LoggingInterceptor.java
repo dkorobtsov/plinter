@@ -7,7 +7,7 @@ import static com.dkorobtsov.logging.ClientPrintingExecutor.printJsonResponse;
 import static com.dkorobtsov.logging.TextUtils.isFileRequest;
 
 import com.dkorobtsov.logging.Level;
-import com.dkorobtsov.logging.LoggingInterceptor;
+import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.ResponseDetails;
 import java.io.IOException;
 import java.util.Objects;
@@ -21,18 +21,18 @@ import okhttp3.ResponseBody;
 public class Okhttp3LoggingInterceptor implements Interceptor {
 
     private final boolean isDebug;
-    private final LoggingInterceptor.Builder builder;
+    private final LoggerConfig loggerConfig;
 
-    public Okhttp3LoggingInterceptor(LoggingInterceptor.Builder builder) {
-        this.builder = builder;
-        this.isDebug = builder.isDebug();
+    public Okhttp3LoggingInterceptor(LoggerConfig loggerConfig) {
+        this.loggerConfig = loggerConfig;
+        this.isDebug = loggerConfig.isDebug;
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
 
-        if (!isDebug || builder.getLevel() == Level.NONE) {
+        if (!isDebug || loggerConfig.level == Level.NONE) {
             return chain.proceed(request);
         }
 
@@ -44,9 +44,9 @@ public class Okhttp3LoggingInterceptor implements Interceptor {
         }
 
         if (isFileRequest(requestSubtype)) {
-            printFileRequest(request, builder);
+            printFileRequest(request, loggerConfig);
         } else {
-            printJsonRequest(request, builder);
+            printJsonRequest(request, loggerConfig);
         }
 
         final long startTime = System.nanoTime();
@@ -64,10 +64,10 @@ public class Okhttp3LoggingInterceptor implements Interceptor {
             .from(request, response, responseTime, isFileRequest(subtype));
 
         if (isFileRequest(subtype)) {
-            printFileResponse(responseDetails, builder);
+            printFileResponse(responseDetails, loggerConfig);
             return response;
         } else {
-            printJsonResponse(responseDetails, builder);
+            printJsonResponse(responseDetails, loggerConfig);
             body = ResponseBody.create(responseDetails.contentType, responseDetails.originalBody);
         }
 
@@ -76,4 +76,7 @@ public class Okhttp3LoggingInterceptor implements Interceptor {
             .build();
     }
 
+    public LoggerConfig loggerConfig() {
+        return this.loggerConfig;
+    }
 }

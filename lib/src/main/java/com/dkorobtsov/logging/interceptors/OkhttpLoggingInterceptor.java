@@ -9,7 +9,7 @@ import static com.dkorobtsov.logging.converters.ToOkhttp3Converter.convertOkhttp
 import static com.dkorobtsov.logging.converters.ToOkhttpConverter.convertOkhttp3MediaType;
 
 import com.dkorobtsov.logging.Level;
-import com.dkorobtsov.logging.LoggingInterceptor;
+import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.RequestDetails;
 import com.dkorobtsov.logging.ResponseDetails;
 import com.squareup.okhttp.Interceptor;
@@ -25,11 +25,11 @@ import okhttp3.RequestBody;
 public class OkhttpLoggingInterceptor implements Interceptor {
 
     private final boolean isDebug;
-    private final LoggingInterceptor.Builder builder;
+    private final LoggerConfig loggerConfig;
 
-    public OkhttpLoggingInterceptor(LoggingInterceptor.Builder builder) {
-        this.builder = builder;
-        this.isDebug = builder.isDebug();
+    public OkhttpLoggingInterceptor(LoggerConfig loggerConfig) {
+        this.loggerConfig = loggerConfig;
+        this.isDebug = loggerConfig.isDebug;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class OkhttpLoggingInterceptor implements Interceptor {
         Request request = chain.request();
         final okhttp3.Request requestDetails = new RequestDetails.Builder().from(request).build();
 
-        if (!isDebug || builder.getLevel() == Level.NONE) {
+        if (!isDebug || loggerConfig.level == Level.NONE) {
             return chain.proceed(request);
         }
 
@@ -49,9 +49,9 @@ public class OkhttpLoggingInterceptor implements Interceptor {
         }
 
         if (isFileRequest(requestSubtype)) {
-            printFileRequest(requestDetails, builder);
+            printFileRequest(requestDetails, loggerConfig);
         } else {
-            printJsonRequest(requestDetails, builder);
+            printJsonRequest(requestDetails, loggerConfig);
         }
 
         final long requestStartTime = System.nanoTime();
@@ -71,10 +71,10 @@ public class OkhttpLoggingInterceptor implements Interceptor {
                 isFileRequest(subtype));
 
         if (isFileRequest(subtype)) {
-            printFileResponse(responseDetails, builder);
+            printFileResponse(responseDetails, loggerConfig);
             return response;
         } else {
-            printJsonResponse(responseDetails, builder);
+            printJsonResponse(responseDetails, loggerConfig);
             final okhttp3.MediaType okhttp3MediaType = responseDetails.contentType;
             final MediaType mediaType = convertOkhttp3MediaType(okhttp3MediaType);
             body = ResponseBody.create(mediaType, responseDetails.originalBody);
@@ -83,6 +83,10 @@ public class OkhttpLoggingInterceptor implements Interceptor {
         return response.newBuilder()
             .body(body)
             .build();
+    }
+
+    public LoggerConfig loggerConfig() {
+        return this.loggerConfig;
     }
 
 }
