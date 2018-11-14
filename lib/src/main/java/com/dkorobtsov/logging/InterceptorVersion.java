@@ -11,6 +11,19 @@ public enum InterceptorVersion {
         return name;
     }
 
+    public static InterceptorVersion parse(String name) {
+        switch (name) {
+            case "okhttp":
+                return OKHTTP;
+            case "okhttp3":
+                return OKHTTP3;
+            case "apacheHttpclientRequest":
+                return APACHE_HTTPCLIENT_REQUEST;
+            default:
+                throw new IllegalArgumentException("Unknown interceptor version: " + name);
+        }
+    }
+
     InterceptorVersion(String name) {
 
         this.name = name;

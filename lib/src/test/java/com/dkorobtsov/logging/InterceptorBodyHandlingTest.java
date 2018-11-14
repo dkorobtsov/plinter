@@ -423,7 +423,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         return file;
     }
 
-    private List<String> interceptedRequest(RequestBody body, String interceptorVersion,
+    private List<String> interceptedRequest(RequestBody body, String loggerVersion,
         boolean provideExecutor, boolean preserveTrailingSpaces) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
@@ -440,66 +440,71 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             builder.executor(Executors.newCachedThreadPool());
         }
 
-        if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
-            Okhttp3LoggingInterceptor interceptor = builder
-                .buildForOkhttp3();
+        InterceptorVersion interceptorVersion = InterceptorVersion.parse(loggerVersion);
+        switch (interceptorVersion) {
+            case OKHTTP:
+                OkhttpLoggingInterceptor okhttpLoggingInterceptor = builder
+                    .buildForOkhttp();
 
-            defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(okhttp3Request)
-                .execute();
-            return testLogger.loggerOutput(preserveTrailingSpaces);
-        } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
-            OkhttpLoggingInterceptor interceptor = builder
-                .buildForOkhttp();
+                final com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
+                    .url(String.valueOf(server.url("/")))
+                    .put(convertOkhtt3pRequestBody(okhttp3Request))
+                    .build();
 
-            final com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
-                .url(String.valueOf(server.url("/")))
-                .put(convertOkhtt3pRequestBody(okhttp3Request))
-                .build();
+                defaultOkhttpClientWithInterceptor(okhttpLoggingInterceptor)
+                    .newCall(request)
+                    .execute();
 
-            defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(request)
-                .execute();
-            return testLogger.loggerOutput(preserveTrailingSpaces);
+                return testLogger.loggerOutput(preserveTrailingSpaces);
 
-        } else if (interceptorVersion
-            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
-            final ApacheHttpRequestInterceptor requestInterceptor = builder
-                .buildForApacheHttpClientRequest();
+            case OKHTTP3:
+                Okhttp3LoggingInterceptor okhttp3LoggingInterceptor = builder
+                    .buildForOkhttp3();
 
-            final ApacheHttpResponseInterceptor responseInterceptor = builder
-                .buildFordApacheHttpClientResponse();
+                defaultOkhttp3ClientWithInterceptor(okhttp3LoggingInterceptor)
+                    .newCall(okhttp3Request)
+                    .execute();
 
-            final HttpPut httpPut = new HttpPut(server.url("/").uri());
-            final MediaType mediaType =
-                body.contentType() == null ? MediaType
-                    .parse(ContentType.APPLICATION_JSON.toString())
-                    : body.contentType();
+                return testLogger.loggerOutput(preserveTrailingSpaces);
 
-            ContentType contentType = ContentType.create(
-                String.format("%s/%s", Objects.requireNonNull(mediaType).type(),
-                    mediaType.subtype()));
+            case APACHE_HTTPCLIENT_REQUEST:
+                final ApacheHttpRequestInterceptor requestInterceptor = builder
+                    .buildForApacheHttpClientRequest();
 
-            final HttpEntity entity = ToApacheHttpClientConverter
-                .okhttp3RequestBodyToStringEntity(body, contentType);
+                final ApacheHttpResponseInterceptor responseInterceptor = builder
+                    .buildFordApacheHttpClientResponse();
 
-            httpPut.setEntity(entity);
-            httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
-            defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
-                .execute(httpPut);
+                final HttpPut httpPut = new HttpPut(server.url("/").uri());
+                final MediaType mediaType =
+                    body.contentType() == null ? MediaType
+                        .parse(ContentType.APPLICATION_JSON.toString())
+                        : body.contentType();
 
-            return testLogger.loggerOutput(preserveTrailingSpaces);
+                ContentType contentType = ContentType.create(
+                    String.format("%s/%s", Objects.requireNonNull(mediaType).type(),
+                        mediaType.subtype()));
 
-        } else {
-            fail(String
-                .format("I didn't recognize %s version. I support 'okhttp' and 'okhttp3' versions",
-                    interceptorVersion));
-            return Arrays.asList(new String[1]);
+                final HttpEntity entity = ToApacheHttpClientConverter
+                    .okhttp3RequestBodyToStringEntity(body, contentType);
+
+                httpPut.setEntity(entity);
+                httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
+                defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
+                    .execute(httpPut);
+
+                return testLogger.loggerOutput(preserveTrailingSpaces);
+
+            default:
+                fail(String
+                    .format(
+                        "I didn't recognize %s version. I support 'okhttp' and 'okhttp3' versions",
+                        loggerVersion));
+                return Arrays.asList(new String[1]);
         }
     }
 
     private List<String> interceptedResponse(String contentType, String body,
-        String interceptorVersion,
+        String loggerVersion,
         boolean provideExecutors, boolean preserveTrailingSpaces) throws IOException {
         server.enqueue(new MockResponse()
             .setResponseCode(200)
@@ -509,38 +514,49 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
             .logger(testLogger);
+
         if (provideExecutors) {
             builder.executor(Executors.newCachedThreadPool());
         }
-        if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
-            OkhttpLoggingInterceptor interceptor = builder
-                .buildForOkhttp();
-            defaultOkhttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttpRequest())
-                .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
-            Okhttp3LoggingInterceptor interceptor = builder
-                .buildForOkhttp3();
 
-            defaultOkhttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkhttp3Request())
-                .execute();
-        } else if (interceptorVersion
-            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
-            final ApacheHttpRequestInterceptor requestInterceptor = builder
-                .buildForApacheHttpClientRequest();
+        InterceptorVersion interceptorVersion = InterceptorVersion.parse(loggerVersion);
+        switch (interceptorVersion) {
+            case OKHTTP:
+                OkhttpLoggingInterceptor okhttpLoggingInterceptor = builder
+                    .buildForOkhttp();
+                defaultOkhttpClientWithInterceptor(okhttpLoggingInterceptor)
+                    .newCall(defaultOkhttpRequest())
+                    .execute();
+                break;
 
-            final ApacheHttpResponseInterceptor responseInterceptor = builder
-                .buildFordApacheHttpClientResponse();
+            case OKHTTP3:
+                Okhttp3LoggingInterceptor okhttp3LoggingInterceptor = builder
+                    .buildForOkhttp3();
 
-            defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
-                .execute(defaultApacheHttpRequest());
-        } else {
-            fail(String.format(
-                "I couldn't recognize %s interceptor version. I only support okhttp and okhttp3 versions at the moment",
-                interceptorVersion));
-            return Arrays.asList(new String[1]);
+                defaultOkhttp3ClientWithInterceptor(okhttp3LoggingInterceptor)
+                    .newCall(defaultOkhttp3Request())
+                    .execute();
+                break;
+
+            case APACHE_HTTPCLIENT_REQUEST:
+                final ApacheHttpRequestInterceptor requestInterceptor = builder
+                    .buildForApacheHttpClientRequest();
+
+                final ApacheHttpResponseInterceptor responseInterceptor = builder
+                    .buildFordApacheHttpClientResponse();
+
+                defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
+                    .execute(defaultApacheHttpRequest());
+                break;
+
+            default:
+                fail(String.format(
+                    "I couldn't recognize %s interceptor version. I only support okhttp and okhttp3 versions at the moment",
+                    loggerVersion));
+                return Arrays.asList(new String[1]);
+
         }
+
         return testLogger.loggerOutput(preserveTrailingSpaces);
     }
 
