@@ -68,7 +68,7 @@ public class Okhttp3LoggingInterceptor implements Interceptor {
             return response;
         } else {
             printJsonResponse(responseDetails, builder);
-            body = ResponseBody.create(responseDetails.contentType, responseDetails.bodyString);
+            body = ResponseBody.create(responseDetails.contentType, responseDetails.originalBody);
         }
 
         return response.newBuilder()
