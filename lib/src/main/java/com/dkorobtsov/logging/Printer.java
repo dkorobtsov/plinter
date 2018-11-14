@@ -73,7 +73,7 @@ class Printer {
         logLines(getResponse(level, responseDetails), logWriter, true);
 
         final String responseBody =
-            LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + formattedBody(responseDetails.bodyString);
+            LINE_SEPARATOR + BODY_TAG + LINE_SEPARATOR + formattedBody(responseDetails.formattedBody);
         if (level == Level.BASIC || level == Level.BODY) {
             logLines(responseBody.split(REGEX_LINE_SEPARATOR), logWriter, true);
         }

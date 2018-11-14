@@ -77,7 +77,7 @@ public class OkhttpLoggingInterceptor implements Interceptor {
             printJsonResponse(responseDetails, builder);
             final okhttp3.MediaType okhttp3MediaType = responseDetails.contentType;
             final MediaType mediaType = convertOkhttp3MediaType(okhttp3MediaType);
-            body = ResponseBody.create(mediaType, responseDetails.bodyString);
+            body = ResponseBody.create(mediaType, responseDetails.originalBody);
         }
 
         return response.newBuilder()

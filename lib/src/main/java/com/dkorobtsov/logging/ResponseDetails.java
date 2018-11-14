@@ -22,12 +22,13 @@ public final class ResponseDetails {
     final String message;
     public final MediaType contentType;
     public final String url;
-    public final String bodyString;
+    public final String originalBody;
+    public final String formattedBody;
     final long chainMs;
 
     ResponseDetails(List<String> segmentList, String header, int code, boolean isSuccessful,
         String message, MediaType contentType, String url,
-        String bodyString, long chainMs) {
+        String originalBody, String formattedBody, long chainMs) {
         this.segmentList = segmentList;
         this.header = header;
         this.code = code;
@@ -35,7 +36,8 @@ public final class ResponseDetails {
         this.message = message;
         this.contentType = contentType;
         this.url = url;
-        this.bodyString = bodyString;
+        this.originalBody = originalBody;
+        this.formattedBody = formattedBody;
         this.chainMs = chainMs;
     }
 
@@ -49,8 +51,10 @@ public final class ResponseDetails {
         final ResponseBody responseBody = response.body();
         final MediaType contentType = Objects.requireNonNull(responseBody).contentType();
         final String url = response.request().url().toString();
-        final String bodyString =
-            isFileRequest ? null : Printer.formattedBody(responseBody.string());
+        final String originalBody =
+            isFileRequest ? null : responseBody.string();
+        final String formattedBody =
+            isFileRequest ? null : Printer.formattedBody(originalBody);
 
         return ResponseDetails
             .builder()
@@ -59,7 +63,8 @@ public final class ResponseDetails {
             .code(code)
             .isSuccessful(isSuccessful)
             .message(message)
-            .bodyString(bodyString)
+            .originalBody(originalBody)
+            .formattedBody(formattedBody)
             .contentType(contentType)
             .url(url)
             .chainMs(chainMs)
@@ -91,7 +96,7 @@ public final class ResponseDetails {
             .code(code)
             .isSuccessful(isSuccessful)
             .message(message)
-            .bodyString(bodyString)
+            .formattedBody(bodyString)
             .contentType(contentType)
             .url(url)
             .build();
@@ -110,7 +115,8 @@ public final class ResponseDetails {
         private String message;
         private MediaType contentType;
         private String url;
-        private String bodyString;
+        private String originalBody;
+        private String formattedBody;
         private long chainMs;
 
         ResponseDetailsBuilder() {
@@ -156,14 +162,19 @@ public final class ResponseDetails {
             return this;
         }
 
-        ResponseDetailsBuilder bodyString(String bodyString) {
-            this.bodyString = bodyString;
+        ResponseDetailsBuilder originalBody(String originalBody) {
+            this.originalBody = originalBody;
+            return this;
+        }
+
+        ResponseDetailsBuilder formattedBody(String formattedBody) {
+            this.formattedBody = formattedBody;
             return this;
         }
 
         public ResponseDetails build() {
             return new ResponseDetails(segmentList, header, code, isSuccessful, message,
-                contentType, url, bodyString, chainMs);
+                contentType, url, originalBody, formattedBody, chainMs);
         }
 
     }
