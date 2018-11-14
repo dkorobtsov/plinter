@@ -23,12 +23,11 @@ public final class ResponseDetails {
     public final MediaType contentType;
     public final String url;
     public final String originalBody;
-    public final String formattedBody;
     final long chainMs;
 
     ResponseDetails(List<String> segmentList, String header, int code, boolean isSuccessful,
         String message, MediaType contentType, String url,
-        String originalBody, String formattedBody, long chainMs) {
+        String originalBody, long chainMs) {
         this.segmentList = segmentList;
         this.header = header;
         this.code = code;
@@ -37,7 +36,6 @@ public final class ResponseDetails {
         this.contentType = contentType;
         this.url = url;
         this.originalBody = originalBody;
-        this.formattedBody = formattedBody;
         this.chainMs = chainMs;
     }
 
@@ -53,8 +51,6 @@ public final class ResponseDetails {
         final String url = response.request().url().toString();
         final String originalBody =
             isFileRequest ? null : responseBody.string();
-        final String formattedBody =
-            isFileRequest ? null : Printer.formattedBody(originalBody);
 
         return ResponseDetails
             .builder()
@@ -64,7 +60,6 @@ public final class ResponseDetails {
             .isSuccessful(isSuccessful)
             .message(message)
             .originalBody(originalBody)
-            .formattedBody(formattedBody)
             .contentType(contentType)
             .url(url)
             .chainMs(chainMs)
@@ -86,8 +81,8 @@ public final class ResponseDetails {
             .convertApacheHttpResponseBodyTo3(response);
         final MediaType contentType = responseBody.contentType();
         final String url = "";
-        final String bodyString =
-            isFileRequest ? null : Printer.formattedBody(responseBody.string());
+        final String originalBody =
+            isFileRequest ? null : responseBody.string();
 
         return ResponseDetails
             .builder()
@@ -96,7 +91,7 @@ public final class ResponseDetails {
             .code(code)
             .isSuccessful(isSuccessful)
             .message(message)
-            .formattedBody(bodyString)
+            .originalBody(originalBody)
             .contentType(contentType)
             .url(url)
             .build();
@@ -167,14 +162,9 @@ public final class ResponseDetails {
             return this;
         }
 
-        ResponseDetailsBuilder formattedBody(String formattedBody) {
-            this.formattedBody = formattedBody;
-            return this;
-        }
-
         public ResponseDetails build() {
             return new ResponseDetails(segmentList, header, code, isSuccessful, message,
-                contentType, url, originalBody, formattedBody, chainMs);
+                contentType, url, originalBody, chainMs);
         }
 
     }
