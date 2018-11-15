@@ -58,7 +58,7 @@ test {
     }
 
     testLogging {
-        showStandardStreams = true
+        showStandardStreams = false
     }
 
 }
