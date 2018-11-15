@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import okhttp3.ConnectionPool;
@@ -218,7 +220,9 @@ public abstract class BaseTest {
         }
 
         if (provideExecutor) {
-            builder.executor(Executors.newCachedThreadPool());
+            builder.executor(new ThreadPoolExecutor(1, 1,
+                50L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>()));
         }
 
         InterceptorVersion interceptorVersion = InterceptorVersion.parse(loggerVersion);
@@ -305,7 +309,9 @@ public abstract class BaseTest {
             .logger(testLogger);
 
         if (provideExecutors) {
-            builder.executor(Executors.newCachedThreadPool());
+            builder.executor(new ThreadPoolExecutor(1, 1,
+                50L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>()));
         }
 
         if (Objects.nonNull(maxLineLength)) {

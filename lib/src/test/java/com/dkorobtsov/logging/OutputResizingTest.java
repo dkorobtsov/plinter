@@ -39,7 +39,7 @@ public class OutputResizingTest extends BaseTest {
         "9", "501"
     })
     public void invalidOutputLengthHandling(String maxLineLength) {
-        new LoggingInterceptor.Builder()
+        LoggingInterceptor.builder()
             .maxLineLength(Integer.parseInt(maxLineLength))
             .buildForOkhttp3();
     }
@@ -49,7 +49,7 @@ public class OutputResizingTest extends BaseTest {
         "10", "500"
     })
     public void validOutputLengthHandling(String maxLineLength) {
-        Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+        Okhttp3LoggingInterceptor interceptor = LoggingInterceptor.builder()
             .maxLineLength(Integer.parseInt(maxLineLength))
             .buildForOkhttp3();
 

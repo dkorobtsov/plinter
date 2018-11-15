@@ -11,12 +11,12 @@ public class LoggingInterceptor {
     private LoggingInterceptor() {
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @SuppressWarnings({"unused", "SameParameterValue"})
     public static class Builder {
-
-        public boolean isDebug() {
-            return isDebug;
-        }
 
         private boolean isDebug = true;
         private int maxLineLength = 110;
@@ -24,7 +24,6 @@ public class LoggingInterceptor {
         private LogWriter logger;
         private LogFormatter formatter;
         private Executor executor;
-
 
         public Builder() {
             formatter = LogFormatter.JUL_MESSAGE_ONLY;
@@ -79,6 +78,10 @@ public class LoggingInterceptor {
         public Builder loggable(boolean isDebug) {
             this.isDebug = isDebug;
             return this;
+        }
+
+        public boolean isDebug() {
+            return isDebug;
         }
 
         /**

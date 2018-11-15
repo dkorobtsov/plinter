@@ -21,17 +21,11 @@ public class LoggerConfig {
         this.maxLineLength = maxLineLength;
     }
 
-    public static loggerConfigBuilder builder() {
-        return new loggerConfigBuilder();
+    public static LoggerConfigBuilder builder() {
+        return new LoggerConfigBuilder();
     }
 
-    public String toString() {
-        return "loggerConfig(loggable=" + this.isDebug + ", level=" + this.level + ", logger="
-            + this.logger + ", formatter=" + this.formatter + ", executor=" + this.executor
-            + ", maxLineLength=" + this.maxLineLength + ")";
-    }
-
-    public static class loggerConfigBuilder {
+    public static class LoggerConfigBuilder {
 
         private boolean isDebug;
         private Level level;
@@ -40,35 +34,35 @@ public class LoggerConfig {
         private Executor executor;
         private int maxLineLength;
 
-        loggerConfigBuilder() {
+        LoggerConfigBuilder() {
         }
 
-        public LoggerConfig.loggerConfigBuilder loggable(boolean isDebug) {
+        public LoggerConfigBuilder loggable(boolean isDebug) {
             this.isDebug = isDebug;
             return this;
         }
 
-        public LoggerConfig.loggerConfigBuilder level(Level level) {
+        public LoggerConfigBuilder level(Level level) {
             this.level = level;
             return this;
         }
 
-        public LoggerConfig.loggerConfigBuilder logger(LogWriter logger) {
+        public LoggerConfigBuilder logger(LogWriter logger) {
             this.logger = logger;
             return this;
         }
 
-        public LoggerConfig.loggerConfigBuilder formatter(LogFormatter formatter) {
+        public LoggerConfigBuilder formatter(LogFormatter formatter) {
             this.formatter = formatter;
             return this;
         }
 
-        public LoggerConfig.loggerConfigBuilder executor(Executor executor) {
+        public LoggerConfigBuilder executor(Executor executor) {
             this.executor = executor;
             return this;
         }
 
-        public LoggerConfig.loggerConfigBuilder maxLineLength(int maxLineLength) {
+        public LoggerConfigBuilder maxLineLength(int maxLineLength) {
             this.maxLineLength = maxLineLength;
             return this;
         }
@@ -78,13 +72,5 @@ public class LoggerConfig {
                 maxLineLength);
         }
 
-        public String toString() {
-            return "loggerConfig.loggerConfigBuilder(loggable=" + this.isDebug
-                + ", level=" + this.level
-                + ", logger=" + this.logger
-                + ", formatter=" + this.formatter
-                + ", executor=" + this.executor
-                + ", maxLineLength=" + this.maxLineLength + ")";
-        }
     }
 }
