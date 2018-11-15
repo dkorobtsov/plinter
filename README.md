@@ -27,6 +27,7 @@ project with log4j2 based logging. So, comparing to original repository, changes
 - added new DefaultLogger implementation (basically just manually configured JUL logger)
 - reworked builder (to support those above mentioned changes)
 - Interceptor now pretty prints XML body as well
+- max output length can be modified (can be useful for body pretty printing)
 
 
 Basic Usage
@@ -87,6 +88,7 @@ Format can be changed to one of the defined templates, for example:
         .loggable(isDebug())
         .level(Level.BASIC)
         .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
+        .maxLineLength(160)
         .executor(Executors.newSingleThreadExecutor())
         .buildForOkhttp3();
 ```
@@ -170,7 +172,7 @@ allprojects {
 }
 
 dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:4.4.1') {
+	compile('com.github.dkorobtsov:LoggingInterceptor:4.5') {
         	exclude group: 'org.json', module: 'json'
     	}
 }
@@ -186,7 +188,7 @@ Maven:
 <dependency>
 	    <groupId>com.github.dkorobtsov</groupId>
 	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>4.4.1</version>
+	    <version>4.5</version>
 </dependency>
 ```
 
@@ -209,20 +211,27 @@ Predefined JUL logging patterns:
 ```
 Note that given setting works only with default JUL logger.
 
+Line Length
+-----------
+```java
+ .maxLineLength(160) // If needed, max output length can be modified. Default value: 110. Valid values: 10-500.
+```
+
+
 Level
 --------
 
 ```java
-setLevel(Level.BASIC)
-	      .NONE     // No logs
-	      .BASIC    // Logging url, method, headers and body.
-	      .HEADERS  // Logging url, method and headers
-	      .BODY     // Logging url, method and body
+.setLevel(Level.BASIC)
+	      .NONE       // No logs
+	      .BASIC      // Logging url, method, headers and body.
+	      .HEADERS    // Logging url, method and headers
+	      .BODY       // Logging url, method and body
 ```	
 
 Loggable
 --------
 
 ```java
-loggable(true/false) // enable/disable sending logs output.
+.loggable(true/false) // enable/disable sending logs output.
 ```
