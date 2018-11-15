@@ -111,7 +111,6 @@ public final class ResponseDetails {
         private MediaType contentType;
         private String url;
         private String originalBody;
-        private String formattedBody;
         private long chainMs;
 
         ResponseDetailsBuilder() {
