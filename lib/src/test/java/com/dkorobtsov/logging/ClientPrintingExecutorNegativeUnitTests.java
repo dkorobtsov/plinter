@@ -12,10 +12,12 @@ public class ClientPrintingExecutorNegativeUnitTests {
             .get()
             .url("http://google.com")
             .build();
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
-            .executor(Executors.newCachedThreadPool());
+
+        final LoggerConfig loggerConfig = LoggerConfig.builder()
+            .executor(Executors.newCachedThreadPool()).build();
+
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printJsonRequest(request, builder);
+        ClientPrintingExecutor.printJsonRequest(request, loggerConfig);
     }
 
     @Test
@@ -24,27 +26,31 @@ public class ClientPrintingExecutorNegativeUnitTests {
             .get()
             .url("http://google.com")
             .build();
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
-            .executor(Executors.newCachedThreadPool());
+
+        final LoggerConfig loggerConfig = LoggerConfig.builder()
+            .executor(Executors.newCachedThreadPool()).build();
+
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printFileRequest(request, builder);
+        ClientPrintingExecutor.printFileRequest(request, loggerConfig);
     }
 
     @Test
     public void testInterruptingPrintingJsonResponseDoesntCrashProcess() {
         final ResponseDetails responseDetails = ResponseDetails.builder().build();
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
-            .executor(Executors.newCachedThreadPool());
+        final LoggerConfig loggerConfig = LoggerConfig.builder()
+            .executor(Executors.newCachedThreadPool()).build();
+
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printFileResponse(responseDetails, builder);
+        ClientPrintingExecutor.printFileResponse(responseDetails, loggerConfig);
     }
 
     @Test
     public void testInterruptingPrintingFileResponseDoesntCrashProcess() {
         final ResponseDetails responseDetails = ResponseDetails.builder().build();
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
-            .executor(Executors.newCachedThreadPool());
+        final LoggerConfig loggerConfig = LoggerConfig.builder()
+            .executor(Executors.newCachedThreadPool()).build();
+
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printFileResponse(responseDetails, builder);
+        ClientPrintingExecutor.printFileResponse(responseDetails, loggerConfig);
     }
 }

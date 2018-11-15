@@ -5,7 +5,7 @@ import static com.dkorobtsov.logging.ClientPrintingExecutor.printJsonRequest;
 import static com.dkorobtsov.logging.TextUtils.isFileRequest;
 
 import com.dkorobtsov.logging.Level;
-import com.dkorobtsov.logging.LoggingInterceptor;
+import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.RequestDetails;
 import java.util.Objects;
 import okhttp3.Request;
@@ -17,16 +17,16 @@ import org.apache.http.protocol.HttpContext;
 public class ApacheHttpRequestInterceptor implements HttpRequestInterceptor {
 
     private final boolean isDebug;
-    private final LoggingInterceptor.Builder builder;
+    private final LoggerConfig loggerConfig;
 
-    public ApacheHttpRequestInterceptor(LoggingInterceptor.Builder builder) {
-        this.builder = builder;
-        this.isDebug = builder.isDebug();
+    public ApacheHttpRequestInterceptor(LoggerConfig loggerConfig) {
+        this.loggerConfig = loggerConfig;
+        this.isDebug = loggerConfig.isDebug;
     }
 
     @Override
     public void process(HttpRequest request, HttpContext context) {
-        if (isDebug && builder.getLevel() != Level.NONE) {
+        if (isDebug && loggerConfig.level != Level.NONE) {
             final Request requestDetails = new RequestDetails.Builder().from(request).build();
             final RequestBody requestBody = requestDetails.body();
 
@@ -37,10 +37,14 @@ public class ApacheHttpRequestInterceptor implements HttpRequestInterceptor {
             }
 
             if (isFileRequest(requestSubtype)) {
-                printFileRequest(requestDetails, builder);
+                printFileRequest(requestDetails, loggerConfig);
             } else {
-                printJsonRequest(requestDetails, builder);
+                printJsonRequest(requestDetails, loggerConfig);
             }
         }
+    }
+
+    public LoggerConfig loggerConfig() {
+        return this.loggerConfig;
     }
 }

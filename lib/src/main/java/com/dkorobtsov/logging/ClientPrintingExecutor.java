@@ -8,75 +8,82 @@ import okhttp3.Request;
 
 public class ClientPrintingExecutor {
 
+    private static final Logger logger = Logger.getLogger(ClientPrintingExecutor.class.getName());
+
     private ClientPrintingExecutor() {
     }
 
-    private static final Logger logger = Logger.getLogger(ClientPrintingExecutor.class.getName());
-
-    private static Runnable createPrintJsonRequestRunnable(final LoggingInterceptor.Builder builder,
-        final Request request) {
-        return () -> Printer.printJsonRequest(builder.getLogger(), builder.getLevel(), request);
-    }
-
-    private static Runnable createFileRequestRunnable(final LoggingInterceptor.Builder builder,
-        final Request request) {
-        return () -> Printer.printFileRequest(builder.getLogger(), builder.getLevel(), request);
-    }
-
-    private static Runnable createPrintJsonResponseRunnable(
-        final LoggingInterceptor.Builder builder,
-        ResponseDetails
-            responseDetails) {
-        return () -> Printer
-            .printJsonResponse(builder.getLogger(), builder.getLevel(), responseDetails);
-    }
-
-    private static Runnable createFileResponseRunnable(final LoggingInterceptor.Builder builder,
-        ResponseDetails responseDetails) {
-        return () -> Printer
-            .printFileResponse(builder.getLogger(), builder.getLevel(), responseDetails);
-    }
-
     public static void printFileResponse(ResponseDetails responseDetails,
-        LoggingInterceptor.Builder builder) {
-        final ExecutorService executor = (ExecutorService) builder.getExecutor();
+        LoggerConfig config) {
+        final ExecutorService executor = (ExecutorService) config.executor;
         if (executor != null) {
-            executor.execute(createFileResponseRunnable(builder, responseDetails));
+            executor.execute(createFileResponseRunnable(config, responseDetails));
             handleThreadTermination(executor);
         } else {
-            Printer.printFileResponse(builder.getLogger(), builder.getLevel(), responseDetails);
+            Printer.printFileResponse(config.logger, config.level,
+                config.maxLineLength, responseDetails
+            );
         }
     }
 
     public static void printJsonResponse(ResponseDetails responseDetails,
-        LoggingInterceptor.Builder builder) {
-        final ExecutorService executor = (ExecutorService) builder.getExecutor();
+        LoggerConfig config) {
+        final ExecutorService executor = (ExecutorService) config.executor;
         if (executor != null) {
-            executor.execute(createPrintJsonResponseRunnable(builder, responseDetails));
+            executor.execute(createPrintJsonResponseRunnable(config, responseDetails));
             handleThreadTermination(executor);
         } else {
-            Printer.printJsonResponse(builder.getLogger(), builder.getLevel(), responseDetails);
+            Printer.printJsonResponse(config.logger, config.level,
+                config.maxLineLength, responseDetails);
         }
     }
 
-    public static void printFileRequest(Request request, LoggingInterceptor.Builder builder) {
-        final ExecutorService executor = (ExecutorService) builder.getExecutor();
+    public static void printFileRequest(Request request, LoggerConfig config) {
+        final ExecutorService executor = (ExecutorService) config.executor;
         if (executor != null) {
-            executor.execute(createFileRequestRunnable(builder, request));
+            executor.execute(createFileRequestRunnable(config, request));
             handleThreadTermination(executor);
         } else {
-            Printer.printFileRequest(builder.getLogger(), builder.getLevel(), request);
+            Printer.printFileRequest(config.logger, config.level,
+                config.maxLineLength, request);
         }
     }
 
-    public static void printJsonRequest(Request request, LoggingInterceptor.Builder builder) {
-        final ExecutorService executor = (ExecutorService) builder.getExecutor();
+    public static void printJsonRequest(Request request, LoggerConfig config) {
+        final ExecutorService executor = (ExecutorService) config.executor;
         if (executor != null) {
-            executor.execute(createPrintJsonRequestRunnable(builder, request));
+            executor.execute(createPrintJsonRequestRunnable(config, request));
             handleThreadTermination(executor);
         } else {
-            Printer.printJsonRequest(builder.getLogger(), builder.getLevel(), request);
+            Printer.printJsonRequest(config.logger, config.level,
+                config.maxLineLength, request);
         }
+    }
+
+    private static Runnable createFileResponseRunnable(final LoggerConfig config,
+        final ResponseDetails responseDetails) {
+        return () -> Printer
+            .printFileResponse(config.logger, config.level,
+                config.maxLineLength, responseDetails);
+    }
+
+    private static Runnable createPrintJsonResponseRunnable(final LoggerConfig config,
+        final ResponseDetails responseDetails) {
+        return () -> Printer
+            .printJsonResponse(config.logger, config.level,
+                config.maxLineLength, responseDetails);
+    }
+
+    private static Runnable createFileRequestRunnable(final LoggerConfig config,
+        final Request request) {
+        return () -> Printer.printFileRequest(config.logger, config.level,
+            config.maxLineLength, request);
+    }
+
+    private static Runnable createPrintJsonRequestRunnable(final LoggerConfig config,
+        final Request request) {
+        return () -> Printer.printJsonRequest(config.logger, config.level,
+            config.maxLineLength, request);
     }
 
     private static void handleThreadTermination(ExecutorService executor) {

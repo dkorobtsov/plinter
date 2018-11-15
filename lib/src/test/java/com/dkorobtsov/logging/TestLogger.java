@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
  */
 public class TestLogger implements LogWriter {
 
+    private static final Logger logger = Logger.getLogger(TestLogger.class.getName());
+
     private final List<String> events = new ArrayList<>(Collections.emptyList());
-    private ThreadLocal<StreamHandler> logOutputHandler = new ThreadLocal<>();
-    private ThreadLocal<OutputStream> logOut = new ThreadLocal<>();
+    private StreamHandler logOutputHandler;
+    private OutputStream logOut;
     private Logger testLogger = Logger.getLogger("TestLogger");
 
     TestLogger(LogFormatter logFormatter) {
@@ -35,10 +37,10 @@ public class TestLogger implements LogWriter {
         testLogger.addHandler(consoleHandler);
 
         // Configuring output to stream
-        logOut.set(new ByteArrayOutputStream());
-        logOutputHandler.set(new StreamHandler(logOut.get(), logFormatter.formatter));
+        logOut = new ByteArrayOutputStream();
+        logOutputHandler = new StreamHandler(logOut, logFormatter.formatter);
 
-        testLogger.addHandler(logOutputHandler.get());
+        testLogger.addHandler(logOutputHandler);
     }
 
     @Override
@@ -73,8 +75,18 @@ public class TestLogger implements LogWriter {
      * @return Returns all formatted events published by current logger as String
      */
     String formattedOutput() {
-        logOutputHandler.get().flush();
-        return logOut.get().toString();
+        try {
+            // Don't like this solution, but without this wait tests verifying
+            // logger output with manually added executor are randomly failing
+            // (part of output is missing). Suppose root cause is that we are
+            // flashing output before all lines get in buffer
+            // NB: random failures occur when value < 16
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        logOutputHandler.flush();
+        return logOut.toString();
     }
 
     /**

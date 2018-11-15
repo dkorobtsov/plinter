@@ -11,22 +11,18 @@ public class LoggingInterceptor {
     private LoggingInterceptor() {
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     @SuppressWarnings({"unused", "SameParameterValue"})
     public static class Builder {
 
-        public boolean isDebug() {
-            return isDebug;
-        }
-
         private boolean isDebug = true;
+        private int maxLineLength = 110;
         private Level level = Level.BASIC;
         private LogWriter logger;
         private LogFormatter formatter;
-
-        LogFormatter getFormatter() {
-            return formatter;
-        }
-
         private Executor executor;
 
         public Builder() {
@@ -34,9 +30,21 @@ public class LoggingInterceptor {
         }
 
         /**
-         * @param logger manual logging interface
-         * @return Builder
-         * @see LogWriter
+         * @param logger use this method to provide your logging interface implementation.
+         *
+         * Example:
+         * <pre>
+         *         Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+         *         .logger(new LogWriter() {
+         *           final Logger log = LogManager.getLogger("OkHttpLogger");
+         *
+         *           @Override
+         *           public void log(String msg) {
+         *             log.debug(msg);
+         *           }
+         *         })
+         *         .buildForOkhttp3();
+         * </pre>
          */
         public Builder logger(LogWriter logger) {
             this.logger = logger;
@@ -51,42 +59,64 @@ public class LoggingInterceptor {
         }
 
         /**
-         * @param format set Java Utility Logger format (will be ignored in case custom logger is
-         * used)
-         * @return Builder
+         * @param format set format for default Java Utility Logger
+         *
+         * (will be ignored in case custom logger is used)
          */
         public Builder format(LogFormatter format) {
             this.formatter = format;
             return this;
         }
 
+        LogFormatter getFormatter() {
+            return formatter;
+        }
+
         /**
          * @param isDebug set can sending log output
-         * @return Builder
          */
         public Builder loggable(boolean isDebug) {
             this.isDebug = isDebug;
             return this;
         }
 
+        public boolean isDebug() {
+            return isDebug;
+        }
+
         /**
          * @param level set log level
-         * @return Builder
-         * @see Level
          */
         public Builder level(Level level) {
             this.level = level;
             return this;
         }
 
-        public Level getLevel() {
+        Level getLevel() {
             return level;
         }
 
         /**
-         * @param executor manual executor for printing
-         * @return Builder
-         * @see LogWriter
+         * @param length specifies max line length when printing request/response body
+         *
+         * Min value: 10, Max value: 500, Default: 110
+         */
+        public Builder maxLineLength(int length) {
+            if (length < 10 || length > 500) {
+                throw new IllegalArgumentException(
+                    "Invalid line length. Should be longer then 10 and shorter then 500.");
+            } else {
+                this.maxLineLength = length;
+            }
+            return this;
+        }
+
+        int getMaxLineLength() {
+            return maxLineLength;
+        }
+
+        /**
+         * @param executor manual executor override for printing
          */
         public Builder executor(Executor executor) {
             this.executor = executor;
@@ -98,19 +128,30 @@ public class LoggingInterceptor {
         }
 
         public OkhttpLoggingInterceptor buildForOkhttp() {
-            return new OkhttpLoggingInterceptor(this);
+            return new OkhttpLoggingInterceptor(loggerConfig());
         }
 
         public Okhttp3LoggingInterceptor buildForOkhttp3() {
-            return new Okhttp3LoggingInterceptor(this);
+            return new Okhttp3LoggingInterceptor(loggerConfig());
         }
 
         public ApacheHttpRequestInterceptor buildForApacheHttpClientRequest() {
-            return new ApacheHttpRequestInterceptor(this);
+            return new ApacheHttpRequestInterceptor(loggerConfig());
         }
 
         public ApacheHttpResponseInterceptor buildFordApacheHttpClientResponse() {
-            return new ApacheHttpResponseInterceptor(this);
+            return new ApacheHttpResponseInterceptor(loggerConfig());
+        }
+
+        private LoggerConfig loggerConfig() {
+            return LoggerConfig.builder()
+                .executor(this.executor)
+                .formatter(this.formatter)
+                .logger(this.logger)
+                .loggable(this.isDebug)
+                .level(this.level)
+                .maxLineLength(this.maxLineLength)
+                .build();
         }
     }
 }
