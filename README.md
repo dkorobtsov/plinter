@@ -29,7 +29,6 @@ project with log4j2 based logging. So, comparing to original repository, changes
 - interceptor now pretty prints XML/HTML body
 - max output length can be modified (can be useful for body pretty printing)
 
-
 Basic Usage
 -----------
 Interceptor should work as is - without any additional parameters.
