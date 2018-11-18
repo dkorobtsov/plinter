@@ -6,6 +6,7 @@ LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp)
 ![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Alib&metric=reliability_rating)
 ![security](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=security_rating)
 ![coverage](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=coverage)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_shield)
 
 
 Description
@@ -234,3 +235,7 @@ Loggable
 ```java
 .loggable(true/false) // enable/disable sending logs output.
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_large)
