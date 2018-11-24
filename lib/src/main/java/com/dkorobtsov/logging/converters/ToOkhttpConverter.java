@@ -15,7 +15,7 @@ public class ToOkhttpConverter {
             : MediaType.parse(okhttp3MediaType.toString());
     }
 
-    public static RequestBody convertOkhtt3pRequestBody(okhttp3.Request request) {
+    public static RequestBody convertOkhttp3RequestBody(okhttp3.Request request) {
         final MediaType contentType = request.body() == null ? MediaType.parse("")
             : convertOkhttp3MediaType(request.body().contentType());
         try {

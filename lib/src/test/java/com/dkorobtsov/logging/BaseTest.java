@@ -1,6 +1,6 @@
 package com.dkorobtsov.logging;
 
-import static com.dkorobtsov.logging.converters.ToOkhttpConverter.convertOkhtt3pRequestBody;
+import static com.dkorobtsov.logging.converters.ToOkhttpConverter.convertOkhttp3RequestBody;
 import static org.junit.Assert.fail;
 
 import com.dkorobtsov.logging.converters.ToApacheHttpClientConverter;
@@ -233,7 +233,7 @@ public abstract class BaseTest {
 
                 final com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
                     .url(String.valueOf(server.url("/")))
-                    .put(convertOkhtt3pRequestBody(okhttp3Request))
+                    .put(convertOkhttp3RequestBody(okhttp3Request))
                     .build();
 
                 defaultOkhttpClientWithInterceptor(okhttpLoggingInterceptor)
