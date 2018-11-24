@@ -2,8 +2,8 @@ package com.dkorobtsov.logging;
 
 import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.Okhttp3LoggingInterceptor;
-import com.dkorobtsov.logging.interceptors.OkhttpLoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.OkHttpLoggingInterceptor;
 import java.util.concurrent.Executor;
 
 public class LoggingInterceptor {
@@ -18,7 +18,7 @@ public class LoggingInterceptor {
     @SuppressWarnings({"unused", "SameParameterValue"})
     public static class Builder {
 
-        private boolean isDebug = true;
+        private boolean isLoggable = true;
         private int maxLineLength = 110;
         private Level level = Level.BASIC;
         private LogWriter logger;
@@ -51,13 +51,6 @@ public class LoggingInterceptor {
             return this;
         }
 
-        LogWriter getLogger() {
-            if (logger == null) {
-                logger = new DefaultLogger(formatter);
-            }
-            return logger;
-        }
-
         /**
          * @param format set format for default Java Utility Logger
          *
@@ -68,20 +61,16 @@ public class LoggingInterceptor {
             return this;
         }
 
-        LogFormatter getFormatter() {
+        LogFormatter getFormat() {
             return formatter;
         }
 
         /**
-         * @param isDebug set can sending log output
+         * @param loggable specifies if logger is enabled
          */
-        public Builder loggable(boolean isDebug) {
-            this.isDebug = isDebug;
+        public Builder loggable(boolean loggable) {
+            this.isLoggable = loggable;
             return this;
-        }
-
-        public boolean isDebug() {
-            return isDebug;
         }
 
         /**
@@ -90,10 +79,6 @@ public class LoggingInterceptor {
         public Builder level(Level level) {
             this.level = level;
             return this;
-        }
-
-        Level getLevel() {
-            return level;
         }
 
         /**
@@ -111,10 +96,6 @@ public class LoggingInterceptor {
             return this;
         }
 
-        int getMaxLineLength() {
-            return maxLineLength;
-        }
-
         /**
          * @param executor manual executor override for printing
          */
@@ -123,16 +104,12 @@ public class LoggingInterceptor {
             return this;
         }
 
-        Executor getExecutor() {
-            return executor;
+        public OkHttpLoggingInterceptor buildForOkhttp() {
+            return new OkHttpLoggingInterceptor(loggerConfig());
         }
 
-        public OkhttpLoggingInterceptor buildForOkhttp() {
-            return new OkhttpLoggingInterceptor(loggerConfig());
-        }
-
-        public Okhttp3LoggingInterceptor buildForOkhttp3() {
-            return new Okhttp3LoggingInterceptor(loggerConfig());
+        public OkHttp3LoggingInterceptor buildForOkhttp3() {
+            return new OkHttp3LoggingInterceptor(loggerConfig());
         }
 
         public ApacheHttpRequestInterceptor buildForApacheHttpClientRequest() {
@@ -148,7 +125,7 @@ public class LoggingInterceptor {
                 .executor(this.executor)
                 .formatter(this.formatter)
                 .logger(this.logger)
-                .loggable(this.isDebug)
+                .loggable(this.isLoggable)
                 .level(this.level)
                 .maxLineLength(this.maxLineLength)
                 .build();

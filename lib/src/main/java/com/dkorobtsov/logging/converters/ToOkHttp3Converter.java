@@ -34,23 +34,23 @@ import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.entity.ContentType;
 import org.apache.http.message.BasicHeader;
 
-public class ToOkhttp3Converter {
+public class ToOkHttp3Converter {
 
-    private static final Logger logger = Logger.getLogger(ToOkhttp3Converter.class.getName());
+    private static final Logger logger = Logger.getLogger(ToOkHttp3Converter.class.getName());
 
     private static final String APPLICATION_JSON = "application/json";
 
-    private ToOkhttp3Converter() {
+    private ToOkHttp3Converter() {
     }
 
-    private static okhttp3.MediaType convertOkhttpMediaTypeTo3(MediaType okhttpMediaType) {
+    private static okhttp3.MediaType convertOkHttpMediaTypeTo3(MediaType okhttpMediaType) {
         return okhttpMediaType == null ? okhttp3.MediaType.parse("")
             : okhttp3.MediaType.parse(okhttpMediaType.toString());
     }
 
-    public static okhttp3.RequestBody convertOkhttpRequestBodyTo3(Request request) {
+    public static okhttp3.RequestBody convertOkHttpRequestBodyTo3(Request request) {
         final okhttp3.MediaType contentType = request.body() == null ? okhttp3.MediaType.parse("")
-            : convertOkhttpMediaTypeTo3(request.body().contentType());
+            : convertOkHttpMediaTypeTo3(request.body().contentType());
         try {
             final Request requestCopy = request.newBuilder().build();
             String requestBodyString = "";
@@ -160,7 +160,7 @@ public class ToOkhttp3Converter {
         return entityBuilder.build();
     }
 
-    public static okhttp3.CacheControl convertOkhttpCacheControlTo3(CacheControl cacheControl) {
+    public static okhttp3.CacheControl convertOkHttpCacheControlTo3(CacheControl cacheControl) {
         return new okhttp3.CacheControl
             .Builder()
             .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),
@@ -172,7 +172,7 @@ public class ToOkhttp3Converter {
             .build();
     }
 
-    private static okhttp3.Request convertOkhttpRequestTo3(Request request) {
+    private static okhttp3.Request convertOkHttpRequestTo3(Request request) {
         final okhttp3.Request.Builder builder = new okhttp3.Request
             .Builder();
         builder.url(request.url());
@@ -181,16 +181,16 @@ public class ToOkhttp3Converter {
             (String name, List<String> values) -> builder
                 .addHeader(name, String.join(";", values)));
         if (permitsRequestBody(request.method())) {
-            builder.method(request.method(), convertOkhttpRequestBodyTo3(request));
+            builder.method(request.method(), convertOkHttpRequestBodyTo3(request));
         } else {
             builder.method(request.method(), null);
         }
         builder.tag(request.tag());
-        builder.cacheControl(convertOkhttpCacheControlTo3(request.cacheControl()));
+        builder.cacheControl(convertOkHttpCacheControlTo3(request.cacheControl()));
         return builder.build();
     }
 
-    private static okhttp3.Handshake convertOkhttpHandshakeTo3(
+    private static okhttp3.Handshake convertOkHttpHandshakeTo3(
         com.squareup.okhttp.Handshake handshake) {
         if (handshake == null) {
             return null;
@@ -206,13 +206,13 @@ public class ToOkhttp3Converter {
         }
     }
 
-    private static okhttp3.Headers convertOkhttpHeadersTo3(com.squareup.okhttp.Headers headers) {
+    private static okhttp3.Headers convertOkHttpHeadersTo3(com.squareup.okhttp.Headers headers) {
         final Headers.Builder headersBuilder = new Headers.Builder();
         headers.names().forEach(name -> headersBuilder.add(name, headers.get(name)));
         return headersBuilder.build();
     }
 
-    private static okhttp3.ResponseBody convertOkhttpResponseBodyTo3(
+    private static okhttp3.ResponseBody convertOkHttpResponseBodyTo3(
         com.squareup.okhttp.ResponseBody responseBody) {
         if (responseBody == null) {
             return null;
@@ -225,11 +225,11 @@ public class ToOkhttp3Converter {
                 logger.log(Level.SEVERE, e.getMessage(), e);
             }
             return okhttp3.ResponseBody
-                .create(convertOkhttpMediaTypeTo3(mediaType), responseBodyString);
+                .create(convertOkHttpMediaTypeTo3(mediaType), responseBodyString);
         }
     }
 
-    private static okhttp3.Protocol convertOkhttpProtocolTo3(Protocol protocol) {
+    private static okhttp3.Protocol convertOkHttpProtocolTo3(Protocol protocol) {
         switch (protocol) {
             case HTTP_1_0:
                 return okhttp3.Protocol.HTTP_1_0;
@@ -242,32 +242,32 @@ public class ToOkhttp3Converter {
         }
     }
 
-    private static okhttp3.Response convertBaseOkhttpResponseTo3(Response response) {
+    public static okhttp3.Response convertOkHttpResponseTo3(Response response) {
+        if (response == null) {
+            return null;
+        } else {
+            final okhttp3.Response okHttp3Response = convertBaseOkHttpResponseTo3(response);
+            return okHttp3Response
+                .newBuilder()
+                .cacheResponse(convertBaseOkHttpResponseTo3(response.cacheResponse()))
+                .networkResponse(convertBaseOkHttpResponseTo3(response.networkResponse()))
+                .build();
+        }
+    }
+
+    private static okhttp3.Response convertBaseOkHttpResponseTo3(Response response) {
         if (response == null) {
             return null;
         } else {
             return new okhttp3.Response
                 .Builder()
-                .request(convertOkhttpRequestTo3(response.request()))
-                .protocol(convertOkhttpProtocolTo3(response.protocol()))
+                .request(convertOkHttpRequestTo3(response.request()))
+                .protocol(convertOkHttpProtocolTo3(response.protocol()))
                 .code(response.code())
                 .message(response.message())
-                .handshake(convertOkhttpHandshakeTo3(response.handshake()))
-                .headers(convertOkhttpHeadersTo3(response.headers()))
-                .body(convertOkhttpResponseBodyTo3(response.body()))
-                .build();
-        }
-    }
-
-    public static okhttp3.Response convertOkhttpResponseTo3(Response response) {
-        if (response == null) {
-            return null;
-        } else {
-            final okhttp3.Response okhttp3Response = convertBaseOkhttpResponseTo3(response);
-            return okhttp3Response
-                .newBuilder()
-                .cacheResponse(convertBaseOkhttpResponseTo3(response.cacheResponse()))
-                .networkResponse(convertBaseOkhttpResponseTo3(response.networkResponse()))
+                .handshake(convertOkHttpHandshakeTo3(response.handshake()))
+                .headers(convertOkHttpHeadersTo3(response.headers()))
+                .body(convertOkHttpResponseBodyTo3(response.body()))
                 .build();
         }
     }

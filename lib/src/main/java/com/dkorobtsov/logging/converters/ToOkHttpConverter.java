@@ -5,19 +5,19 @@ import com.squareup.okhttp.RequestBody;
 import java.io.IOException;
 import okio.Buffer;
 
-public class ToOkhttpConverter {
+public class ToOkHttpConverter {
 
-    private ToOkhttpConverter() {
+    private ToOkHttpConverter() {
     }
 
-    public static MediaType convertOkhttp3MediaType(okhttp3.MediaType okhttp3MediaType) {
-        return okhttp3MediaType == null ? MediaType.parse("")
-            : MediaType.parse(okhttp3MediaType.toString());
+    public static MediaType convertOkHttp3MediaType(okhttp3.MediaType okHttp3MediaType) {
+        return okHttp3MediaType == null ? MediaType.parse("")
+            : MediaType.parse(okHttp3MediaType.toString());
     }
 
-    public static RequestBody convertOkhttp3RequestBody(okhttp3.Request request) {
+    public static RequestBody convertOkHttp3RequestBody(okhttp3.Request request) {
         final MediaType contentType = request.body() == null ? MediaType.parse("")
-            : convertOkhttp3MediaType(request.body().contentType());
+            : convertOkHttp3MediaType(request.body().contentType());
         try {
             final okhttp3.Request requestCopy = request.newBuilder().build();
 

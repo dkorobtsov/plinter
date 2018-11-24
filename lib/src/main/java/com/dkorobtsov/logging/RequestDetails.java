@@ -1,8 +1,8 @@
 package com.dkorobtsov.logging;
 
-import static com.dkorobtsov.logging.converters.ToOkhttp3Converter.convertApacheHttpRequestBodyTo3;
-import static com.dkorobtsov.logging.converters.ToOkhttp3Converter.convertOkhttpCacheControlTo3;
-import static com.dkorobtsov.logging.converters.ToOkhttp3Converter.convertOkhttpRequestBodyTo3;
+import static com.dkorobtsov.logging.converters.ToOkHttp3Converter.convertApacheHttpRequestBodyTo3;
+import static com.dkorobtsov.logging.converters.ToOkHttp3Converter.convertOkHttpCacheControlTo3;
+import static com.dkorobtsov.logging.converters.ToOkHttp3Converter.convertOkHttpRequestBodyTo3;
 import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
 
 import java.util.Arrays;
@@ -41,7 +41,7 @@ public class RequestDetails {
             if (numberOfClientsInitialized == 0 || numberOfClientsInitialized > 1) {
                 throw new IllegalArgumentException(
                     "You can only initialize one client in the builder. " +
-                        "No more then 1 'from' method per builder invocation allowed");
+                        "No more then 1 'interceptedResponse' method per builder invocation allowed");
             } else if (okhttpRequest != null) {
                 return buildFromOkhttp();
             } else {
@@ -59,12 +59,12 @@ public class RequestDetails {
             if (permitsRequestBody(this.okhttpRequest.method())) {
                 builder
                     .method(this.okhttpRequest.method(),
-                        convertOkhttpRequestBodyTo3(this.okhttpRequest));
+                        convertOkHttpRequestBodyTo3(this.okhttpRequest));
             } else {
                 builder.method(this.okhttpRequest.method(), null);
             }
             builder.tag(this.okhttpRequest.tag());
-            builder.cacheControl(convertOkhttpCacheControlTo3(this.okhttpRequest.cacheControl()));
+            builder.cacheControl(convertOkHttpCacheControlTo3(this.okhttpRequest.cacheControl()));
             return builder.build();
         }
 

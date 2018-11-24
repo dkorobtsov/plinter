@@ -9,7 +9,7 @@ public class LoggingInterceptorUnitTests {
     public void testDefaultLogFormatterIsMessageOnly() {
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder();
         Assert
-            .assertEquals("Default logger", LogFormatter.JUL_MESSAGE_ONLY, builder.getFormatter());
+            .assertEquals("Default logger", LogFormatter.JUL_MESSAGE_ONLY, builder.getFormat());
     }
 
     @Test
@@ -18,6 +18,7 @@ public class LoggingInterceptorUnitTests {
             .Builder();
         final LogFormatter format = LogFormatter.JUL_DATE_LEVEL_MESSAGE;
         builder.format(format);
-        Assert.assertEquals("Log Formatter", format, builder.getFormatter());
+        Assert.assertEquals("Log Formatter", format, builder.getFormat());
     }
+
 }

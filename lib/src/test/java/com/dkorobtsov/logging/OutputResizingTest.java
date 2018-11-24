@@ -2,7 +2,7 @@ package com.dkorobtsov.logging;
 
 import static org.junit.Assert.assertTrue;
 
-import com.dkorobtsov.logging.interceptors.Okhttp3LoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
 import java.io.IOException;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
@@ -49,7 +49,7 @@ public class OutputResizingTest extends BaseTest {
         "10", "500"
     })
     public void validOutputLengthHandling(String maxLineLength) {
-        Okhttp3LoggingInterceptor interceptor = LoggingInterceptor.builder()
+        OkHttp3LoggingInterceptor interceptor = LoggingInterceptor.builder()
             .maxLineLength(Integer.parseInt(maxLineLength))
             .buildForOkhttp3();
 

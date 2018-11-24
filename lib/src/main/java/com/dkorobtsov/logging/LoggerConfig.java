@@ -4,16 +4,16 @@ import java.util.concurrent.Executor;
 
 public class LoggerConfig {
 
-    public final boolean isDebug;
+    public final boolean isLoggable;
     public final Level level;
     public final LogWriter logger;
     public final LogFormatter formatter;
     public final Executor executor;
     public final int maxLineLength;
 
-    LoggerConfig(boolean isDebug, Level level, LogWriter logger, LogFormatter formatter,
+    LoggerConfig(boolean isLoggable, Level level, LogWriter logger, LogFormatter formatter,
         Executor executor, int maxLineLength) {
-        this.isDebug = isDebug;
+        this.isLoggable = isLoggable;
         this.level = level;
         this.logger = logger;
         this.formatter = formatter;

@@ -12,7 +12,7 @@ public class ToApacheHttpClientConverter {
     private ToApacheHttpClientConverter() {
     }
 
-    public static HttpEntity okhttp3RequestBodyToStringEntity(RequestBody requestBody,
+    public static HttpEntity okHttp3RequestBodyToStringEntity(RequestBody requestBody,
         ContentType contentType) throws IOException {
 
         if (requestBody == null) {

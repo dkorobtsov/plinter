@@ -21,7 +21,7 @@ public class RequestDetailsUnitTests {
     }
 
     @Test
-    public void testBuildingOkhttpClientWithHeaders() {
+    public void testBuildingOkHttpClientWithHeaders() {
         final String contentType = "application/json";
         final String authorizationHeader = "Bearer bla";
         final Request request = new Request

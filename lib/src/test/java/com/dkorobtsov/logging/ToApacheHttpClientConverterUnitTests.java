@@ -14,9 +14,9 @@ import org.junit.Test;
 public class ToApacheHttpClientConverterUnitTests {
 
     @Test
-    public void testOkhtt3WithEmptyBodyConversion() throws IOException {
+    public void testOkHttp3WithEmptyBodyConversion() throws IOException {
         final StringEntity httpEntity = (StringEntity) ToApacheHttpClientConverter
-            .okhttp3RequestBodyToStringEntity(null, ContentType.APPLICATION_JSON);
+            .okHttp3RequestBodyToStringEntity(null, ContentType.APPLICATION_JSON);
         final InputStream content = httpEntity.getContent();
         StringBuilder stringBuilder = new StringBuilder();
         String line;

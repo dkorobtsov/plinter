@@ -17,7 +17,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
             .executor(Executors.newCachedThreadPool()).build();
 
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printJsonRequest(request, loggerConfig);
+        ClientPrintingExecutor.printRequest(loggerConfig, request, false);
     }
 
     @Test
@@ -31,26 +31,17 @@ public class ClientPrintingExecutorNegativeUnitTests {
             .executor(Executors.newCachedThreadPool()).build();
 
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printFileRequest(request, loggerConfig);
+        ClientPrintingExecutor.printRequest(loggerConfig, request, true);
     }
 
     @Test
-    public void testInterruptingPrintingJsonResponseDoesntCrashProcess() {
-        final ResponseDetails responseDetails = ResponseDetails.builder().build();
+    public void testInterruptingPrintingResponseDoesntCrashProcess() {
+        final InterceptedResponse responseDetails = InterceptedResponse.builder().build();
         final LoggerConfig loggerConfig = LoggerConfig.builder()
             .executor(Executors.newCachedThreadPool()).build();
 
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printFileResponse(responseDetails, loggerConfig);
+        ClientPrintingExecutor.printResponse(loggerConfig, responseDetails);
     }
 
-    @Test
-    public void testInterruptingPrintingFileResponseDoesntCrashProcess() {
-        final ResponseDetails responseDetails = ResponseDetails.builder().build();
-        final LoggerConfig loggerConfig = LoggerConfig.builder()
-            .executor(Executors.newCachedThreadPool()).build();
-
-        Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printFileResponse(responseDetails, loggerConfig);
-    }
 }
