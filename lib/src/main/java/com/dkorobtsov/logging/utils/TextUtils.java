@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.utils;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class TextUtils {
         return segmentString.toString();
     }
 
-    static boolean isEmpty(CharSequence str) {
+    public static boolean isEmpty(CharSequence str) {
         return str == null || str.length() == 0;
     }
 

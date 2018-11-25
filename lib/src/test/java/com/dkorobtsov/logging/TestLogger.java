@@ -1,5 +1,6 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.enums.LoggingFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class TestLogger implements LogWriter {
     private OutputStream logOut;
     private Logger testLogger = Logger.getLogger("TestLogger");
 
-    TestLogger(LogFormatter logFormatter) {
+    TestLogger(LoggingFormat logFormatter) {
         testLogger.setUseParentHandlers(false);
 
         // Removing existing handlers for new instance

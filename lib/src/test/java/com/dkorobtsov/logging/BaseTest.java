@@ -4,6 +4,8 @@ import static com.dkorobtsov.logging.converters.ToOkHttpConverter.convertOkHttp3
 import static org.junit.Assert.fail;
 
 import com.dkorobtsov.logging.converters.ToApacheHttpClientConverter;
+import com.dkorobtsov.logging.enums.InterceptorVersion;
+import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
@@ -35,7 +37,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 
 public abstract class BaseTest {
@@ -50,8 +52,8 @@ public abstract class BaseTest {
     @Rule
     public MockWebServer server = new MockWebServer();
 
-    @BeforeClass
-    public static void cleanAnyExistingJavaUtilityLoggingConfigurations() {
+    @Before
+    public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
         LogManager.getLogManager().reset();
         Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
         globalLogger.setLevel(java.util.logging.Level.OFF);
@@ -112,8 +114,9 @@ public abstract class BaseTest {
         return okHttpClient;
     }
 
-    void attachLoggerToInterceptorWithDefaultRequest(String version,
-        LogWriter log4j2Writer) throws IOException {
+    void attachLoggerToInterceptorWithDefaultRequest(String version, LogWriter log4j2Writer)
+        throws IOException {
+
         InterceptorVersion interceptorVersion = InterceptorVersion.parse(version);
         switch (interceptorVersion) {
             case OKHTTP3:
@@ -213,7 +216,7 @@ public abstract class BaseTest {
     List<String> interceptedRequest(RequestBody body, Integer maxLineLength, String loggerVersion,
         boolean provideExecutor, boolean preserveTrailingSpaces) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
         Request okHttp3Request = new Request.Builder()
             .url(String.valueOf(server.url("/")))
@@ -308,7 +311,7 @@ public abstract class BaseTest {
             .setHeader("Content-Type", contentType)
             .setBody(body));
 
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
             .logger(testLogger);
 

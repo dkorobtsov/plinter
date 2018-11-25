@@ -5,6 +5,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.dkorobtsov.logging.enums.InterceptorVersion;
+import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
@@ -27,7 +30,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         interceptWithSimpleInterceptor(interceptorVersion, testLogger);
 
         assertTrue("Logger should publish events using only default configuration",
@@ -42,7 +45,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         interceptWithSimpleInterceptor(interceptorVersion, testLogger);
 
         //Comparing message by length since on Gradle runner characters may be different
@@ -91,7 +94,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, false);
 
         assertTrue("Logger output should be empty if debug mode is off.",
@@ -105,7 +108,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, true);
 
         assertTrue("Logger should publish intercepted events if debug mode is on.",
@@ -119,7 +122,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     })
     public void defaultLoggerFormatCanBeModified(String interceptorVersion) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_DATE_LEVEL_MESSAGE);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
         interceptWithSimpleLoggableInterceptor(interceptorVersion, testLogger, true);
 
         String logEntry = testLogger.lastFormattedEvent(true);
@@ -171,7 +174,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.NONE);
 
         assertTrue("Logger output should be empty if debug mode is off.",
@@ -185,7 +188,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.BODY);
 
         assertFalse("Headers should not be logged when level set to Body.",
@@ -199,7 +202,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.HEADERS);
 
         assertFalse("Body should not be logged when level set to Headers.",
@@ -213,7 +216,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void allDetailsShouldBePrintedIfLevelSetToBasic(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
         interceptWithLogLevelInterceptor(interceptorVersion, testLogger, Level.BASIC);
 
         assertTrue("Request section should be present in logger output.",
@@ -280,7 +283,7 @@ public class LoggingInterceptorsTests extends BaseTest {
     })
     public void userShouldBeAbleToSupplyExecutor(String interceptorVersion) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_THREAD_MESSAGE);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             OkHttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
                 .level(Level.BASIC)
@@ -326,39 +329,50 @@ public class LoggingInterceptorsTests extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void userShouldBeAbleToUseDefaultLogger(String interceptorVersion) throws IOException {
+    public void userShouldBeAbleToUseDefaultLogger(String version) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
-            OkHttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-                .level(Level.BASIC)
-                .executor(Executors.newSingleThreadExecutor())
-                .buildForOkhttp3();
 
-            defaultOkHttp3ClientWithInterceptor(interceptor)
-                .newCall(defaultOkHttp3Request())
-                .execute();
-        } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
-            final OkHttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-                .level(Level.BASIC)
-                .executor(Executors.newSingleThreadExecutor())
-                .buildForOkhttp();
-            defaultOkHttpClientWithInterceptor(interceptor)
-                .newCall(defaultOkHttpRequest())
-                .execute();
-        } else if (interceptorVersion
-            .equals(InterceptorVersion.APACHE_HTTPCLIENT_REQUEST.getName())) {
-            final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
-                .level(Level.BASIC)
-                .executor(Executors.newSingleThreadExecutor())
-                .buildForApacheHttpClientRequest();
-            final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
-                .level(Level.BASIC)
-                .executor(Executors.newSingleThreadExecutor())
-                .buildFordApacheHttpClientResponse();
-            defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
-                .execute(defaultApacheHttpRequest());
-        } else {
-            fail("Only okhttp and okhttp3 versions are supported");
+        InterceptorVersion interceptorVersion = InterceptorVersion.parse(version);
+        switch (interceptorVersion) {
+            case OKHTTP3:
+                OkHttp3LoggingInterceptor okHttp3Interceptor = new LoggingInterceptor.Builder()
+                    .level(Level.BASIC)
+                    .executor(Executors.newSingleThreadExecutor())
+                    .buildForOkhttp3();
+
+                defaultOkHttp3ClientWithInterceptor(okHttp3Interceptor)
+                    .newCall(defaultOkHttp3Request())
+                    .execute();
+                break;
+
+            case OKHTTP:
+                final OkHttpLoggingInterceptor okHttpInterceptor = new LoggingInterceptor.Builder()
+                    .level(Level.BASIC)
+                    .executor(Executors.newSingleThreadExecutor())
+                    .buildForOkhttp();
+
+                defaultOkHttpClientWithInterceptor(okHttpInterceptor)
+                    .newCall(defaultOkHttpRequest())
+                    .execute();
+                break;
+
+            case APACHE_HTTPCLIENT_REQUEST:
+                final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
+                    .level(Level.BASIC)
+                    .executor(Executors.newSingleThreadExecutor())
+                    .buildForApacheHttpClientRequest();
+
+                final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
+                    .level(Level.BASIC)
+                    .buildFordApacheHttpClientResponse();
+
+                defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
+                    .execute(defaultApacheHttpRequest());
+                break;
+
+            default:
+                fail("Unknown interceptor version: " + interceptorVersion);
+                break;
         }
     }
 

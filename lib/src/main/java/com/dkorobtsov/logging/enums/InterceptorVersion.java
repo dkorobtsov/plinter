@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.enums;
 
 public enum InterceptorVersion {
     OKHTTP("okhttp"),

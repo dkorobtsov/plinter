@@ -1,9 +1,9 @@
 package com.dkorobtsov.logging.interceptors;
 
 import com.dkorobtsov.logging.InterceptedResponse;
-import com.dkorobtsov.logging.Level;
+import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.TextUtils;
+import com.dkorobtsov.logging.utils.TextUtils;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;

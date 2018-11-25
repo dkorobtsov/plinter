@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.utils;
 
 import java.util.Objects;
 import okhttp3.Request;

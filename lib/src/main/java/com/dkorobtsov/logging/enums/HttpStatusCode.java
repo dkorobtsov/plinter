@@ -1,8 +1,8 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.enums;
 
 import java.util.Arrays;
 
-public enum HttpStatusCodes {
+public enum HttpStatusCode {
     CONTINUE(100, "CONTINUE"),
     SWITCHING_PROTOCOLS(101, "SWITCHING_PROTOCOLS"),
     PROCESSING(102, "PROCESSING"),
@@ -63,7 +63,7 @@ public enum HttpStatusCodes {
     private int statusCode;
     private String message;
 
-    HttpStatusCodes(int statusCode, String message) {
+    HttpStatusCode(int statusCode, String message) {
         this.statusCode = statusCode;
         this.message = message;
     }

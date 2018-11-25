@@ -2,6 +2,8 @@ package com.dkorobtsov.logging;
 
 import static org.junit.Assert.assertTrue;
 
+import com.dkorobtsov.logging.enums.InterceptorVersion;
+import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;
@@ -29,7 +31,7 @@ public class MalformedJsonHandlingTest extends BaseTest {
             .setHeader("Content-Type", "application/json")
             .setBody("? \"test\" : \"test1\"}"));
 
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         attachLoggerToInterceptorWithDefaultRequest(interceptorVersion, testLogger);
 
         assertTrue("Interceptor should be able to log malformed json body.",
@@ -43,7 +45,7 @@ public class MalformedJsonHandlingTest extends BaseTest {
     public void interceptorAbleToHandleBody_malformedJsonRequest(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         final String content = "? \"test\" : \"test1\"}";
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
             Request okhttp3Request = new Request.Builder()
@@ -80,7 +82,7 @@ public class MalformedJsonHandlingTest extends BaseTest {
             .setHeader("Content-Type", "application/json")
             .setBody("[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]"));
 
-        TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         attachLoggerToInterceptorWithDefaultRequest(interceptorVersion, testLogger);
 
         assertTrue("Interceptor should be able to log malformed json body.",
@@ -98,7 +100,7 @@ public class MalformedJsonHandlingTest extends BaseTest {
     public void interceptorAbleToHandleBody_jsonArrayRequest(String interceptorVersion)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
-        final TestLogger testLogger = new TestLogger(LogFormatter.JUL_MESSAGE_ONLY);
+        final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
         final String content = "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]";
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {

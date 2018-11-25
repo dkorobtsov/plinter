@@ -22,11 +22,11 @@ public class RequestDetails {
     public static class Builder {
 
         private int numberOfClientsInitialized = 0;
-        private com.squareup.okhttp.Request okhttpRequest;
+        private com.squareup.okhttp.Request okHttpRequest;
         private HttpRequest apacheHttpRequest;
 
-        public Builder from(com.squareup.okhttp.Request okhttpRequest) {
-            this.okhttpRequest = okhttpRequest;
+        public Builder from(com.squareup.okhttp.Request okHttpRequest) {
+            this.okHttpRequest = okHttpRequest;
             this.numberOfClientsInitialized++;
             return this;
         }
@@ -42,29 +42,29 @@ public class RequestDetails {
                 throw new IllegalArgumentException(
                     "You can only initialize one client in the builder. " +
                         "No more then 1 'interceptedResponse' method per builder invocation allowed");
-            } else if (okhttpRequest != null) {
-                return buildFromOkhttp();
+            } else if (okHttpRequest != null) {
+                return buildFromOkHttp();
             } else {
                 return buildFromApacheHttpRequest();
             }
         }
 
-        private Request buildFromOkhttp() {
+        private Request buildFromOkHttp() {
             final okhttp3.Request.Builder builder = new okhttp3.Request.Builder();
-            builder.url(this.okhttpRequest.url());
-            final Map<String, List<String>> headersMap = this.okhttpRequest.headers().toMultimap();
+            builder.url(this.okHttpRequest.url());
+            final Map<String, List<String>> headersMap = this.okHttpRequest.headers().toMultimap();
             headersMap.forEach((String name, List<String> values)
                 -> builder.addHeader(name, String.join(";", values)));
 
-            if (permitsRequestBody(this.okhttpRequest.method())) {
+            if (permitsRequestBody(this.okHttpRequest.method())) {
                 builder
-                    .method(this.okhttpRequest.method(),
-                        convertOkHttpRequestBodyTo3(this.okhttpRequest));
+                    .method(this.okHttpRequest.method(),
+                        convertOkHttpRequestBodyTo3(this.okHttpRequest));
             } else {
-                builder.method(this.okhttpRequest.method(), null);
+                builder.method(this.okHttpRequest.method(), null);
             }
-            builder.tag(this.okhttpRequest.tag());
-            builder.cacheControl(convertOkHttpCacheControlTo3(this.okhttpRequest.cacheControl()));
+            builder.tag(this.okHttpRequest.tag());
+            builder.cacheControl(convertOkHttpCacheControlTo3(this.okHttpRequest.cacheControl()));
             return builder.build();
         }
 

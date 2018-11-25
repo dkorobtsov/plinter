@@ -1,11 +1,11 @@
 package com.dkorobtsov.logging.interceptors;
 
 import com.dkorobtsov.logging.ClientPrintingExecutor;
-import com.dkorobtsov.logging.HttpStatusCodes;
+import com.dkorobtsov.logging.enums.HttpStatusCode;
 import com.dkorobtsov.logging.InterceptedResponse;
-import com.dkorobtsov.logging.Level;
+import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.TextUtils;
+import com.dkorobtsov.logging.utils.TextUtils;
 import com.dkorobtsov.logging.converters.ToOkHttp3Converter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class ApacheHttpResponseInterceptor implements HttpResponseInterceptor {
         final String header = String.join(";", stringifiedHeaders);
         final int code = httpResponse.getStatusLine().getStatusCode();
         final boolean isSuccessful = code >= 200 && code <= 300;
-        final String message = HttpStatusCodes.findMessage(code);
+        final String message = HttpStatusCode.findMessage(code);
         final ResponseBody responseBody = ToOkHttp3Converter
             .convertApacheHttpResponseBodyTo3(httpResponse);
         final MediaType contentType = responseBody.contentType();

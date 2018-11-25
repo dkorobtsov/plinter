@@ -1,10 +1,10 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.enums;
 
 import java.util.Date;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
-public enum LogFormatter {
+public enum LoggingFormat {
 
     JUL_FULL(new SimpleFormatter() {
         @Override
@@ -70,7 +70,7 @@ public enum LogFormatter {
 
     public final SimpleFormatter formatter;
 
-    LogFormatter(SimpleFormatter simpleFormatter) {
+    LoggingFormat(SimpleFormatter simpleFormatter) {
         this.formatter = simpleFormatter;
     }
 
