@@ -1,15 +1,22 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.enums.LoggingFormat;
+import java.util.Arrays;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DefaultLogger implements LogWriter {
 
-    private static final Logger logger = Logger.getLogger("DefaultLogger");
+    private final Logger logger = Logger.getLogger(DefaultLogger.class.getName());
 
-    DefaultLogger(LogFormatter logFormatter) {
+    DefaultLogger(LoggingFormat logFormatter) {
         logger.setUseParentHandlers(false);
+
+        // Sometimes handlers are duplicated, here we are making sure,
+        // that only cone console handler will exist
+        Arrays.stream(logger.getHandlers()).forEach(logger::removeHandler);
+
         final ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(logFormatter.formatter);
         logger.addHandler(handler);

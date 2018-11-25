@@ -1,5 +1,9 @@
 package com.dkorobtsov.logging;
 
+import static java.util.Objects.isNull;
+
+import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
@@ -22,11 +26,11 @@ public class LoggingInterceptor {
         private int maxLineLength = 110;
         private Level level = Level.BASIC;
         private LogWriter logger;
-        private LogFormatter formatter;
+        private LoggingFormat formatter;
         private Executor executor;
 
         public Builder() {
-            formatter = LogFormatter.JUL_MESSAGE_ONLY;
+            formatter = LoggingFormat.JUL_MESSAGE_ONLY;
         }
 
         /**
@@ -56,12 +60,12 @@ public class LoggingInterceptor {
          *
          * (will be ignored in case custom logger is used)
          */
-        public Builder format(LogFormatter format) {
+        public Builder format(LoggingFormat format) {
             this.formatter = format;
             return this;
         }
 
-        LogFormatter getFormat() {
+        LoggingFormat getFormat() {
             return formatter;
         }
 
@@ -124,7 +128,7 @@ public class LoggingInterceptor {
             return LoggerConfig.builder()
                 .executor(this.executor)
                 .formatter(this.formatter)
-                .logger(this.logger)
+                .logger(isNull(this.logger) ? new DefaultLogger(this.formatter) : this.logger)
                 .loggable(this.isLoggable)
                 .level(this.level)
                 .maxLineLength(this.maxLineLength)
