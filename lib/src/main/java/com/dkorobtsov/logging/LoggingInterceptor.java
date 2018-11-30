@@ -28,6 +28,7 @@ public class LoggingInterceptor {
         private LogWriter logger;
         private LoggingFormat formatter;
         private Executor executor;
+        private boolean withThreadInfo = false;
 
         public Builder() {
             formatter = LoggingFormat.JUL_MESSAGE_ONLY;
@@ -78,7 +79,8 @@ public class LoggingInterceptor {
         }
 
         /**
-         * @param level set log level
+         * @param level sets logging level
+         * @see Level
          */
         public Builder level(Level level) {
             this.level = level;
@@ -97,6 +99,24 @@ public class LoggingInterceptor {
             } else {
                 this.maxLineLength = length;
             }
+            return this;
+        }
+
+        /**
+         * @param withThreadInfo specifies if request executor thread name and timestamp should be
+         * printed. Default: false
+         *
+         * <pre>
+         * Example:
+         *
+         * ┌────── Request ────────────────────────────────────────────────────────────────────────
+         * |
+         * | Thread:  pool-31-thread-1                                   Sent:  2018-11-25 01:51:39
+         * ├───────────────────────────────────────────────────────────────────────────────────────
+         * </pre>
+         */
+        public Builder withThreadInfo(boolean withThreadInfo) {
+            this.withThreadInfo = withThreadInfo;
             return this;
         }
 
@@ -132,6 +152,7 @@ public class LoggingInterceptor {
                 .loggable(this.isLoggable)
                 .level(this.level)
                 .maxLineLength(this.maxLineLength)
+                .withThreadInfo(this.withThreadInfo)
                 .build();
         }
     }

@@ -1,5 +1,7 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.enums.LoggingFormat;
 import java.util.concurrent.Executor;
 
 public class LoggerConfig {
@@ -7,18 +9,20 @@ public class LoggerConfig {
     public final boolean isLoggable;
     public final Level level;
     public final LogWriter logger;
-    public final LogFormatter formatter;
+    public final LoggingFormat formatter;
     public final Executor executor;
     public final int maxLineLength;
+    public final boolean withThreadInfo;
 
-    LoggerConfig(boolean isLoggable, Level level, LogWriter logger, LogFormatter formatter,
-        Executor executor, int maxLineLength) {
+    LoggerConfig(boolean isLoggable, Level level, LogWriter logger, LoggingFormat formatter,
+        Executor executor, int maxLineLength, boolean withThreadInfo) {
         this.isLoggable = isLoggable;
         this.level = level;
         this.logger = logger;
         this.formatter = formatter;
         this.executor = executor;
         this.maxLineLength = maxLineLength;
+        this.withThreadInfo = withThreadInfo;
     }
 
     public static LoggerConfigBuilder builder() {
@@ -27,18 +31,19 @@ public class LoggerConfig {
 
     public static class LoggerConfigBuilder {
 
-        private boolean isDebug;
+        private boolean isLoggable;
         private Level level;
         private LogWriter logger;
-        private LogFormatter formatter;
+        private LoggingFormat formatter;
         private Executor executor;
         private int maxLineLength;
+        private boolean withThreadInfo;
 
         LoggerConfigBuilder() {
         }
 
-        public LoggerConfigBuilder loggable(boolean isDebug) {
-            this.isDebug = isDebug;
+        public LoggerConfigBuilder loggable(boolean isLoggable) {
+            this.isLoggable = isLoggable;
             return this;
         }
 
@@ -52,7 +57,7 @@ public class LoggerConfig {
             return this;
         }
 
-        public LoggerConfigBuilder formatter(LogFormatter formatter) {
+        public LoggerConfigBuilder formatter(LoggingFormat formatter) {
             this.formatter = formatter;
             return this;
         }
@@ -67,10 +72,31 @@ public class LoggerConfig {
             return this;
         }
 
-        public LoggerConfig build() {
-            return new LoggerConfig(isDebug, level, logger, formatter, executor,
-                maxLineLength);
+        public LoggerConfigBuilder withThreadInfo(boolean withThreadInfo) {
+            this.withThreadInfo = withThreadInfo;
+            return this;
         }
 
+        public LoggerConfig build() {
+            return new LoggerConfig(isLoggable, level, logger, formatter, executor, maxLineLength,
+                withThreadInfo);
+        }
+
+    }
+
+    @Override
+    public String toString() {
+        final String line = "\n────────────────────────────────────────────────────────────────────────────────────────";
+        return line
+            + "\n LoggerConfig:"
+            + line
+            + "\n isLoggable     : " + isLoggable
+            + "\n level          : " + level
+            + "\n logger         : " + logger
+            + "\n formatter      : " + formatter
+            + "\n executor       : " + executor
+            + "\n maxLineLength  : " + maxLineLength
+            + "\n withThreadInfo : " + withThreadInfo
+            + line;
     }
 }

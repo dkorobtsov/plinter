@@ -1,9 +1,13 @@
 package com.dkorobtsov.logging;
 
 import static com.dkorobtsov.logging.BodyFormatter.formattedBody;
-import static com.dkorobtsov.logging.TextUtils.slashSegments;
+import static com.dkorobtsov.logging.utils.TextUtils.slashSegments;
 
+import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.utils.TextUtils;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Objects;
 import okhttp3.Request;
 import okio.Buffer;
@@ -27,11 +31,19 @@ class Printer {
     private static final String METHOD_TAG = "Method: @";
     private static final String HEADERS_TAG = "Headers:";
     private static final String STATUS_CODE_TAG = "Status Code: ";
-    private static final String RECEIVED_TAG = "Received in: ";
+    private static final String EXECUTION_TIME_TAG = "Execution time: ";
     private static final String CORNER_UP = "┌ ";
     private static final String CORNER_BOTTOM = "└ ";
     private static final String CENTER_LINE = "├ ";
     private static final String DEFAULT_LINE = "  ";
+    private static final String SECTION_LINE = "├───────────────────────────────────────────────────────────────────────────────────────";
+    private static final String SECTION_DEFAULT_LINE = "| ";
+    private static final String THREAD_TAG = "Thread: ";
+    private static final String SENT_TAG = "Sent: ";
+    private static final String SENT_STRING_FORMAT = "%-5s %-46s %-5s %s";
+    private static final String RECEIVED_TAG = "Received: ";
+    private static final String RECEIVED_STRING_FORMAT = "%-5s %-42s %-5s %s";
+    private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS";
 
     private static LoggerConfig loggerConfig;
 
@@ -42,6 +54,7 @@ class Printer {
         Printer.loggerConfig = loggerConfig;
 
         printRequestStartingLine();
+        printDebugDetails(true);
         printUrl(request.url().toString());
         printRequestDetails(request);
         printRequestBody(request, hasPrintableBody);
@@ -52,6 +65,7 @@ class Printer {
         Printer.loggerConfig = loggerConfig;
 
         printResponseStartingLine();
+        printDebugDetails(false);
         printUrl(interceptedResponse.url);
         printResponseDetails(interceptedResponse);
         printResponseBody(interceptedResponse);
@@ -70,8 +84,26 @@ class Printer {
         loggerConfig.logger.log(ENDING_LINE);
     }
 
+    private static void printDebugDetails(boolean isRequest) {
+        if (loggerConfig.withThreadInfo){
+            String debugDetails = LINE_SEPARATOR +
+                String.format(isRequest? SENT_STRING_FORMAT : RECEIVED_STRING_FORMAT,
+                    THREAD_TAG,
+                    Thread.currentThread().getName(),
+                    isRequest ? SENT_TAG : RECEIVED_TAG,
+                    new SimpleDateFormat(TIMESTAMP_FORMAT)
+                        .format(Calendar.getInstance().getTime()));
+
+            logLines(debugDetails.split(REGEX_LINE_SEPARATOR), SECTION_DEFAULT_LINE, true);
+            loggerConfig.logger.log(SECTION_LINE);
+        }
+    }
+
     private static void printUrl(String url) {
-        logLines(new String[]{URL_TAG + url}, false);
+        // ApacheHTTPClient response does not contain URL
+        if (!isEmpty(url)) {
+            logLines(new String[]{URL_TAG + url}, false);
+        }
     }
 
     private static void printRequestDetails(Request request) {
@@ -133,7 +165,7 @@ class Printer {
         final String segmentString = slashSegments(responseDetails.segmentList);
         final String receivedTags = responseDetails.chainMs == 0
             ? ""
-            : " - " + RECEIVED_TAG + responseDetails.chainMs + "ms";
+            : " - " + EXECUTION_TIME_TAG + responseDetails.chainMs + "ms";
 
         final String log = (!TextUtils.isEmpty(segmentString)
             ? segmentString + " - "
@@ -166,9 +198,13 @@ class Printer {
     }
 
     private static void logLines(String[] lines, boolean withLineSize) {
+        logLines(lines, DEFAULT_LINE, withLineSize);
+    }
+
+    private static void logLines(String[] lines, String startingWith, boolean withLineSize) {
         for (String line : lines) {
             if (isEmpty(line)) {
-                loggerConfig.logger.log(line);
+                loggerConfig.logger.log(startingWith);
             } else {
                 int lineLength = line.length();
                 int maxLongSize = withLineSize ? loggerConfig.maxLineLength : lineLength;
@@ -176,7 +212,7 @@ class Printer {
                     int start = i * maxLongSize;
                     int end = (i + 1) * maxLongSize;
                     end = end > line.length() ? line.length() : end;
-                    loggerConfig.logger.log(DEFAULT_LINE + line.substring(start, end));
+                    loggerConfig.logger.log(startingWith + line.substring(start, end));
                 }
             }
         }
