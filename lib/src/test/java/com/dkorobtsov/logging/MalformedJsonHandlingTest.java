@@ -48,12 +48,12 @@ public class MalformedJsonHandlingTest extends BaseTest {
         final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         final String content = "? \"test\" : \"test1\"}";
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
-            Request okhttp3Request = new Request.Builder()
+            Request okHttp3Request = new Request.Builder()
                 .url(String.valueOf(server.url("/")))
                 .put(RequestBody.create(MediaType.parse("application/json"),
                     content))
                 .build();
-            attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null, null);
+            attachLoggerToInterceptor(interceptorVersion, testLogger, okHttp3Request, null, null);
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
                 .url(String.valueOf(server.url("/")))
@@ -104,12 +104,12 @@ public class MalformedJsonHandlingTest extends BaseTest {
 
         final String content = "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]";
         if (interceptorVersion.equals(InterceptorVersion.OKHTTP3.getName())) {
-            Request okhttp3Request = new Request.Builder()
+            Request okHttp3Request = new Request.Builder()
                 .url(String.valueOf(server.url("/")))
                 .put(RequestBody.create(MediaType.parse("application/json"),
                     content))
                 .build();
-            attachLoggerToInterceptor(interceptorVersion, testLogger, okhttp3Request, null, null);
+            attachLoggerToInterceptor(interceptorVersion, testLogger, okHttp3Request, null, null);
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
             com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
                 .url(String.valueOf(server.url("/")))

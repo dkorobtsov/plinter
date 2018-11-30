@@ -11,6 +11,7 @@ public class EnumParsingTest {
         HttpStatusCode.findMessage(999);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test(expected = IllegalArgumentException.class)
     public void unknownInterceptorVersionThrowsIllegalArgumentException() {
         InterceptorVersion.parse("UnknownInterceptor");
