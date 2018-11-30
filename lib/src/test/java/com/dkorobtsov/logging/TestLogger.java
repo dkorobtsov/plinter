@@ -117,4 +117,9 @@ public class TestLogger implements LogWriter {
             .get(loggerOutput(preserveTrailingSpaces).size() - 1);
     }
 
+    @Override
+    public String toString() {
+        return "TestLogger";
+    }
+
 }

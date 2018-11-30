@@ -27,4 +27,9 @@ public class DefaultLogger implements LogWriter {
         logger.log(Level.INFO, msg);
     }
 
+    @Override
+    public String toString() {
+        return "DefaultLogger";
+    }
+
 }
