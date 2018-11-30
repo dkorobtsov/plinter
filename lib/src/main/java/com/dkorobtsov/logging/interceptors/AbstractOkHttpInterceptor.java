@@ -14,7 +14,6 @@ import okhttp3.ResponseBody;
 
 abstract class AbstractOkHttpInterceptor {
 
-    protected boolean isLoggable;
     protected LoggerConfig loggerConfig;
 
     public LoggerConfig loggerConfig() {
@@ -22,7 +21,7 @@ abstract class AbstractOkHttpInterceptor {
     }
 
     protected boolean skipLogging(){
-        return !isLoggable || loggerConfig.level == Level.NONE;
+        return !loggerConfig.isLoggable || loggerConfig.level == Level.NONE;
     }
 
     InterceptedResponse interceptedResponse(Request request, Response response, long chainMs)

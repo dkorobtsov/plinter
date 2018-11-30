@@ -18,7 +18,6 @@ public class OkHttp3LoggingInterceptor extends AbstractOkHttpInterceptor impleme
 
     public OkHttp3LoggingInterceptor(LoggerConfig loggerConfig) {
         this.loggerConfig = loggerConfig;
-        this.isLoggable = loggerConfig.isLoggable;
     }
 
     @Override
