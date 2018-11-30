@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import okhttp3.ConnectionPool;
@@ -56,7 +57,7 @@ public abstract class BaseTest {
     public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
         LogManager.getLogManager().reset();
         Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
-        globalLogger.setLevel(java.util.logging.Level.OFF);
+        globalLogger.setLevel(Level.OFF);
     }
 
     /**

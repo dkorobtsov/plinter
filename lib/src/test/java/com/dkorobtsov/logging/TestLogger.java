@@ -46,7 +46,7 @@ public class TestLogger implements LogWriter {
 
     @Override
     public void log(String msg) {
-        testLogger.log(Level.INFO, msg);
+        testLogger.info(msg);
         events.add(msg);
     }
 
