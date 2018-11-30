@@ -25,7 +25,6 @@ public enum InterceptorVersion {
     }
 
     InterceptorVersion(String name) {
-
         this.name = name;
     }
 }
