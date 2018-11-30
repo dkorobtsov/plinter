@@ -1,14 +1,15 @@
 package com.dkorobtsov.logging.interceptors;
 
-import static com.dkorobtsov.logging.utils.TextUtils.hasPrintableBody;
+import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
+import static com.dkorobtsov.logging.ClientPrintingExecutor.printResponse;
 import static com.dkorobtsov.logging.converters.ToOkHttp3Converter.convertOkHttpResponseTo3;
 import static com.dkorobtsov.logging.converters.ToOkHttpConverter.convertOkHttp3MediaType;
+import static com.dkorobtsov.logging.utils.TextUtils.hasPrintableBody;
 
-import com.dkorobtsov.logging.utils.BodyUtils;
-import com.dkorobtsov.logging.ClientPrintingExecutor;
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.RequestDetails;
+import com.dkorobtsov.logging.utils.BodyUtils;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Request;
@@ -34,18 +35,17 @@ public class OkHttpLoggingInterceptor extends AbstractOkHttpInterceptor implemen
 
         String subtype = BodyUtils.subtype(requestDetails);
 
-        ClientPrintingExecutor
-            .printRequest(loggerConfig, requestDetails, hasPrintableBody(subtype));
+        printRequest(loggerConfig, requestDetails, hasPrintableBody(subtype));
 
         final long startTime = System.nanoTime();
         final Response response = chain.proceed(request);
-        final long responseTime = TimeUnit.NANOSECONDS
+        final long ms = TimeUnit.NANOSECONDS
             .toMillis(System.nanoTime() - startTime);
 
         InterceptedResponse interceptedResponse = interceptedResponse(requestDetails,
-            convertOkHttpResponseTo3(response), responseTime);
+            convertOkHttpResponseTo3(response), ms);
 
-        ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
+        printResponse(loggerConfig, interceptedResponse);
 
         final ResponseBody body;
         if (interceptedResponse.hasPrintableBody) {
