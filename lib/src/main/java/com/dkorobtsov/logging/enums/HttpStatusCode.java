@@ -52,14 +52,6 @@ public enum HttpStatusCode {
     HTTP_VERSION_NOT_SUPPORTED(505, "HTTP_VERSION_NOT_SUPPORTED"),
     INSUFFICIENT_STORAGE(507, "INSUFFICIENT_STORAGE");
 
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
     private int statusCode;
     private String message;
 
@@ -75,6 +67,14 @@ public enum HttpStatusCode {
             .orElseThrow(() -> new IllegalArgumentException(
                 String.format("Couldn't find %s http status code", code)))
             .getMessage();
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
 }

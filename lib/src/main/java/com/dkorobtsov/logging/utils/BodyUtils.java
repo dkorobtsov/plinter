@@ -9,7 +9,7 @@ public class BodyUtils {
     private BodyUtils() {
     }
 
-    public static String subtype(Request request){
+    public static String subtype(Request request) {
         final RequestBody requestBody = request.body();
 
         String requestSubtype = null;

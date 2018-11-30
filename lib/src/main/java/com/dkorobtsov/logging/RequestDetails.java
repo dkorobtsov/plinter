@@ -25,6 +25,14 @@ public class RequestDetails {
         private com.squareup.okhttp.Request okHttpRequest;
         private HttpRequest apacheHttpRequest;
 
+        private static String buildUrlFromApacheHttpRequest(HttpRequest request) {
+            final HttpHost target = ((HttpRequestWrapper) request).getTarget();
+            final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
+            return String
+                .format("%s://%s%s%s", target.getSchemeName(), target.getHostName(), portString,
+                    ((HttpRequestWrapper) request).getURI());
+        }
+
         public Builder from(com.squareup.okhttp.Request okHttpRequest) {
             this.okHttpRequest = okHttpRequest;
             this.numberOfClientsInitialized++;
@@ -82,14 +90,6 @@ public class RequestDetails {
                 builder.method(method, null);
             }
             return builder.build();
-        }
-
-        private static String buildUrlFromApacheHttpRequest(HttpRequest request) {
-            final HttpHost target = ((HttpRequestWrapper) request).getTarget();
-            final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
-            return String
-                .format("%s://%s%s%s", target.getSchemeName(), target.getHostName(), portString,
-                    ((HttpRequestWrapper) request).getURI());
         }
 
     }

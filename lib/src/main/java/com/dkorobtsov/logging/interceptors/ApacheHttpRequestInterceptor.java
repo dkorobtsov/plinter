@@ -3,10 +3,10 @@ package com.dkorobtsov.logging.interceptors;
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
 import static com.dkorobtsov.logging.utils.TextUtils.hasPrintableBody;
 
-import com.dkorobtsov.logging.utils.BodyUtils;
-import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.RequestDetails;
+import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.utils.BodyUtils;
 import okhttp3.Request;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;

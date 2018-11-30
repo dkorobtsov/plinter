@@ -7,8 +7,8 @@ public enum InterceptorVersion {
 
     private String name;
 
-    public String getName() {
-        return name;
+    InterceptorVersion(String name) {
+        this.name = name;
     }
 
     public static InterceptorVersion parse(String name) {
@@ -24,7 +24,7 @@ public enum InterceptorVersion {
         }
     }
 
-    InterceptorVersion(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 }

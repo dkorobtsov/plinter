@@ -29,6 +29,22 @@ public class LoggerConfig {
         return new LoggerConfigBuilder();
     }
 
+    @Override
+    public String toString() {
+        final String line = "\n────────────────────────────────────────────────────────────────────────────────────────";
+        return line
+            + "\n LoggerConfig:"
+            + line
+            + "\n isLoggable     : " + isLoggable
+            + "\n level          : " + level
+            + "\n logger         : " + logger
+            + "\n formatter      : " + formatter
+            + "\n executor       : " + executor
+            + "\n maxLineLength  : " + maxLineLength
+            + "\n withThreadInfo : " + withThreadInfo
+            + line;
+    }
+
     public static class LoggerConfigBuilder {
 
         private boolean isLoggable = true;
@@ -82,21 +98,5 @@ public class LoggerConfig {
                 withThreadInfo);
         }
 
-    }
-
-    @Override
-    public String toString() {
-        final String line = "\n────────────────────────────────────────────────────────────────────────────────────────";
-        return line
-            + "\n LoggerConfig:"
-            + line
-            + "\n isLoggable     : " + isLoggable
-            + "\n level          : " + level
-            + "\n logger         : " + logger
-            + "\n formatter      : " + formatter
-            + "\n executor       : " + executor
-            + "\n maxLineLength  : " + maxLineLength
-            + "\n withThreadInfo : " + withThreadInfo
-            + line;
     }
 }

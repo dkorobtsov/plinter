@@ -1,8 +1,8 @@
 package com.dkorobtsov.logging.interceptors;
 
 import com.dkorobtsov.logging.InterceptedResponse;
-import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.LoggerConfig;
+import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.utils.TextUtils;
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +20,7 @@ abstract class AbstractOkHttpInterceptor {
         return this.loggerConfig;
     }
 
-    protected boolean skipLogging(){
+    protected boolean skipLogging() {
         return !loggerConfig.isLoggable || loggerConfig.level == Level.NONE;
     }
 

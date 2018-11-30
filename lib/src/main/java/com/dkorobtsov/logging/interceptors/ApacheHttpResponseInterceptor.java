@@ -1,12 +1,12 @@
 package com.dkorobtsov.logging.interceptors;
 
 import com.dkorobtsov.logging.ClientPrintingExecutor;
-import com.dkorobtsov.logging.enums.HttpStatusCode;
 import com.dkorobtsov.logging.InterceptedResponse;
-import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.utils.TextUtils;
 import com.dkorobtsov.logging.converters.ToOkHttp3Converter;
+import com.dkorobtsov.logging.enums.HttpStatusCode;
+import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.utils.TextUtils;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
