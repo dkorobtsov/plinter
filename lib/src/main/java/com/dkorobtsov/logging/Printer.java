@@ -85,9 +85,9 @@ class Printer {
     }
 
     private static void printDebugDetails(boolean isRequest) {
-        if (loggerConfig.withThreadInfo){
+        if (loggerConfig.withThreadInfo) {
             String debugDetails = LINE_SEPARATOR +
-                String.format(isRequest? SENT_STRING_FORMAT : RECEIVED_STRING_FORMAT,
+                String.format(isRequest ? SENT_STRING_FORMAT : RECEIVED_STRING_FORMAT,
                     THREAD_TAG,
                     Thread.currentThread().getName(),
                     isRequest ? SENT_TAG : RECEIVED_TAG,

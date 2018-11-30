@@ -31,13 +31,13 @@ public class LoggerConfig {
 
     public static class LoggerConfigBuilder {
 
-        private boolean isLoggable;
-        private Level level;
-        private LogWriter logger;
-        private LoggingFormat formatter;
+        private boolean isLoggable = true;
+        private Level level = Level.BASIC;
+        private LoggingFormat formatter = LoggingFormat.JUL_MESSAGE_ONLY;
+        private LogWriter logger = new DefaultLogger(this.formatter);
         private Executor executor;
-        private int maxLineLength;
-        private boolean withThreadInfo;
+        private int maxLineLength = 110;
+        private boolean withThreadInfo = false;
 
         LoggerConfigBuilder() {
         }
