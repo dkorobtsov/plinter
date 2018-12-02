@@ -1,11 +1,11 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.internal.InterceptedRequest;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import okhttp3.Request;
 
 public class ClientPrintingExecutor {
 
@@ -15,7 +15,7 @@ public class ClientPrintingExecutor {
     }
 
     public static void printRequest(final LoggerConfig loggerConfig,
-        final Request request, final boolean hasPrintableBody) {
+        final InterceptedRequest request, final boolean hasPrintableBody) {
         Runnable printRequest = () -> Printer.printRequest(loggerConfig, request, hasPrintableBody);
         final ExecutorService executor = (ExecutorService) loggerConfig.executor;
         sendCommandToPrinter(executor, printRequest);

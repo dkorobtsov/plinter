@@ -288,8 +288,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
     @Test
     @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
+/*        "okhttp, true", "okhttp, false",
+        "okhttp3, true", "okhttp3, false",*/
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
     public void interceptorAbleToHandleBody_xmlResponse(String loggerVersion,

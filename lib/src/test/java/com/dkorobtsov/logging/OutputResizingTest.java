@@ -2,7 +2,7 @@ package com.dkorobtsov.logging;
 
 import static org.junit.Assert.assertTrue;
 
-import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import java.io.IOException;
 import java.util.List;
 import junitparams.JUnitParamsRunner;

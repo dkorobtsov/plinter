@@ -1,16 +1,16 @@
 package com.dkorobtsov.logging;
 
 import static com.dkorobtsov.logging.BodyFormatter.formattedBody;
-import static com.dkorobtsov.logging.utils.TextUtils.slashSegments;
+import static com.dkorobtsov.logging.Utilities.slashSegments;
 
 import com.dkorobtsov.logging.enums.Level;
-import com.dkorobtsov.logging.utils.TextUtils;
+import com.dkorobtsov.logging.internal.InterceptedRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Objects;
-import okhttp3.Request;
 import okio.Buffer;
+import org.apache.http.util.TextUtils;
 
 class Printer {
 
@@ -50,7 +50,8 @@ class Printer {
     private Printer() {
     }
 
-    static void printRequest(LoggerConfig loggerConfig, Request request, boolean hasPrintableBody) {
+    static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request,
+        boolean hasPrintableBody) {
         Printer.loggerConfig = loggerConfig;
 
         printRequestStartingLine();
@@ -106,7 +107,7 @@ class Printer {
         }
     }
 
-    private static void printRequestDetails(Request request) {
+    private static void printRequestDetails(InterceptedRequest request) {
         logLines(requestDetails(request), true);
     }
 
@@ -114,7 +115,7 @@ class Printer {
         logLines(responseDetails(interceptedResponse), true);
     }
 
-    private static void printRequestBody(Request request, boolean hasPrintableBody) {
+    private static void printRequestBody(InterceptedRequest request, boolean hasPrintableBody) {
         if (bodyShouldBePrinted()) {
             if (hasPrintableBody) {
                 String requestBody = LINE_SEPARATOR
@@ -147,7 +148,7 @@ class Printer {
         return loggerConfig.level == Level.BASIC || loggerConfig.level == Level.BODY;
     }
 
-    private static String[] requestDetails(Request request) {
+    private static String[] requestDetails(InterceptedRequest request) {
         boolean isLoggable = loggerConfig.level == Level.HEADERS
             || loggerConfig.level == Level.BASIC;
 
@@ -184,8 +185,8 @@ class Printer {
             : "";
     }
 
-    private static String bodyToString(final Request request) {
-        final Request copy = request.newBuilder().build();
+    private static String bodyToString(final InterceptedRequest request) {
+        final InterceptedRequest copy = request.newBuilder().build();
         try (final Buffer buffer = new Buffer()) {
             if (Objects.isNull(copy.body())) {
                 return "";
@@ -227,6 +228,7 @@ class Printer {
 
     private static String dotHeaders(String header) {
         String[] headers = header.split(REGEX_LINE_SEPARATOR);
+
         StringBuilder builder = new StringBuilder();
         String tag = "─ ";
         if (headers.length > 1) {

@@ -1,15 +1,13 @@
 package com.dkorobtsov.logging;
 
-import static com.dkorobtsov.logging.converters.ToOkHttpConverter.convertOkHttp3RequestBody;
 import static org.junit.Assert.fail;
 
-import com.dkorobtsov.logging.converters.ToApacheHttpClientConverter;
 import com.dkorobtsov.logging.enums.InterceptorVersion;
 import com.dkorobtsov.logging.enums.LoggingFormat;
-import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
-import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
-import com.dkorobtsov.logging.interceptors.OkHttpLoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
+import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import java.io.IOException;
@@ -29,12 +27,14 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okio.Buffer;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
@@ -281,8 +281,7 @@ public abstract class BaseTest {
                     String.format("%s/%s", Objects.requireNonNull(mediaType).type(),
                         mediaType.subtype()));
 
-                final HttpEntity entity = ToApacheHttpClientConverter
-                    .okHttp3RequestBodyToStringEntity(body, contentType);
+                final HttpEntity entity = okHttp3RequestBodyToStringEntity(body, contentType);
 
                 httpPut.setEntity(entity);
                 httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
@@ -295,6 +294,50 @@ public abstract class BaseTest {
                 fail("Unknown interceptor version: " + interceptorVersion);
                 return Arrays.asList(new String[1]);
         }
+    }
+
+    private static HttpEntity okHttp3RequestBodyToStringEntity(RequestBody requestBody,
+        ContentType contentType) throws IOException {
+
+        if (requestBody == null) {
+            return new StringEntity("");
+        }
+
+        final String responseString;
+        try (final Buffer buffer = new Buffer()) {
+            requestBody.writeTo(buffer);
+            responseString = buffer.readUtf8();
+        }
+
+        return new StringEntity(responseString, contentType);
+    }
+
+    private static com.squareup.okhttp.RequestBody convertOkHttp3RequestBody(
+        okhttp3.Request request) {
+        final com.squareup.okhttp.MediaType contentType =
+            request.body() == null ? com.squareup.okhttp.MediaType
+                .parse("")
+                : convertOkHttp3MediaType(request.body().contentType());
+        try {
+            final okhttp3.Request requestCopy = request.newBuilder().build();
+
+            String requestBodyString = "";
+            if (requestCopy.body() != null) {
+                final Buffer buffer = new Buffer();
+                requestCopy.body().writeTo(buffer);
+                requestBodyString = buffer.readUtf8();
+            }
+            return com.squareup.okhttp.RequestBody.create(contentType, requestBodyString);
+        } catch (final IOException e) {
+            return com.squareup.okhttp.RequestBody
+                .create(contentType, "[LoggingInterceptorError] : could not parse request body");
+        }
+    }
+
+    private static com.squareup.okhttp.MediaType convertOkHttp3MediaType(
+        okhttp3.MediaType okHttp3MediaType) {
+        return okHttp3MediaType == null ? com.squareup.okhttp.MediaType.parse("")
+            : com.squareup.okhttp.MediaType.parse(okHttp3MediaType.toString());
     }
 
     List<String> interceptedResponse(String contentType, String body, String loggerVersion,

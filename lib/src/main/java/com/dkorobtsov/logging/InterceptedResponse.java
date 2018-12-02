@@ -1,7 +1,7 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import java.util.List;
-import okhttp3.MediaType;
 
 public final class InterceptedResponse {
 
@@ -10,14 +10,14 @@ public final class InterceptedResponse {
     public final int code;
     public final boolean isSuccessful;
     public final String message;
-    public final MediaType contentType;
+    public final InterceptedMediaType contentType;
     public final String url;
     public final String originalBody;
     public final boolean hasPrintableBody;
     public final long chainMs;
 
     InterceptedResponse(List<String> segmentList, String header, int code, boolean isSuccessful,
-        String message, MediaType contentType, String url,
+        String message, InterceptedMediaType contentType, String url,
         String originalBody, boolean hasPrintableBody, long chainMs) {
         this.segmentList = segmentList;
         this.header = header;
@@ -42,7 +42,7 @@ public final class InterceptedResponse {
         private int code;
         private boolean isSuccessful;
         private String message;
-        private MediaType contentType;
+        private InterceptedMediaType contentType;
         private String url;
         private String originalBody;
         private boolean hasPrintableBody;
@@ -76,7 +76,7 @@ public final class InterceptedResponse {
             return this;
         }
 
-        public ResponseDetailsBuilder contentType(MediaType contentType) {
+        public ResponseDetailsBuilder contentType(InterceptedMediaType contentType) {
             this.contentType = contentType;
             return this;
         }

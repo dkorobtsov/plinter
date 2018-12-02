@@ -1,14 +1,14 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.internal.InterceptedRequest;
 import java.util.concurrent.Executors;
-import okhttp3.Request;
 import org.junit.Test;
 
 public class ClientPrintingExecutorNegativeUnitTests {
 
     @Test
     public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
-        final Request request = new Request.Builder()
+        final InterceptedRequest request = new InterceptedRequest.Builder()
             .get()
             .url("http://google.com")
             .build();
@@ -22,7 +22,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
 
     @Test
     public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
-        final Request request = new Request.Builder()
+        final InterceptedRequest request = new InterceptedRequest.Builder()
             .get()
             .url("http://google.com")
             .build();

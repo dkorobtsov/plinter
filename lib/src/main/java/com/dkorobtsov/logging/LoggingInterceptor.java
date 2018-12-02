@@ -4,10 +4,10 @@ import static java.util.Objects.isNull;
 
 import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.enums.LoggingFormat;
-import com.dkorobtsov.logging.interceptors.ApacheHttpRequestInterceptor;
-import com.dkorobtsov.logging.interceptors.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.OkHttp3LoggingInterceptor;
-import com.dkorobtsov.logging.interceptors.OkHttpLoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
+import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import java.util.concurrent.Executor;
 
 public class LoggingInterceptor {
