@@ -1,12 +1,17 @@
 package com.dkorobtsov.logging.interceptors.okhttp3;
 
+import static java.util.Objects.isNull;
+
+import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.ResponseDetails;
+import com.dkorobtsov.logging.ResponseConverter;
+import com.dkorobtsov.logging.ResponseHandler;
 import com.dkorobtsov.logging.internal.InterceptedHeaders;
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedResponseBody;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okhttp3.Headers;
@@ -15,24 +20,26 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 @SuppressWarnings("Duplicates")
-class OkHttp3ResponseAdapter {
+class OkHttp3ResponseConverter implements ResponseConverter<Response> {
 
-    private static final Logger logger = Logger.getLogger(OkHttp3ResponseAdapter.class.getName());
+    private static final Logger logger = Logger.getLogger(OkHttp3ResponseConverter.class.getName());
 
-    OkHttp3ResponseAdapter() {
-
+    @Override
+    public InterceptedResponse convertFrom(Response response, URL requestUrl, Long ms) {
+        return ResponseHandler
+            .interceptedResponse(responseDetails(response), requestUrl, ms);
     }
 
-    static ResponseDetails responseDetails(Response response) {
-        if (response == null) {
-            return null;
+    private ResponseDetails responseDetails(Response response) {
+        if (isNull(response)) {
+            throw new IllegalStateException("httpResponse == null");
         } else {
             return ResponseDetails.builder()
                 .code(response.code())
                 .headers(interceptedHeaders(response.headers()))
                 .isSuccessful(response.isSuccessful())
                 .mediaType(interceptedMediaType(
-                    Objects.isNull(response.body())
+                    isNull(response.body())
                         ? null
                         : response.body().contentType()))
                 .message(response.message())
@@ -41,14 +48,14 @@ class OkHttp3ResponseAdapter {
         }
     }
 
-    private static InterceptedHeaders interceptedHeaders(Headers headers) {
+    private InterceptedHeaders interceptedHeaders(Headers headers) {
         final InterceptedHeaders.Builder headersBuilder = new InterceptedHeaders.Builder();
         headers.names().forEach(name -> headersBuilder.add(name, headers.get(name)));
         return headersBuilder.build();
     }
 
-    private static InterceptedResponseBody interceptedResponseBody(ResponseBody responseBody) {
-        if (Objects.isNull(responseBody)) {
+    private InterceptedResponseBody interceptedResponseBody(ResponseBody responseBody) {
+        if (isNull(responseBody)) {
             return null;
         } else {
             final MediaType mediaType = responseBody.contentType();
@@ -63,7 +70,7 @@ class OkHttp3ResponseAdapter {
         }
     }
 
-    private static InterceptedMediaType interceptedMediaType(MediaType mediaType) {
+    private InterceptedMediaType interceptedMediaType(MediaType mediaType) {
         return mediaType == null ? InterceptedMediaType.parse("")
             : InterceptedMediaType.parse(mediaType.toString());
     }

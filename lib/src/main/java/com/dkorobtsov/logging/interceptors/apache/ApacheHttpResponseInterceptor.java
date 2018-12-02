@@ -1,28 +1,31 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
+import com.dkorobtsov.logging.AbstractInterceptor;
 import com.dkorobtsov.logging.ClientPrintingExecutor;
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
+import com.dkorobtsov.logging.ResponseConverter;
 import com.dkorobtsov.logging.enums.Level;
-import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
-import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.protocol.HttpContext;
 
-public class ApacheHttpResponseInterceptor extends AbstractInterceptor implements
-    HttpResponseInterceptor {
+public class ApacheHttpResponseInterceptor extends AbstractInterceptor
+    implements HttpResponseInterceptor {
+
+    private ResponseConverter<HttpResponse> responseAdapter;
 
     public ApacheHttpResponseInterceptor(LoggerConfig loggerConfig) {
+        this.responseAdapter = new ApacheResponseConverter();
         this.loggerConfig = loggerConfig;
     }
 
     @Override
-    public void process(HttpResponse response, HttpContext context) throws IOException {
+    public void process(HttpResponse response, HttpContext context) {
         if (loggerConfig.isLoggable && loggerConfig.level != Level.NONE) {
 
-            InterceptedResponse interceptedResponse = interceptedResponse(
-                ApacheResponseAdapter.responseDetails(response), null, null);
+            InterceptedResponse interceptedResponse = responseAdapter.convertFrom(
+                response, null, null);
 
             ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
         }

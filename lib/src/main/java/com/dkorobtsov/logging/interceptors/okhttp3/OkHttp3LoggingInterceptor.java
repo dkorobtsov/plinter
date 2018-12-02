@@ -2,13 +2,15 @@ package com.dkorobtsov.logging.interceptors.okhttp3;
 
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printResponse;
-import static com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3ResponseAdapter.responseDetails;
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
+import com.dkorobtsov.logging.AbstractInterceptor;
+import com.dkorobtsov.logging.RequestConverter;
+import com.dkorobtsov.logging.ResponseConverter;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -16,10 +18,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class OkHttp3LoggingInterceptor
-    extends AbstractInterceptor implements Interceptor {
+public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements Interceptor {
+
+    private RequestConverter<Request> requestConverter;
+    private ResponseConverter<Response> responseConverter;
 
     public OkHttp3LoggingInterceptor(LoggerConfig loggerConfig) {
+        this.requestConverter = new OkHttp3RequestConverter();
+        this.responseConverter = new OkHttp3ResponseConverter();
         this.loggerConfig = loggerConfig;
     }
 
@@ -27,8 +33,7 @@ public class OkHttp3LoggingInterceptor
     @SuppressWarnings("Duplicates")
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        final InterceptedRequest interceptedRequest = OkHttp3RequestAdapter
-            .interceptedRequest(request);
+        final InterceptedRequest interceptedRequest = requestConverter.convertFrom(request);
 
         if (skipLogging()) {
             return chain.proceed(request);
@@ -41,8 +46,8 @@ public class OkHttp3LoggingInterceptor
         final long ms = TimeUnit.NANOSECONDS
             .toMillis(System.nanoTime() - startTime);
 
-        InterceptedResponse interceptedResponse = interceptedResponse(
-            responseDetails(response), interceptedRequest.url(), ms);
+        final URL url = interceptedRequest.url();
+        InterceptedResponse interceptedResponse = responseConverter.convertFrom(response, url, ms);
 
         printResponse(loggerConfig, interceptedResponse);
 

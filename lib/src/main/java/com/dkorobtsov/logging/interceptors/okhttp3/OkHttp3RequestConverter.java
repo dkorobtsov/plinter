@@ -1,29 +1,27 @@
-package com.dkorobtsov.logging.interceptors.okhttp;
+package com.dkorobtsov.logging.interceptors.okhttp3;
 
 import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
 
+import com.dkorobtsov.logging.RequestConverter;
 import com.dkorobtsov.logging.internal.CacheControl;
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.dkorobtsov.logging.internal.InterceptedRequestBody;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Request;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import okhttp3.MediaType;
+import okhttp3.Request;
 import okio.Buffer;
 
 @SuppressWarnings("Duplicates")
-class OkHttpRequestAdapter {
+class OkHttp3RequestConverter implements RequestConverter<Request> {
 
-    private OkHttpRequestAdapter() {
-
-    }
-
-    static InterceptedRequest interceptedRequest(com.squareup.okhttp.Request okHttpRequest) {
+    @Override
+    public InterceptedRequest convertFrom(Request okHttpRequest) {
         final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
-        builder.url(okHttpRequest.url());
+        builder.url(okHttpRequest.url().toString());
         final Map<String, List<String>> headersMap = okHttpRequest.headers().toMultimap();
         headersMap.forEach((String name, List<String> values)
             -> builder.addHeader(name, String.join(";", values)));
@@ -40,7 +38,7 @@ class OkHttpRequestAdapter {
         return builder.build();
     }
 
-    private static InterceptedRequestBody interceptedRequestBody(Request request) {
+    private InterceptedRequestBody interceptedRequestBody(Request request) {
         final InterceptedMediaType contentType = request.body() == null
             ? InterceptedMediaType.parse("")
             : interceptedMediaType(request.body().contentType());
@@ -61,12 +59,13 @@ class OkHttpRequestAdapter {
         }
     }
 
-    private static InterceptedMediaType interceptedMediaType(MediaType mediaType) {
+    private InterceptedMediaType interceptedMediaType(MediaType mediaType) {
         return mediaType == null ? InterceptedMediaType.parse("")
             : InterceptedMediaType.parse(mediaType.toString());
     }
 
-    private static CacheControl cacheControl(com.squareup.okhttp.CacheControl cacheControl) {
+    private CacheControl cacheControl(
+        okhttp3.CacheControl cacheControl) {
         return new CacheControl.Builder()
             .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),
                 TimeUnit.SECONDS)

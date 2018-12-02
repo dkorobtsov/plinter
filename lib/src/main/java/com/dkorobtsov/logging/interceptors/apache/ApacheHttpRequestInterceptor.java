@@ -1,27 +1,29 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
-import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
-import static com.dkorobtsov.logging.interceptors.apache.ApacheRequestAdapter.interceptedRequest;
-
+import com.dkorobtsov.logging.AbstractInterceptor;
+import com.dkorobtsov.logging.ClientPrintingExecutor;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
+import com.dkorobtsov.logging.RequestConverter;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
 
-public class ApacheHttpRequestInterceptor
-    extends AbstractInterceptor implements HttpRequestInterceptor {
+public class ApacheHttpRequestInterceptor extends AbstractInterceptor
+    implements HttpRequestInterceptor {
+
+    private RequestConverter<HttpRequest> requestConverter;
 
     public ApacheHttpRequestInterceptor(LoggerConfig loggerConfig) {
+        this.requestConverter = new ApacheRequestConverter();
         this.loggerConfig = loggerConfig;
     }
 
     @Override
     public void process(HttpRequest request, HttpContext context) {
         if (!skipLogging()) {
-            final InterceptedRequest interceptedRequest = interceptedRequest(request);
-            printRequest(loggerConfig, interceptedRequest);
+            final InterceptedRequest interceptedRequest = requestConverter.convertFrom(request);
+            ClientPrintingExecutor.printRequest(loggerConfig, interceptedRequest);
         }
     }
 

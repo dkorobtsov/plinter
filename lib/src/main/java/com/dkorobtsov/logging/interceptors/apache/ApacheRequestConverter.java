@@ -1,9 +1,10 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
-import static com.dkorobtsov.logging.interceptors.apache.ApacheResponseAdapter.readApacheHttpEntity;
-import static com.dkorobtsov.logging.interceptors.apache.ApacheResponseAdapter.recreateHttpEntityFromString;
-import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
+import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.readApacheHttpEntity;
+import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.recreateHttpEntityFromString;
 
+import com.dkorobtsov.logging.RequestConverter;
+import com.dkorobtsov.logging.internal.HttpMethod;
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.dkorobtsov.logging.internal.InterceptedRequestBody;
@@ -19,17 +20,14 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.message.BasicHeader;
 
-public class ApacheRequestAdapter {
+public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
 
-    private static final Logger logger = Logger.getLogger(ApacheRequestAdapter.class.getName());
+    private static final Logger logger = Logger.getLogger(ApacheRequestConverter.class.getName());
 
     private static final String APPLICATION_JSON = "application/json";
 
-    private ApacheRequestAdapter() {
-
-    }
-
-    public static InterceptedRequest interceptedRequest(HttpRequest apacheHttpRequest) {
+    @Override
+    public InterceptedRequest convertFrom(HttpRequest apacheHttpRequest) {
         final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
         builder.url(interceptedUrl(apacheHttpRequest));
 
@@ -38,7 +36,7 @@ public class ApacheRequestAdapter {
             .forEach(header -> builder.addHeader(header.getName(), header.getValue()));
 
         final String method = apacheHttpRequest.getRequestLine().getMethod();
-        if (permitsRequestBody(method)) {
+        if (HttpMethod.permitsRequestBody(method)) {
             builder.method(method, interceptedRequestBody(apacheHttpRequest));
         } else {
             builder.method(method, null);
@@ -46,7 +44,7 @@ public class ApacheRequestAdapter {
         return builder.build();
     }
 
-    public static InterceptedRequestBody interceptedRequestBody(HttpRequest request) {
+    private InterceptedRequestBody interceptedRequestBody(HttpRequest request) {
         if (request instanceof HttpRequestWrapper) {
             final HttpRequest original = ((HttpRequestWrapper) request).getOriginal();
             if (original instanceof HttpEntityEnclosingRequestBase) {
@@ -85,7 +83,7 @@ public class ApacheRequestAdapter {
             .create(InterceptedMediaType.parse(APPLICATION_JSON), "");
     }
 
-    private static String interceptedUrl(HttpRequest request) {
+    private String interceptedUrl(HttpRequest request) {
         final HttpHost target = ((HttpRequestWrapper) request).getTarget();
         final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
         return String
