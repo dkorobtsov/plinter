@@ -171,27 +171,30 @@ class Printer {
         return requestDetails.split(REGEX_LINE_SEPARATOR);
     }
 
-    private static String[] responseDetails(InterceptedResponse responseDetails) {
+    private static String[] responseDetails(InterceptedResponse interceptedResponse) {
         final boolean isLoggable = loggerConfig.level == Level.HEADERS
             || loggerConfig.level == Level.BASIC;
 
-        final String segmentString = slashSegments(responseDetails.segmentList);
-        final String receivedTags = responseDetails.chainMs == 0
+        final String segmentString = slashSegments(interceptedResponse.segmentList);
+        final String receivedTags = interceptedResponse.chainMs == 0
             ? ""
-            : " - " + EXECUTION_TIME_TAG + responseDetails.chainMs + "ms";
+            : " - " + EXECUTION_TIME_TAG + interceptedResponse.chainMs + "ms";
 
         final String log = (!TextUtils.isEmpty(segmentString)
             ? segmentString + " - "
             : "") + "is success : "
-            + responseDetails.isSuccessful + receivedTags
+            + interceptedResponse.isSuccessful + receivedTags
             + DOUBLE_SEPARATOR
-            + STATUS_CODE_TAG + responseDetails.code + " / " + responseDetails.message
+            + STATUS_CODE_TAG + interceptedResponse.code + " / " + interceptedResponse.message
             + DOUBLE_SEPARATOR
-            + printHeaderIfLoggable(responseDetails.header, isLoggable);
+            + printHeaderIfLoggable(interceptedResponse.header, isLoggable);
         return log.split(REGEX_LINE_SEPARATOR);
     }
 
     private static String slashSegments(List<String> segments) {
+        if (segments.isEmpty()) {
+            return "";
+        }
         StringBuilder segmentString = new StringBuilder();
         for (String segment : segments) {
             segmentString.append("/").append(segment);

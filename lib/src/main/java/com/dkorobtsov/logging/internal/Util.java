@@ -15,11 +15,14 @@
  */
 package com.dkorobtsov.logging.internal;
 
+import static java.util.Objects.isNull;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import okio.BufferedSource;
@@ -151,6 +154,9 @@ public final class Util {
      * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
      */
     public static List<String> encodedPathSegments(URL url) {
+        if (isNull(url)) {
+            return Collections.emptyList();
+        }
         String urlString = url.toString();
         String scheme = url.getProtocol();
 
