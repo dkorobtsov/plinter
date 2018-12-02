@@ -15,11 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SuppressWarnings("Duplicates")
-class OkHttpResponseDetails {
+class OkHttpResponseAdapter {
 
-    private static final Logger logger = Logger.getLogger(OkHttpResponseDetails.class.getName());
+    private static final Logger logger = Logger.getLogger(OkHttpResponseAdapter.class.getName());
 
-    OkHttpResponseDetails() {
+    OkHttpResponseAdapter() {
 
     }
 

@@ -22,7 +22,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor implement
         if (loggerConfig.isLoggable && loggerConfig.level != Level.NONE) {
 
             InterceptedResponse interceptedResponse = interceptedResponse(
-                ApacheResponseDetails.responseDetails(response), null, null);
+                ApacheResponseAdapter.responseDetails(response), null, null);
 
             ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
         }

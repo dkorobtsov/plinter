@@ -15,11 +15,11 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 @SuppressWarnings("Duplicates")
-class OkHttp3ResponseDetails {
+class OkHttp3ResponseAdapter {
 
-    private static final Logger logger = Logger.getLogger(OkHttp3ResponseDetails.class.getName());
+    private static final Logger logger = Logger.getLogger(OkHttp3ResponseAdapter.class.getName());
 
-    OkHttp3ResponseDetails() {
+    OkHttp3ResponseAdapter() {
 
     }
 

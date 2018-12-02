@@ -2,7 +2,7 @@ package com.dkorobtsov.logging.interceptors.okhttp3;
 
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printResponse;
-import static com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3ResponseDetails.responseDetails;
+import static com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3ResponseAdapter.responseDetails;
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
@@ -27,7 +27,7 @@ public class OkHttp3LoggingInterceptor
     @SuppressWarnings("Duplicates")
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        final InterceptedRequest interceptedRequest = OkHttp3RequestDetails
+        final InterceptedRequest interceptedRequest = OkHttp3RequestAdapter
             .interceptedRequest(request);
 
         if (skipLogging()) {

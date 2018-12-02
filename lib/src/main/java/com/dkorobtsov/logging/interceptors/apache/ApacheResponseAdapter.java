@@ -22,12 +22,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 
-public class ApacheResponseDetails {
+public class ApacheResponseAdapter {
 
     private static final String APPLICATION_JSON = "application/json";
-    private static final Logger logger = Logger.getLogger(ApacheResponseDetails.class.getName());
+    private static final Logger logger = Logger.getLogger(ApacheResponseAdapter.class.getName());
 
-    ApacheResponseDetails() {
+    ApacheResponseAdapter() {
 
     }
 

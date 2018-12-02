@@ -1,7 +1,7 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
-import static com.dkorobtsov.logging.interceptors.apache.ApacheResponseDetails.readApacheHttpEntity;
-import static com.dkorobtsov.logging.interceptors.apache.ApacheResponseDetails.recreateHttpEntityFromString;
+import static com.dkorobtsov.logging.interceptors.apache.ApacheResponseAdapter.readApacheHttpEntity;
+import static com.dkorobtsov.logging.interceptors.apache.ApacheResponseAdapter.recreateHttpEntityFromString;
 import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
 
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
@@ -19,13 +19,13 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.message.BasicHeader;
 
-public class ApacheRequestDetails {
+public class ApacheRequestAdapter {
 
-    private static final Logger logger = Logger.getLogger(ApacheRequestDetails.class.getName());
+    private static final Logger logger = Logger.getLogger(ApacheRequestAdapter.class.getName());
 
     private static final String APPLICATION_JSON = "application/json";
 
-    private ApacheRequestDetails() {
+    private ApacheRequestAdapter() {
 
     }
 

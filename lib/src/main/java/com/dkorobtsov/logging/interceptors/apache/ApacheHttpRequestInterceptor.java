@@ -1,7 +1,7 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
-import static com.dkorobtsov.logging.interceptors.apache.ApacheRequestDetails.interceptedRequest;
+import static com.dkorobtsov.logging.interceptors.apache.ApacheRequestAdapter.interceptedRequest;
 
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.interceptors.AbstractInterceptor;

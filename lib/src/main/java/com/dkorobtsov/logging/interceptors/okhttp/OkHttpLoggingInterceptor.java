@@ -2,8 +2,8 @@ package com.dkorobtsov.logging.interceptors.okhttp;
 
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printResponse;
-import static com.dkorobtsov.logging.interceptors.okhttp.OkHttpRequestDetails.interceptedRequest;
-import static com.dkorobtsov.logging.interceptors.okhttp.OkHttpResponseDetails.responseDetails;
+import static com.dkorobtsov.logging.interceptors.okhttp.OkHttpRequestAdapter.interceptedRequest;
+import static com.dkorobtsov.logging.interceptors.okhttp.OkHttpResponseAdapter.responseDetails;
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;

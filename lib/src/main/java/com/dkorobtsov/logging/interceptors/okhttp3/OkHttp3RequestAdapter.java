@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging.interceptors.okhttp;
+package com.dkorobtsov.logging.interceptors.okhttp3;
 
 import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
 
@@ -6,24 +6,24 @@ import com.dkorobtsov.logging.internal.CacheControl;
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.dkorobtsov.logging.internal.InterceptedRequestBody;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Request;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import okhttp3.MediaType;
+import okhttp3.Request;
 import okio.Buffer;
 
 @SuppressWarnings("Duplicates")
-class OkHttpRequestDetails {
+class OkHttp3RequestAdapter {
 
-    private OkHttpRequestDetails() {
+    private OkHttp3RequestAdapter() {
 
     }
 
-    static InterceptedRequest interceptedRequest(com.squareup.okhttp.Request okHttpRequest) {
+    static InterceptedRequest interceptedRequest(Request okHttpRequest) {
         final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
-        builder.url(okHttpRequest.url());
+        builder.url(okHttpRequest.url().toString());
         final Map<String, List<String>> headersMap = okHttpRequest.headers().toMultimap();
         headersMap.forEach((String name, List<String> values)
             -> builder.addHeader(name, String.join(";", values)));
@@ -66,7 +66,8 @@ class OkHttpRequestDetails {
             : InterceptedMediaType.parse(mediaType.toString());
     }
 
-    private static CacheControl cacheControl(com.squareup.okhttp.CacheControl cacheControl) {
+    private static CacheControl cacheControl(
+        okhttp3.CacheControl cacheControl) {
         return new CacheControl.Builder()
             .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),
                 TimeUnit.SECONDS)
