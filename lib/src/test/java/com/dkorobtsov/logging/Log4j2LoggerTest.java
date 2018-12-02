@@ -46,7 +46,7 @@ public class Log4j2LoggerTest extends BaseTest {
 
     @Test
     @Parameters({
-        "okhttp", "okhttp3"
+        "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
     public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptorVersion)
         throws IOException {

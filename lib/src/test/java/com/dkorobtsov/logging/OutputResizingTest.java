@@ -20,9 +20,9 @@ public class OutputResizingTest extends BaseTest {
 
     @Test
     @Parameters({
-        "okhttp, false",
-        "okhttp3, false",
-        "apacheHttpclientRequest, false"
+        "okhttp, false", "okhttp, true",
+        "okhttp3, false", "okhttp3, true",
+        "apacheHttpclientRequest, false", "apacheHttpclientRequest, true"
     })
     public void printerOutputResizingValidation(String loggerVersion,
         boolean provideExecutor) throws IOException {

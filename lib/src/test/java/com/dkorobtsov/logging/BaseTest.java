@@ -137,20 +137,20 @@ public abstract class BaseTest {
         }
     }
 
-    void attachLoggerToInterceptor(String version, LogWriter log4j2Writer,
+    void attachLoggerToInterceptor(String version, LogWriter logWriter,
         Request okHttp3Request, com.squareup.okhttp.Request okHttpRequest,
         HttpUriRequest apacheHttpRequest) throws IOException {
 
         InterceptorVersion interceptorVersion = parse(version);
         switch (interceptorVersion) {
             case OKHTTP3:
-                attachLoggerToOkHttp3Interceptor(log4j2Writer, okHttp3Request);
+                attachLoggerToOkHttp3Interceptor(logWriter, okHttp3Request);
                 break;
             case OKHTTP:
-                attachLoggerToOkHttpInterceptor(log4j2Writer, okHttpRequest);
+                attachLoggerToOkHttpInterceptor(logWriter, okHttpRequest);
                 break;
             case APACHE_HTTPCLIENT_REQUEST:
-                attachLoggerToApacheRequestInterceptor(log4j2Writer, apacheHttpRequest);
+                attachLoggerToApacheRequestInterceptor(logWriter, apacheHttpRequest);
                 break;
             default:
                 fail("Unknown interceptor version: " + interceptorVersion);
@@ -231,7 +231,9 @@ public abstract class BaseTest {
             .put(body)
             .build();
 
-        LoggerConfigBuilder builder = LoggerConfig.builder().logger(testLogger);
+        LoggerConfigBuilder builder = LoggerConfig.builder()
+            .withThreadInfo(true)
+            .logger(testLogger);
 
         if (Objects.nonNull(maxLineLength)) {
             builder.maxLineLength(maxLineLength);
@@ -365,7 +367,9 @@ public abstract class BaseTest {
             .setBody(body));
 
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        LoggerConfigBuilder builder = LoggerConfig.builder().logger(testLogger);
+        LoggerConfigBuilder builder = LoggerConfig.builder()
+            .withThreadInfo(true)
+            .logger(testLogger);
 
         if (provideExecutors) {
             builder.executor(new ThreadPoolExecutor(1, 1,
