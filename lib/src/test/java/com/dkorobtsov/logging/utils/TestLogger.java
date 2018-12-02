@@ -94,7 +94,7 @@ public class TestLogger implements LogWriter {
     /**
      * @return Returns all formatted events published by current logger as String array
      */
-    List<String> loggerOutput(boolean preserveTrailingSpaces) {
+    public List<String> loggerOutput(boolean preserveTrailingSpaces) {
         if (preserveTrailingSpaces) {
             return Arrays.asList(formattedOutput().split("\r?\n"));
         }
