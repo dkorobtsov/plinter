@@ -2,8 +2,8 @@ package com.dkorobtsov.logging;
 
 import static org.junit.Assert.assertTrue;
 
-import com.dkorobtsov.logging.enums.InterceptorVersion;
-import com.dkorobtsov.logging.enums.LoggingFormat;
+import com.dkorobtsov.logging.utils.InterceptorVersion;
+import com.dkorobtsov.logging.utils.TestLogger;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.io.IOException;
 import junitparams.JUnitParamsRunner;

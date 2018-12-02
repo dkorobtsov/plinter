@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging.enums;
+package com.dkorobtsov.logging;
 
 import java.util.Date;
 import java.util.logging.LogRecord;

@@ -16,6 +16,7 @@
 package com.dkorobtsov.logging.internal;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -41,6 +42,7 @@ import okio.ByteString;
  */
 public final class Util {
 
+    public static final String APPLICATION_JSON = "application/json";
     static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final ByteString UTF_8_BOM = ByteString.decodeHex("efbbbf");
     private static final ByteString UTF_16_BE_BOM = ByteString.decodeHex("feff");
@@ -170,6 +172,13 @@ public final class Util {
             i = segmentEnd;
         }
         return result;
+    }
+
+    public static boolean hasPrintableBody(final String mediaType) {
+        return (nonNull(mediaType) && (mediaType.contains("json")
+            || mediaType.contains("xml")
+            || mediaType.contains("plain")
+            || mediaType.contains("html")));
     }
 
 }

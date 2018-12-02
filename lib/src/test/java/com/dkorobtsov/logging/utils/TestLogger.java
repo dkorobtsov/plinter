@@ -1,6 +1,7 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.utils;
 
-import com.dkorobtsov.logging.enums.LoggingFormat;
+import com.dkorobtsov.logging.LogWriter;
+import com.dkorobtsov.logging.LoggingFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class TestLogger implements LogWriter {
     private OutputStream logOut;
     private Logger testLogger = Logger.getLogger("TestLogger");
 
-    TestLogger(LoggingFormat logFormatter) {
+    public TestLogger(LoggingFormat logFormatter) {
         testLogger.setUseParentHandlers(false);
 
         // Removing existing handlers for new instance
@@ -61,7 +62,7 @@ public class TestLogger implements LogWriter {
     /**
      * @return Returns first formatted event published by current logger
      */
-    String firstRawEvent() {
+    public String firstRawEvent() {
         return rawMessages().get(0).trim();
     }
 
@@ -75,7 +76,7 @@ public class TestLogger implements LogWriter {
     /**
      * @return Returns all formatted events published by current logger as String
      */
-    String formattedOutput() {
+    public String formattedOutput() {
         try {
             // Don't like this solution, but without this wait tests verifying
             // logger output with manually added executor are randomly failing
@@ -105,14 +106,14 @@ public class TestLogger implements LogWriter {
     /**
      * @return Returns first formatted event published by current logger
      */
-    String firstFormattedEvent(boolean preserveTrailingSpaces) {
+    public String firstFormattedEvent(boolean preserveTrailingSpaces) {
         return loggerOutput(preserveTrailingSpaces).get(0);
     }
 
     /**
      * @return Returns last formatted event published by current logger
      */
-    String lastFormattedEvent(boolean preserveTrailingSpaces) {
+    public String lastFormattedEvent(boolean preserveTrailingSpaces) {
         return loggerOutput(preserveTrailingSpaces)
             .get(loggerOutput(preserveTrailingSpaces).size() - 1);
     }

@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.internal;
 
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;

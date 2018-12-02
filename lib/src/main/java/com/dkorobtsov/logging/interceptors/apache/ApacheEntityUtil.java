@@ -1,5 +1,7 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
+import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,8 +15,6 @@ import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 
 class ApacheEntityUtil {
-
-    private static final String APPLICATION_JSON = "application/json";
 
     static String readApacheHttpEntity(HttpEntity entity) throws IOException {
         if (entity != null) {

@@ -3,7 +3,6 @@ package com.dkorobtsov.logging;
 import static org.junit.Assert.assertEquals;
 
 import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
-import com.dkorobtsov.logging.enums.LoggingFormat;
 import org.junit.Test;
 
 public class LoggingInterceptorUnitTests {

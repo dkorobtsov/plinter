@@ -6,13 +6,13 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
-import com.dkorobtsov.logging.enums.InterceptorVersion;
-import com.dkorobtsov.logging.enums.Level;
-import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
+import com.dkorobtsov.logging.utils.InterceptorVersion;
+import com.dkorobtsov.logging.utils.TestLogger;
+import com.dkorobtsov.logging.utils.TestUtil;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.io.IOException;
 import java.util.Objects;

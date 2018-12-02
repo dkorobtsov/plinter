@@ -1,17 +1,22 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.internal;
 
-import static com.dkorobtsov.logging.BodyUtil.hasPrintableBody;
 import static com.dkorobtsov.logging.internal.Util.encodedPathSegments;
+import static com.dkorobtsov.logging.internal.Util.hasPrintableBody;
 
-import com.dkorobtsov.logging.internal.InterceptedMediaType;
-import com.dkorobtsov.logging.internal.InterceptedResponseBody;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * Utility class intended to reduce code duplication on Response converters.
+ */
 public class ResponseHandler {
+
+    private static final Logger logger = Logger.getLogger(ResponseHandler.class.getName());
 
     public static InterceptedResponse interceptedResponse(ResponseDetails response,
         URL requestUrl, Long chainMs) {
@@ -33,14 +38,7 @@ public class ResponseHandler {
         final InterceptedResponseBody responseBody = response.responseBody;
         final InterceptedMediaType contentType = Objects.requireNonNull(responseBody).contentType();
         final String url = Objects.isNull(requestUrl) ? "" : requestUrl.toString();
-
-        String originalBody;
-        try {
-            originalBody = responseBody.string();
-        } catch (IOException e) {
-            originalBody = "";
-            e.printStackTrace();
-        }
+        final String originalBody = originalBodyFrom(responseBody);
 
         return InterceptedResponse
             .builder()
@@ -55,6 +53,17 @@ public class ResponseHandler {
             .url(url)
             .chainMs(Objects.isNull(chainMs) ? 0 : chainMs)
             .build();
+    }
+
+    private static String originalBodyFrom(InterceptedResponseBody responseBody) {
+        String originalBody;
+        try {
+            originalBody = responseBody.string();
+        } catch (IOException e) {
+            originalBody = "";
+            logger.log(Level.SEVERE, e.getMessage(), e);
+        }
+        return originalBody;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.utils;
 
 import static org.junit.Assert.fail;
 
@@ -7,9 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import org.junit.Assert;
 
-final class TestUtil {
+public final class TestUtil {
 
-    static void assertEntryStartsWithParsableDate(String rawEntry) {
+    public static void assertEntryStartsWithParsableDate(String rawEntry) {
         String[] entryElements = TestUtil
             .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
 
@@ -29,7 +29,8 @@ final class TestUtil {
             .toArray(String[]::new);
     }
 
-    static void assertLogEntryElementsCount(String entrySeparatedByBrackets, int expectedCount) {
+    public static void assertLogEntryElementsCount(String entrySeparatedByBrackets,
+        int expectedCount) {
         String[] entryElements = TestUtil
             .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
 

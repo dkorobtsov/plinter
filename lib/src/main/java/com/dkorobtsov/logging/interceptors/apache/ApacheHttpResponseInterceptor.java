@@ -1,11 +1,11 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
 import com.dkorobtsov.logging.AbstractInterceptor;
-import com.dkorobtsov.logging.ClientPrintingExecutor;
-import com.dkorobtsov.logging.InterceptedResponse;
+import com.dkorobtsov.logging.internal.ClientPrintingExecutor;
+import com.dkorobtsov.logging.internal.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.ResponseConverter;
-import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.Level;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.protocol.HttpContext;

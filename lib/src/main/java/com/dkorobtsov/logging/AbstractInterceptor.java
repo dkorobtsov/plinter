@@ -1,7 +1,5 @@
 package com.dkorobtsov.logging;
 
-import com.dkorobtsov.logging.enums.Level;
-
 public abstract class AbstractInterceptor {
 
     protected LoggerConfig loggerConfig;

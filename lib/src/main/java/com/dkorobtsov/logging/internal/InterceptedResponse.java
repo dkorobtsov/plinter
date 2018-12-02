@@ -1,6 +1,5 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.internal;
 
-import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import java.util.List;
 
 public final class InterceptedResponse {

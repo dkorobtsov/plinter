@@ -1,4 +1,4 @@
-package com.dkorobtsov.logging.enums;
+package com.dkorobtsov.logging;
 
 public enum Level {
     /**

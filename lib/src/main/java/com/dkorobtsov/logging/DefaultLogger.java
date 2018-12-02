@@ -1,6 +1,5 @@
 package com.dkorobtsov.logging;
 
-import com.dkorobtsov.logging.enums.LoggingFormat;
 import java.util.Arrays;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;

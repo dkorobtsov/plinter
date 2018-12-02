@@ -26,7 +26,7 @@ package com.dkorobtsov.logging.internal;
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
-public final class HttpHeaders {
+final class HttpHeaders {
 
     private HttpHeaders() {
     }
@@ -36,7 +36,7 @@ public final class HttpHeaders {
      * from {@code characters}. Returns the input length if none of the requested characters can be
      * found.
      */
-    public static int skipUntil(String input, int pos, String characters) {
+    static int skipUntil(String input, int pos, String characters) {
         for (; pos < input.length(); pos++) {
             if (characters.indexOf(input.charAt(pos)) != -1) {
                 break;
@@ -49,7 +49,7 @@ public final class HttpHeaders {
      * Returns the next non-whitespace character in {@code input} that is white space. Result is
      * undefined if input contains newline characters.
      */
-    public static int skipWhitespace(String input, int pos) {
+    static int skipWhitespace(String input, int pos) {
         for (; pos < input.length(); pos++) {
             char c = input.charAt(pos);
             if (c != ' ' && c != '\t') {
@@ -63,7 +63,7 @@ public final class HttpHeaders {
      * Returns {@code value} as a positive integer, or 0 if it is negative, or {@code defaultValue}
      * if it cannot be parsed.
      */
-    public static int parseSeconds(String value, int defaultValue) {
+    static int parseSeconds(String value, int defaultValue) {
         try {
             long seconds = Long.parseLong(value);
             if (seconds > Integer.MAX_VALUE) {

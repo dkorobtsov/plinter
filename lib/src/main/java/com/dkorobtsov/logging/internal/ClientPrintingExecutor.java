@@ -1,6 +1,6 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.internal;
 
-import com.dkorobtsov.logging.internal.InterceptedRequest;
+import com.dkorobtsov.logging.LoggerConfig;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;

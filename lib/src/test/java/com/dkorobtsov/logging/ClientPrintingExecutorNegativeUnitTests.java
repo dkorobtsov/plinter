@@ -1,6 +1,8 @@
 package com.dkorobtsov.logging;
 
+import com.dkorobtsov.logging.internal.ClientPrintingExecutor;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
+import com.dkorobtsov.logging.internal.InterceptedResponse;
 import java.util.concurrent.Executors;
 import org.junit.Test;
 

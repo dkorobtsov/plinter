@@ -1,15 +1,15 @@
 package com.dkorobtsov.logging;
 
-import static com.dkorobtsov.logging.enums.InterceptorVersion.parse;
+import static com.dkorobtsov.logging.utils.InterceptorVersion.parse;
 import static org.junit.Assert.fail;
 
 import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
-import com.dkorobtsov.logging.enums.InterceptorVersion;
-import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
+import com.dkorobtsov.logging.utils.InterceptorVersion;
+import com.dkorobtsov.logging.utils.TestLogger;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import java.io.IOException;

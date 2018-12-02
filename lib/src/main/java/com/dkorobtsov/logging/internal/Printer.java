@@ -1,12 +1,11 @@
-package com.dkorobtsov.logging;
+package com.dkorobtsov.logging.internal;
 
-import static com.dkorobtsov.logging.BodyFormatter.formattedBody;
-import static com.dkorobtsov.logging.BodyUtil.hasPrintableBody;
+import static com.dkorobtsov.logging.internal.BodyFormatter.formattedBody;
+import static com.dkorobtsov.logging.internal.Util.hasPrintableBody;
 import static java.util.Objects.nonNull;
 
-import com.dkorobtsov.logging.enums.Level;
-import com.dkorobtsov.logging.internal.InterceptedRequest;
-import com.dkorobtsov.logging.internal.InterceptedRequestBody;
+import com.dkorobtsov.logging.LoggerConfig;
+import com.dkorobtsov.logging.Level;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

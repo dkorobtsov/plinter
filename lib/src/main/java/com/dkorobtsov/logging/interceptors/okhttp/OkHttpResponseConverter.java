@@ -2,10 +2,10 @@ package com.dkorobtsov.logging.interceptors.okhttp;
 
 import static java.util.Objects.isNull;
 
-import com.dkorobtsov.logging.InterceptedResponse;
-import com.dkorobtsov.logging.ResponseDetails;
+import com.dkorobtsov.logging.internal.InterceptedResponse;
+import com.dkorobtsov.logging.internal.ResponseDetails;
 import com.dkorobtsov.logging.ResponseConverter;
-import com.dkorobtsov.logging.ResponseHandler;
+import com.dkorobtsov.logging.internal.ResponseHandler;
 import com.dkorobtsov.logging.internal.InterceptedHeaders;
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedResponseBody;

@@ -1,7 +1,7 @@
 package com.dkorobtsov.logging;
 
-import com.dkorobtsov.logging.enums.HttpStatusCode;
-import com.dkorobtsov.logging.enums.InterceptorVersion;
+import com.dkorobtsov.logging.internal.HttpStatusCode;
+import com.dkorobtsov.logging.utils.InterceptorVersion;
 import org.junit.Test;
 
 public class EnumParsingTest {

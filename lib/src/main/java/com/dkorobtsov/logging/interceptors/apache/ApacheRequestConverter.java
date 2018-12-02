@@ -2,6 +2,7 @@ package com.dkorobtsov.logging.interceptors.apache;
 
 import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.readApacheHttpEntity;
 import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.recreateHttpEntityFromString;
+import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
 
 import com.dkorobtsov.logging.RequestConverter;
 import com.dkorobtsov.logging.internal.HttpMethod;
@@ -23,8 +24,6 @@ import org.apache.http.message.BasicHeader;
 public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
 
     private static final Logger logger = Logger.getLogger(ApacheRequestConverter.class.getName());
-
-    private static final String APPLICATION_JSON = "application/json";
 
     @Override
     public InterceptedRequest convertFrom(HttpRequest apacheHttpRequest) {

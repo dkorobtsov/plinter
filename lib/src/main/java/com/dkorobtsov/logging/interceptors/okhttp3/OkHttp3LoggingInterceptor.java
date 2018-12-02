@@ -1,9 +1,9 @@
 package com.dkorobtsov.logging.interceptors.okhttp3;
 
-import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
-import static com.dkorobtsov.logging.ClientPrintingExecutor.printResponse;
+import static com.dkorobtsov.logging.internal.ClientPrintingExecutor.printRequest;
+import static com.dkorobtsov.logging.internal.ClientPrintingExecutor.printResponse;
 
-import com.dkorobtsov.logging.InterceptedResponse;
+import com.dkorobtsov.logging.internal.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.AbstractInterceptor;
 import com.dkorobtsov.logging.RequestConverter;

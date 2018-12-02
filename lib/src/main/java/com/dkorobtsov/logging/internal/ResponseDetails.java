@@ -1,8 +1,4 @@
-package com.dkorobtsov.logging;
-
-import com.dkorobtsov.logging.internal.InterceptedHeaders;
-import com.dkorobtsov.logging.internal.InterceptedMediaType;
-import com.dkorobtsov.logging.internal.InterceptedResponseBody;
+package com.dkorobtsov.logging.internal;
 
 public class ResponseDetails {
 

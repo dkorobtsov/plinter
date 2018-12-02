@@ -1,6 +1,7 @@
 package com.dkorobtsov.logging;
 
-import com.dkorobtsov.logging.enums.LoggingFormat;
+import com.dkorobtsov.logging.utils.TestLogger;
+import com.dkorobtsov.logging.utils.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

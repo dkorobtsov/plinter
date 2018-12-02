@@ -1,7 +1,5 @@
 package com.dkorobtsov.logging;
 
-import com.dkorobtsov.logging.enums.Level;
-import com.dkorobtsov.logging.enums.LoggingFormat;
 import java.util.concurrent.Executor;
 
 public class LoggerConfig {
