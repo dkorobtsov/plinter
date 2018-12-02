@@ -16,6 +16,10 @@ import org.apache.http.entity.ContentType;
 
 class ApacheEntityUtil {
 
+    private ApacheEntityUtil(){
+
+    }
+
     static String readApacheHttpEntity(HttpEntity entity) throws IOException {
         if (entity != null) {
             StringBuilder textBuilder = new StringBuilder();

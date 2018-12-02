@@ -16,6 +16,10 @@ import java.util.logging.Logger;
  */
 public class ResponseHandler {
 
+    private ResponseHandler(){
+
+    }
+
     private static final Logger logger = Logger.getLogger(ResponseHandler.class.getName());
 
     public static InterceptedResponse interceptedResponse(ResponseDetails response,
