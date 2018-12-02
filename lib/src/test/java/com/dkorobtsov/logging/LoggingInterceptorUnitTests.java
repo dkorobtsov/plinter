@@ -1,25 +1,27 @@
 package com.dkorobtsov.logging;
 
+import static org.junit.Assert.assertEquals;
+
+import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
 import com.dkorobtsov.logging.enums.LoggingFormat;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class LoggingInterceptorUnitTests {
 
     @Test
     public void testDefaultLogFormatterIsMessageOnly() {
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder();
-        Assert
-            .assertEquals("Default logger", LoggingFormat.JUL_MESSAGE_ONLY, builder.getFormat());
+        final LoggerConfigBuilder builder = LoggerConfig.builder();
+
+        assertEquals("Default logger", LoggingFormat.JUL_MESSAGE_ONLY, builder.getFormat());
     }
 
     @Test
     public void testSettingFormatForLoggingInterceptor() {
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor
-            .Builder();
+        final LoggerConfigBuilder builder = LoggerConfig.builder();
         final LoggingFormat format = LoggingFormat.JUL_DATE_LEVEL_MESSAGE;
-        builder.format(format);
-        Assert.assertEquals("Log Formatter", format, builder.getFormat());
+        LoggerConfig loggerConfig = builder.format(format).build();
+
+        assertEquals("Log Formatter", format, loggerConfig.format);
     }
 
 }

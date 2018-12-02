@@ -1,13 +1,15 @@
 package com.dkorobtsov.logging;
 
+import static com.dkorobtsov.logging.enums.InterceptorVersion.parse;
 import static org.junit.Assert.fail;
 
+import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
 import com.dkorobtsov.logging.enums.InterceptorVersion;
 import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import java.io.IOException;
@@ -118,7 +120,7 @@ public abstract class BaseTest {
     void attachLoggerToInterceptorWithDefaultRequest(String version, LogWriter log4j2Writer)
         throws IOException {
 
-        InterceptorVersion interceptorVersion = InterceptorVersion.parse(version);
+        InterceptorVersion interceptorVersion = parse(version);
         switch (interceptorVersion) {
             case OKHTTP3:
                 attachLoggerToOkHttp3InterceptorWithDefaultRequest(log4j2Writer);
@@ -139,7 +141,7 @@ public abstract class BaseTest {
         Request okHttp3Request, com.squareup.okhttp.Request okHttpRequest,
         HttpUriRequest apacheHttpRequest) throws IOException {
 
-        InterceptorVersion interceptorVersion = InterceptorVersion.parse(version);
+        InterceptorVersion interceptorVersion = parse(version);
         switch (interceptorVersion) {
             case OKHTTP3:
                 attachLoggerToOkHttp3Interceptor(log4j2Writer, okHttp3Request);
@@ -163,9 +165,11 @@ public abstract class BaseTest {
 
     private void attachLoggerToOkHttpInterceptor(LogWriter logWriter,
         com.squareup.okhttp.Request request) throws IOException {
-        OkHttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-            .logger(logWriter)
-            .buildForOkhttp();
+        OkHttpLoggingInterceptor interceptor = new OkHttpLoggingInterceptor(
+            LoggerConfig.builder()
+                .logger(logWriter)
+                .build());
+
         defaultOkHttpClientWithInterceptor(interceptor)
             .newCall(request)
             .execute();
@@ -178,9 +182,10 @@ public abstract class BaseTest {
 
     private void attachLoggerToOkHttp3Interceptor(LogWriter logWriter, Request request)
         throws IOException {
-        OkHttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-            .logger(logWriter)
-            .buildForOkhttp3();
+        OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
+            LoggerConfig.builder()
+                .logger(logWriter)
+                .build());
 
         log.debug("Sending request.");
         defaultOkHttp3ClientWithInterceptor(interceptor)
@@ -195,13 +200,15 @@ public abstract class BaseTest {
 
     private void attachLoggerToApacheRequestInterceptor(LogWriter logWriter, HttpUriRequest request)
         throws IOException {
-        ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()
-            .logger(logWriter)
-            .buildForApacheHttpClientRequest();
+        ApacheHttpRequestInterceptor requestInterceptor = new ApacheHttpRequestInterceptor(
+            LoggerConfig.builder()
+                .logger(logWriter)
+                .build());
 
-        final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()
-            .logger(logWriter)
-            .buildFordApacheHttpClientResponse();
+        ApacheHttpResponseInterceptor responseInterceptor = new ApacheHttpResponseInterceptor(
+            LoggerConfig.builder()
+                .logger(logWriter)
+                .build());
 
         log.debug("Sending request.");
         defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
@@ -224,8 +231,7 @@ public abstract class BaseTest {
             .put(body)
             .build();
 
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
-            .logger(testLogger);
+        LoggerConfigBuilder builder = LoggerConfig.builder().logger(testLogger);
 
         if (Objects.nonNull(maxLineLength)) {
             builder.maxLineLength(maxLineLength);
@@ -237,11 +243,13 @@ public abstract class BaseTest {
                 new LinkedBlockingQueue<>()));
         }
 
-        InterceptorVersion interceptorVersion = InterceptorVersion.parse(loggerVersion);
+        LoggerConfig loggerConfig = builder.build();
+
+        InterceptorVersion interceptorVersion = parse(loggerVersion);
         switch (interceptorVersion) {
             case OKHTTP:
-                OkHttpLoggingInterceptor okhttpLoggingInterceptor = builder
-                    .buildForOkhttp();
+                OkHttpLoggingInterceptor okhttpLoggingInterceptor
+                    = new OkHttpLoggingInterceptor(loggerConfig);
 
                 final com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
                     .url(String.valueOf(server.url("/")))
@@ -255,8 +263,8 @@ public abstract class BaseTest {
                 return testLogger.loggerOutput(preserveTrailingSpaces);
 
             case OKHTTP3:
-                OkHttp3LoggingInterceptor okhttp3LoggingInterceptor = builder
-                    .buildForOkhttp3();
+                OkHttp3LoggingInterceptor okhttp3LoggingInterceptor
+                    = new OkHttp3LoggingInterceptor(loggerConfig);
 
                 defaultOkHttp3ClientWithInterceptor(okhttp3LoggingInterceptor)
                     .newCall(okHttp3Request)
@@ -265,11 +273,12 @@ public abstract class BaseTest {
                 return testLogger.loggerOutput(preserveTrailingSpaces);
 
             case APACHE_HTTPCLIENT_REQUEST:
-                final ApacheHttpRequestInterceptor requestInterceptor = builder
-                    .buildForApacheHttpClientRequest();
+                final ApacheHttpRequestInterceptor requestInterceptor
+                    = new ApacheHttpRequestInterceptor(loggerConfig);
 
-                final ApacheHttpResponseInterceptor responseInterceptor = builder
-                    .buildFordApacheHttpClientResponse();
+                final ApacheHttpResponseInterceptor responseInterceptor
+                    = new ApacheHttpResponseInterceptor(loggerConfig);
+
 
                 final HttpPut httpPut = new HttpPut(server.url("/").uri());
                 final MediaType mediaType =
@@ -356,8 +365,7 @@ public abstract class BaseTest {
             .setBody(body));
 
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        final LoggingInterceptor.Builder builder = new LoggingInterceptor.Builder()
-            .logger(testLogger);
+        LoggerConfigBuilder builder = LoggerConfig.builder().logger(testLogger);
 
         if (provideExecutors) {
             builder.executor(new ThreadPoolExecutor(1, 1,
@@ -369,19 +377,22 @@ public abstract class BaseTest {
             builder.maxLineLength(maxLineLength);
         }
 
-        InterceptorVersion interceptorVersion = InterceptorVersion.parse(loggerVersion);
+        LoggerConfig loggerConfig = builder.build();
+
+        InterceptorVersion interceptorVersion = parse(loggerVersion);
         switch (interceptorVersion) {
             case OKHTTP:
-                OkHttpLoggingInterceptor okhttpLoggingInterceptor = builder
-                    .buildForOkhttp();
+                OkHttpLoggingInterceptor okhttpLoggingInterceptor
+                    = new OkHttpLoggingInterceptor(loggerConfig);
+
                 defaultOkHttpClientWithInterceptor(okhttpLoggingInterceptor)
                     .newCall(defaultOkHttpRequest())
                     .execute();
                 break;
 
             case OKHTTP3:
-                OkHttp3LoggingInterceptor okhttp3LoggingInterceptor = builder
-                    .buildForOkhttp3();
+                OkHttp3LoggingInterceptor okhttp3LoggingInterceptor
+                    = new OkHttp3LoggingInterceptor(loggerConfig);
 
                 defaultOkHttp3ClientWithInterceptor(okhttp3LoggingInterceptor)
                     .newCall(defaultOkHttp3Request())
@@ -389,11 +400,11 @@ public abstract class BaseTest {
                 break;
 
             case APACHE_HTTPCLIENT_REQUEST:
-                final ApacheHttpRequestInterceptor requestInterceptor = builder
-                    .buildForApacheHttpClientRequest();
+                final ApacheHttpRequestInterceptor requestInterceptor
+                    = new ApacheHttpRequestInterceptor(loggerConfig);
 
-                final ApacheHttpResponseInterceptor responseInterceptor = builder
-                    .buildFordApacheHttpClientResponse();
+                final ApacheHttpResponseInterceptor responseInterceptor
+                    = new ApacheHttpResponseInterceptor(loggerConfig);
 
                 defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                     .execute(defaultApacheHttpRequest());

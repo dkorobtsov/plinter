@@ -5,13 +5,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
 import com.dkorobtsov.logging.enums.InterceptorVersion;
 import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.enums.LoggingFormat;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
+import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.io.IOException;
 import java.util.Objects;
@@ -56,7 +57,7 @@ public class LoggingInterceptorsTests extends BaseTest {
 
         //Comparing message by length since on Gradle runner characters may be different
         //unless GradleVM executes with -Dfile.encoding=utf-8 option
-        assertEquals("Logger with default formatter should publish message only",
+        assertEquals("Logger with default format should publish message only",
             testLogger.firstRawEvent().length(),
             testLogger.firstFormattedEvent(false).length());
     }
@@ -283,32 +284,34 @@ public class LoggingInterceptorsTests extends BaseTest {
     private void interceptWithValues(String version, TestLogger testLogger, Boolean loggable,
         Level level, Executor executor, Boolean withThreadInfo) throws IOException {
 
-        LoggingInterceptor.Builder interceptorBuilder = new LoggingInterceptor.Builder();
+        LoggerConfigBuilder configBuilder = LoggerConfig.builder();
 
         if (Objects.nonNull(testLogger)) {
-            interceptorBuilder.logger(testLogger);
+            configBuilder.logger(testLogger);
         }
 
         if (Objects.nonNull(loggable)) {
-            interceptorBuilder.loggable(loggable);
+            configBuilder.loggable(loggable);
         }
 
         if (Objects.nonNull(level)) {
-            interceptorBuilder.level(level);
+            configBuilder.level(level);
         }
 
         if (Objects.nonNull(executor)) {
-            interceptorBuilder.executor(executor);
+            configBuilder.executor(executor);
         }
 
         if (Objects.nonNull(withThreadInfo)) {
-            interceptorBuilder.withThreadInfo(withThreadInfo);
+            configBuilder.withThreadInfo(withThreadInfo);
         }
+
+        LoggerConfig loggerConfig = configBuilder.build();
 
         switch (InterceptorVersion.parse(version)) {
             case OKHTTP3:
-                OkHttp3LoggingInterceptor okHttp3LoggingInterceptor = interceptorBuilder
-                    .buildForOkhttp3();
+                OkHttp3LoggingInterceptor okHttp3LoggingInterceptor
+                    = new OkHttp3LoggingInterceptor(loggerConfig);
 
                 logger.info("OkHttp3 Interceptor: {}",
                     okHttp3LoggingInterceptor.loggerConfig().toString());
@@ -319,8 +322,8 @@ public class LoggingInterceptorsTests extends BaseTest {
                 break;
 
             case OKHTTP:
-                final OkHttpLoggingInterceptor okHttpLoggingInterceptor = interceptorBuilder
-                    .buildForOkhttp();
+                final OkHttpLoggingInterceptor okHttpLoggingInterceptor
+                    = new OkHttpLoggingInterceptor(loggerConfig);
 
                 logger.info("OkHttp Interceptor: {}",
                     okHttpLoggingInterceptor.loggerConfig().toString());
@@ -331,11 +334,11 @@ public class LoggingInterceptorsTests extends BaseTest {
                 break;
 
             case APACHE_HTTPCLIENT_REQUEST:
-                final ApacheHttpRequestInterceptor requestInterceptor = interceptorBuilder
-                    .buildForApacheHttpClientRequest();
+                final ApacheHttpRequestInterceptor requestInterceptor
+                    = new ApacheHttpRequestInterceptor(loggerConfig);
 
-                final ApacheHttpResponseInterceptor responseInterceptor = interceptorBuilder
-                    .buildFordApacheHttpClientResponse();
+                final ApacheHttpResponseInterceptor responseInterceptor
+                    = new ApacheHttpResponseInterceptor(loggerConfig);
 
                 logger.info("Apache Request Interceptor: {}",
                     requestInterceptor.loggerConfig().toString());

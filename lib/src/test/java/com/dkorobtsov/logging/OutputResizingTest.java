@@ -39,9 +39,10 @@ public class OutputResizingTest extends BaseTest {
         "9", "501"
     })
     public void invalidOutputLengthHandling(String maxLineLength) {
-        LoggingInterceptor.builder()
-            .maxLineLength(Integer.parseInt(maxLineLength))
-            .buildForOkhttp3();
+        new OkHttp3LoggingInterceptor(
+            LoggerConfig.builder()
+                .maxLineLength(Integer.parseInt(maxLineLength))
+                .build());
     }
 
     @Test
@@ -49,9 +50,10 @@ public class OutputResizingTest extends BaseTest {
         "10", "500"
     })
     public void validOutputLengthHandling(String maxLineLength) {
-        OkHttp3LoggingInterceptor interceptor = LoggingInterceptor.builder()
-            .maxLineLength(Integer.parseInt(maxLineLength))
-            .buildForOkhttp3();
+        OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
+            LoggerConfig.builder()
+                .maxLineLength(Integer.parseInt(maxLineLength))
+                .build());
 
         Assert.assertEquals(Integer.parseInt(maxLineLength),
             interceptor.loggerConfig().maxLineLength);

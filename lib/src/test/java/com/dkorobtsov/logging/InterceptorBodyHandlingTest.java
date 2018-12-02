@@ -1,7 +1,5 @@
 package com.dkorobtsov.logging;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +12,7 @@ import okhttp3.RequestBody;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
+import org.assertj.core.api.Assertions;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -106,7 +105,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .create(MediaType.parse("application/json"), SIMPLE_JSON),
             loggerVersion, provideExecutor, true);
 
-        assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
+        Assertions.assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
     }
 
     @Test
@@ -120,7 +119,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         final List<String> loggerOutput = interceptedResponse("application/json", SIMPLE_JSON,
             loggerVersion, provideExecutor, true);
 
-        assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
+        Assertions.assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
     }
 
     @Test
@@ -136,7 +135,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .create(MediaType.parse("application/json"), PREFORMATTED_JSON_BODY),
             loggerVersion, provideExecutor, true);
 
-        assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
+        Assertions.assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
     }
 
     @Test
@@ -151,7 +150,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             PREFORMATTED_JSON_BODY,
             loggerVersion, provideExecutor, true);
 
-        assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
+        Assertions.assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
     }
 
     @Test
@@ -208,7 +207,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .create(MediaType.parse("text/html"), HTML_BODY),
             loggerVersion, provideExecutor, false);
 
-        assertThat(loggerOutput).contains("<title>Error 404 Not Found</title>");
+        Assertions.assertThat(loggerOutput).contains("<title>Error 404 Not Found</title>");
     }
 
     @Test
@@ -223,7 +222,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         final List<String> loggerOutput = interceptedResponse(
             "text/html", HTML_BODY, loggerVersion, provideExecutor, false);
 
-        assertThat(loggerOutput).contains("<title>Error 404 Not Found</title>");
+        Assertions.assertThat(loggerOutput).contains("<title>Error 404 Not Found</title>");
     }
 
     @Test
@@ -282,8 +281,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
                 .create(MediaType.parse("application/xml"), XML_BODY),
             loggerVersion, provideExecutor, false);
 
-        assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-        assertThat(loggerOutput).contains("</mammals>");
+        Assertions.assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
+        Assertions.assertThat(loggerOutput).contains("</mammals>");
     }
 
     @Test
@@ -299,8 +298,8 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             loggerVersion,
             provideExecutor, false);
 
-        assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-        assertThat(loggerOutput).contains("</mammals>");
+        Assertions.assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
+        Assertions.assertThat(loggerOutput).contains("</mammals>");
     }
 
     @Test
@@ -361,7 +360,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
         final List<String> loggerOutput = interceptedRequest(body, loggerVersion, provideExecutor,
             true);
 
-        assertThat(loggerOutput).contains("  Omitted response body ");
+        Assertions.assertThat(loggerOutput).contains("  Omitted response body ");
     }
 
     @Test
@@ -376,7 +375,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
             String.valueOf(createFileFromString(PREFORMATTED_JSON_BODY)), loggerVersion,
             provideExecutor, true);
 
-        assertThat(loggerOutput).contains("  Omitted response body ");
+        Assertions.assertThat(loggerOutput).contains("  Omitted response body ");
     }
 
     @SuppressWarnings("SameParameterValue")
