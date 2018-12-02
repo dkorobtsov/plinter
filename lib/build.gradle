@@ -28,6 +28,7 @@ ext {
     jsonVersion = '20180130'
     okhttp3Version = '3.9.1'
     okhttpVersion = '2.7.5'
+    okioVersion = '2.1.0'
     junit4Version = '4.12'
     log4j2Version = '2.11.0'
     junitParamsVersion = '1.1.1'
@@ -64,6 +65,7 @@ test {
 }
 
 dependencies {
+    implementation "com.squareup.okio:okio:$okioVersion"
     implementation "org.json:json:$jsonVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
     implementation "com.squareup.okhttp:logging-interceptor:$okhttpVersion"
