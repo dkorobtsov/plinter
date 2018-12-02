@@ -1,8 +1,7 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
-import static com.dkorobtsov.logging.Utilities.hasPrintableBody;
-import static com.dkorobtsov.logging.Utilities.subtype;
+import static com.dkorobtsov.logging.interceptors.apache.ApacheRequestDetails.interceptedRequest;
 
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
@@ -21,12 +20,8 @@ public class ApacheHttpRequestInterceptor
     @Override
     public void process(HttpRequest request, HttpContext context) {
         if (!skipLogging()) {
-            final InterceptedRequest requestDetails = ApacheRequestDetails
-                .interceptedRequest(request);
-
-            String subtype = subtype(requestDetails);
-
-            printRequest(loggerConfig, requestDetails, hasPrintableBody(subtype));
+            final InterceptedRequest interceptedRequest = interceptedRequest(request);
+            printRequest(loggerConfig, interceptedRequest);
         }
     }
 

@@ -1,13 +1,16 @@
 package com.dkorobtsov.logging;
 
 import static com.dkorobtsov.logging.BodyFormatter.formattedBody;
-import static com.dkorobtsov.logging.Utilities.slashSegments;
+import static com.dkorobtsov.logging.BodyUtil.hasPrintableBody;
+import static java.util.Objects.nonNull;
 
 import com.dkorobtsov.logging.enums.Level;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
+import com.dkorobtsov.logging.internal.InterceptedRequestBody;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 import okio.Buffer;
 import org.apache.http.util.TextUtils;
@@ -50,15 +53,14 @@ class Printer {
     private Printer() {
     }
 
-    static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request,
-        boolean hasPrintableBody) {
+    static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request) {
         Printer.loggerConfig = loggerConfig;
 
         printRequestStartingLine();
         printDebugDetails(true);
         printUrl(request.url().toString());
         printRequestDetails(request);
-        printRequestBody(request, hasPrintableBody);
+        printRequestBody(request);
         printEndingLine();
     }
 
@@ -115,9 +117,9 @@ class Printer {
         logLines(responseDetails(interceptedResponse), true);
     }
 
-    private static void printRequestBody(InterceptedRequest request, boolean hasPrintableBody) {
+    private static void printRequestBody(InterceptedRequest request) {
         if (bodyShouldBePrinted()) {
-            if (hasPrintableBody) {
+            if (hasPrintableBody(mediaType(request))) {
                 String requestBody = LINE_SEPARATOR
                     + BODY_TAG
                     + LINE_SEPARATOR
@@ -127,6 +129,16 @@ class Printer {
                 logLines(OMITTED_REQUEST, true);
             }
         }
+    }
+
+    private static String mediaType(InterceptedRequest request) {
+        final InterceptedRequestBody requestBody = request.body();
+
+        String requestSubtype = null;
+        if (nonNull(requestBody) && nonNull(requestBody.contentType())) {
+            requestSubtype = Objects.requireNonNull(requestBody.contentType()).subtype();
+        }
+        return requestSubtype;
     }
 
     private static void printResponseBody(InterceptedResponse interceptedResponse) {
@@ -177,6 +189,14 @@ class Printer {
             + DOUBLE_SEPARATOR
             + printHeaderIfLoggable(responseDetails.header, isLoggable);
         return log.split(REGEX_LINE_SEPARATOR);
+    }
+
+    private static String slashSegments(List<String> segments) {
+        StringBuilder segmentString = new StringBuilder();
+        for (String segment : segments) {
+            segmentString.append("/").append(segment);
+        }
+        return segmentString.toString();
     }
 
     private static String printHeaderIfLoggable(String header, boolean loggable) {

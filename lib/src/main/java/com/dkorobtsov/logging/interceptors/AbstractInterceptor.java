@@ -1,7 +1,7 @@
 package com.dkorobtsov.logging.interceptors;
 
-import static com.dkorobtsov.logging.Utilities.encodedPathSegments;
-import static com.dkorobtsov.logging.Utilities.hasPrintableBody;
+import static com.dkorobtsov.logging.BodyUtil.hasPrintableBody;
+import static com.dkorobtsov.logging.internal.Util.encodedPathSegments;
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
@@ -31,11 +31,11 @@ public abstract class AbstractInterceptor {
         URL requestUrl, Long chainMs) throws IOException {
 
         // Trying to determine if body should be pretty printed or omitted as file request
-        String subtype = null;
+        String mediaType = null;
         if (Objects.requireNonNull(response.responseBody).contentType() != null) {
-            subtype = Objects.requireNonNull(response.responseBody.contentType()).subtype();
+            mediaType = Objects.requireNonNull(response.responseBody.contentType()).subtype();
         }
-        final boolean hasPrintableBody = hasPrintableBody(subtype);
+        final boolean hasPrintableBody = hasPrintableBody(mediaType);
 
         final List<String> segmentList = Objects.isNull(requestUrl)
             ? Collections.emptyList() : encodedPathSegments(requestUrl);
@@ -63,5 +63,6 @@ public abstract class AbstractInterceptor {
             .chainMs(Objects.isNull(chainMs) ? 0 : chainMs)
             .build();
     }
+
 
 }

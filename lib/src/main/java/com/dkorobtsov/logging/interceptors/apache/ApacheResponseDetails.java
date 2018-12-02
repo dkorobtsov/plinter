@@ -31,7 +31,7 @@ public class ApacheResponseDetails {
 
     }
 
-    public static ResponseDetails getResponseDetails(HttpResponse httpResponse) {
+    public static ResponseDetails responseDetails(HttpResponse httpResponse) {
         if (Objects.isNull(httpResponse)) {
             return null;
         } else {

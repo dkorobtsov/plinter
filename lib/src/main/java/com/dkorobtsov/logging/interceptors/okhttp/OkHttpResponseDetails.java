@@ -23,7 +23,7 @@ class OkHttpResponseDetails {
 
     }
 
-    static ResponseDetails okHttpResponseDetails(Response response) {
+    static ResponseDetails responseDetails(Response response) {
         if (response == null) {
             return null;
         } else {

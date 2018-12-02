@@ -14,16 +14,14 @@ public class ClientPrintingExecutor {
     private ClientPrintingExecutor() {
     }
 
-    public static void printRequest(final LoggerConfig loggerConfig,
-        final InterceptedRequest request, final boolean hasPrintableBody) {
-        Runnable printRequest = () -> Printer.printRequest(loggerConfig, request, hasPrintableBody);
+    public static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request) {
+        final Runnable printRequest = () -> Printer.printRequest(loggerConfig, request);
         final ExecutorService executor = (ExecutorService) loggerConfig.executor;
         sendCommandToPrinter(executor, printRequest);
     }
 
-    public static void printResponse(LoggerConfig loggerConfig,
-        InterceptedResponse responseDetails) {
-        Runnable printResponse = () -> Printer.printResponse(loggerConfig, responseDetails);
+    public static void printResponse(LoggerConfig loggerConfig, InterceptedResponse response) {
+        final Runnable printResponse = () -> Printer.printResponse(loggerConfig, response);
         final ExecutorService executor = (ExecutorService) loggerConfig.executor;
         sendCommandToPrinter(executor, printResponse);
     }

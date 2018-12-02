@@ -2,9 +2,7 @@ package com.dkorobtsov.logging.interceptors.okhttp3;
 
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printRequest;
 import static com.dkorobtsov.logging.ClientPrintingExecutor.printResponse;
-import static com.dkorobtsov.logging.Utilities.hasPrintableBody;
-import static com.dkorobtsov.logging.Utilities.subtype;
-import static com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3ResponseDetails.getOkHttpResponseDetails;
+import static com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3ResponseDetails.responseDetails;
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
@@ -36,9 +34,7 @@ public class OkHttp3LoggingInterceptor
             return chain.proceed(request);
         }
 
-        String subtype = subtype(interceptedRequest);
-
-        printRequest(loggerConfig, interceptedRequest, hasPrintableBody(subtype));
+        printRequest(loggerConfig, interceptedRequest);
 
         final long startTime = System.nanoTime();
         final Response response = chain.proceed(request);
@@ -46,7 +42,7 @@ public class OkHttp3LoggingInterceptor
             .toMillis(System.nanoTime() - startTime);
 
         InterceptedResponse interceptedResponse = interceptedResponse(
-            getOkHttpResponseDetails(response), interceptedRequest.url(), ms);
+            responseDetails(response), interceptedRequest.url(), ms);
 
         printResponse(loggerConfig, interceptedResponse);
 

@@ -10,6 +10,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
     public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
         final InterceptedRequest request = new InterceptedRequest.Builder()
             .get()
+            .addHeader("Content-type", "application/json")
             .url("http://google.com")
             .build();
 
@@ -17,13 +18,14 @@ public class ClientPrintingExecutorNegativeUnitTests {
             .executor(Executors.newCachedThreadPool()).build();
 
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printRequest(loggerConfig, request, false);
+        ClientPrintingExecutor.printRequest(loggerConfig, request);
     }
 
     @Test
     public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
         final InterceptedRequest request = new InterceptedRequest.Builder()
             .get()
+            .addHeader("Content-type", "application/zip")
             .url("http://google.com")
             .build();
 
@@ -31,7 +33,7 @@ public class ClientPrintingExecutorNegativeUnitTests {
             .executor(Executors.newCachedThreadPool()).build();
 
         Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printRequest(loggerConfig, request, true);
+        ClientPrintingExecutor.printRequest(loggerConfig, request);
     }
 
     @Test
