@@ -4,13 +4,13 @@ import com.dkorobtsov.logging.ClientPrintingExecutor;
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.enums.Level;
-import com.dkorobtsov.logging.interceptors.ResponseInterceptor;
+import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
 import java.io.IOException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.protocol.HttpContext;
 
-public class ApacheHttpResponseInterceptor extends ResponseInterceptor implements
+public class ApacheHttpResponseInterceptor extends AbstractInterceptor implements
     HttpResponseInterceptor {
 
     public ApacheHttpResponseInterceptor(LoggerConfig loggerConfig) {

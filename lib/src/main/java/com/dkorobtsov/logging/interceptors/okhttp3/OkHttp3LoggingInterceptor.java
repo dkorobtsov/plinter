@@ -8,7 +8,7 @@ import static com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3ResponseDetails
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.interceptors.ResponseInterceptor;
+import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +18,8 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class OkHttp3LoggingInterceptor extends ResponseInterceptor implements Interceptor {
+public class OkHttp3LoggingInterceptor
+    extends AbstractInterceptor implements Interceptor {
 
     public OkHttp3LoggingInterceptor(LoggerConfig loggerConfig) {
         this.loggerConfig = loggerConfig;

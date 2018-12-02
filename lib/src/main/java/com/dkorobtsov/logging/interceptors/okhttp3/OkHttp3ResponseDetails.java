@@ -15,7 +15,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 @SuppressWarnings("Duplicates")
-public class OkHttp3ResponseDetails {
+class OkHttp3ResponseDetails {
 
     private static final Logger logger = Logger.getLogger(OkHttp3ResponseDetails.class.getName());
 
@@ -23,8 +23,7 @@ public class OkHttp3ResponseDetails {
 
     }
 
-
-    public static ResponseDetails getOkHttpResponseDetails(Response response) {
+    static ResponseDetails getOkHttpResponseDetails(Response response) {
         if (response == null) {
             return null;
         } else {

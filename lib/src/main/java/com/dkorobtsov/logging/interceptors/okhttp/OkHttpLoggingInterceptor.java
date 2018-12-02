@@ -9,7 +9,7 @@ import static com.dkorobtsov.logging.interceptors.okhttp.OkHttpResponseDetails.o
 
 import com.dkorobtsov.logging.InterceptedResponse;
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.interceptors.ResponseInterceptor;
+import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.MediaType;
@@ -19,7 +19,8 @@ import com.squareup.okhttp.ResponseBody;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-public class OkHttpLoggingInterceptor extends ResponseInterceptor implements Interceptor {
+public class OkHttpLoggingInterceptor
+    extends AbstractInterceptor implements Interceptor {
 
     public OkHttpLoggingInterceptor(LoggerConfig loggerConfig) {
         this.loggerConfig = loggerConfig;

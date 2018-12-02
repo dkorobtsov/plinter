@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class ResponseInterceptor {
+public abstract class AbstractInterceptor {
 
     protected LoggerConfig loggerConfig;
 
@@ -27,7 +27,7 @@ public abstract class ResponseInterceptor {
         return !loggerConfig.isLoggable || loggerConfig.level == Level.NONE;
     }
 
-    public InterceptedResponse interceptedResponse(ResponseDetails response,
+    protected InterceptedResponse interceptedResponse(ResponseDetails response,
         URL requestUrl, Long chainMs) throws IOException {
 
         // Trying to determine if body should be pretty printed or omitted as file request

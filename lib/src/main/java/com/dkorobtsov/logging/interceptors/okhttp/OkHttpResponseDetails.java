@@ -15,15 +15,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @SuppressWarnings("Duplicates")
-public class OkHttpResponseDetails {
+class OkHttpResponseDetails {
+
+    private static final Logger logger = Logger.getLogger(OkHttpResponseDetails.class.getName());
 
     OkHttpResponseDetails() {
 
     }
 
-    private static final Logger logger = Logger.getLogger(OkHttpResponseDetails.class.getName());
-
-    public static ResponseDetails okHttpResponseDetails(Response response) {
+    static ResponseDetails okHttpResponseDetails(Response response) {
         if (response == null) {
             return null;
         } else {

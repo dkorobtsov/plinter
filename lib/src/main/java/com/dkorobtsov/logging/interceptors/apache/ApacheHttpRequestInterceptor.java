@@ -5,25 +5,22 @@ import static com.dkorobtsov.logging.Utilities.hasPrintableBody;
 import static com.dkorobtsov.logging.Utilities.subtype;
 
 import com.dkorobtsov.logging.LoggerConfig;
-import com.dkorobtsov.logging.enums.Level;
+import com.dkorobtsov.logging.interceptors.AbstractInterceptor;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
 
-public class ApacheHttpRequestInterceptor implements HttpRequestInterceptor {
-
-    private final boolean isLoggable;
-    private final LoggerConfig loggerConfig;
+public class ApacheHttpRequestInterceptor
+    extends AbstractInterceptor implements HttpRequestInterceptor {
 
     public ApacheHttpRequestInterceptor(LoggerConfig loggerConfig) {
         this.loggerConfig = loggerConfig;
-        this.isLoggable = loggerConfig.isLoggable;
     }
 
     @Override
     public void process(HttpRequest request, HttpContext context) {
-        if (isLoggable && loggerConfig.level != Level.NONE) {
+        if (!skipLogging()) {
             final InterceptedRequest requestDetails = ApacheRequestDetails
                 .interceptedRequest(request);
 
@@ -33,7 +30,4 @@ public class ApacheHttpRequestInterceptor implements HttpRequestInterceptor {
         }
     }
 
-    public LoggerConfig loggerConfig() {
-        return this.loggerConfig;
-    }
 }

@@ -15,13 +15,13 @@ import okhttp3.Request;
 import okio.Buffer;
 
 @SuppressWarnings("Duplicates")
-public class OkHttp3RequestDetails {
+class OkHttp3RequestDetails {
 
     private OkHttp3RequestDetails() {
 
     }
 
-    public static InterceptedRequest interceptedRequest(Request okHttpRequest) {
+    static InterceptedRequest interceptedRequest(Request okHttpRequest) {
         final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
         builder.url(okHttpRequest.url().toString());
         final Map<String, List<String>> headersMap = okHttpRequest.headers().toMultimap();
@@ -40,7 +40,7 @@ public class OkHttp3RequestDetails {
         return builder.build();
     }
 
-    public static InterceptedRequestBody interceptedRequestBody(Request request) {
+    private static InterceptedRequestBody interceptedRequestBody(Request request) {
         final InterceptedMediaType contentType = request.body() == null
             ? InterceptedMediaType.parse("")
             : interceptedMediaType(request.body().contentType());
@@ -66,7 +66,7 @@ public class OkHttp3RequestDetails {
             : InterceptedMediaType.parse(mediaType.toString());
     }
 
-    public static CacheControl cacheControl(
+    private static CacheControl cacheControl(
         okhttp3.CacheControl cacheControl) {
         return new CacheControl.Builder()
             .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),

@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit;
 import okio.Buffer;
 
 @SuppressWarnings("Duplicates")
-public class OkHttpRequestDetails {
+class OkHttpRequestDetails {
 
     private OkHttpRequestDetails() {
 
     }
 
-    public static InterceptedRequest interceptedRequest(com.squareup.okhttp.Request okHttpRequest) {
+    static InterceptedRequest interceptedRequest(com.squareup.okhttp.Request okHttpRequest) {
         final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
         builder.url(okHttpRequest.url());
         final Map<String, List<String>> headersMap = okHttpRequest.headers().toMultimap();
@@ -40,7 +40,7 @@ public class OkHttpRequestDetails {
         return builder.build();
     }
 
-    public static InterceptedRequestBody interceptedRequestBody(Request request) {
+    private static InterceptedRequestBody interceptedRequestBody(Request request) {
         final InterceptedMediaType contentType = request.body() == null
             ? InterceptedMediaType.parse("")
             : interceptedMediaType(request.body().contentType());
@@ -66,7 +66,7 @@ public class OkHttpRequestDetails {
             : InterceptedMediaType.parse(mediaType.toString());
     }
 
-    public static CacheControl cacheControl(com.squareup.okhttp.CacheControl cacheControl) {
+    private static CacheControl cacheControl(com.squareup.okhttp.CacheControl cacheControl) {
         return new CacheControl.Builder()
             .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),
                 TimeUnit.SECONDS)
