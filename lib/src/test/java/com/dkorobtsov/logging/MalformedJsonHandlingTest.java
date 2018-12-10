@@ -55,12 +55,12 @@ public class MalformedJsonHandlingTest extends BaseTest {
                 .build();
             attachLoggerToInterceptor(interceptorVersion, testLogger, okHttp3Request, null, null);
         } else if (interceptorVersion.equals(InterceptorVersion.OKHTTP.getName())) {
-            com.squareup.okhttp.Request okhttpRequest = new com.squareup.okhttp.Request.Builder()
+            com.squareup.okhttp.Request okHttpRequest = new com.squareup.okhttp.Request.Builder()
                 .url(String.valueOf(server.url("/")))
                 .put(com.squareup.okhttp.RequestBody
                     .create(com.squareup.okhttp.MediaType.parse("application/json"), content))
                 .build();
-            attachLoggerToInterceptor(interceptorVersion, testLogger, null, okhttpRequest, null);
+            attachLoggerToInterceptor(interceptorVersion, testLogger, null, okHttpRequest, null);
         } else {
             final HttpPut httpPut = new HttpPut(server.url("/").uri());
             httpPut.setEntity(new StringEntity(content));
@@ -121,7 +121,7 @@ public class MalformedJsonHandlingTest extends BaseTest {
         } else {
             final HttpPut httpPut = new HttpPut(server.url("/").uri());
             httpPut.setEntity(new StringEntity(content));
-            httpPut.setHeader(new BasicHeader("Contety-Tyoe", "application/json"));
+            httpPut.setHeader(new BasicHeader("Content-Type", "application/json"));
             attachLoggerToInterceptor(interceptorVersion, testLogger, null, null, httpPut);
         }
 

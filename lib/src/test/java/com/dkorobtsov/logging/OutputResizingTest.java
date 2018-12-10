@@ -1,5 +1,6 @@
 package com.dkorobtsov.logging;
 
+import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
 import static org.junit.Assert.assertTrue;
 
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
@@ -7,8 +8,6 @@ import java.io.IOException;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +25,8 @@ public class OutputResizingTest extends BaseTest {
     })
     public void printerOutputResizingValidation(String loggerVersion,
         boolean provideExecutor) throws IOException {
-        final List<String> loggerOutput = interceptedRequest(RequestBody
-                .create(MediaType.parse("application/json"), TEST_JSON),
-            10, loggerVersion, provideExecutor, false);
+        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+            TEST_JSON, APPLICATION_JSON, false, 10);
 
         assertTrue("Interceptor should be able to log simple json body.",
             loggerOutput.contains("Method: @P"));

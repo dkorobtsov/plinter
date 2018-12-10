@@ -42,7 +42,10 @@ import okio.ByteString;
  */
 public final class Util {
 
+    public static final String TEXT_HTML = "text/html";
     public static final String APPLICATION_JSON = "application/json";
+    public static final String APPLICATION_ZIP = "application/zip";
+    public static final String APPLICATION_XML = "application/xml";
     static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final ByteString UTF_8_BOM = ByteString.decodeHex("efbbbf");
     private static final ByteString UTF_16_BE_BOM = ByteString.decodeHex("feff");

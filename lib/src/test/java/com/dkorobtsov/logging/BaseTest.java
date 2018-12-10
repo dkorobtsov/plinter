@@ -29,7 +29,6 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okio.Buffer;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -42,6 +41,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 public abstract class BaseTest {
 
@@ -54,6 +54,9 @@ public abstract class BaseTest {
 
     @Rule
     public MockWebServer server = new MockWebServer();
+
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Before
     public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
@@ -215,21 +218,20 @@ public abstract class BaseTest {
             .execute(request);
     }
 
-    List<String> interceptedRequest(RequestBody body, String loggerVersion,
-        boolean provideExecutor, boolean preserveTrailingSpaces) throws IOException {
-        return interceptedRequest(body, null, loggerVersion, provideExecutor,
-            preserveTrailingSpaces);
+    List<String> interceptedRequest(String loggerVersion, boolean provideExecutor,
+        String content, String contentType, boolean preserveTrailingSpaces) throws IOException {
+
+        return interceptedRequest(loggerVersion, provideExecutor, content, contentType,
+            preserveTrailingSpaces, null
+        );
     }
 
-    List<String> interceptedRequest(RequestBody body, Integer maxLineLength, String loggerVersion,
-        boolean provideExecutor, boolean preserveTrailingSpaces) throws IOException {
+    List<String> interceptedRequest(String loggerVersion, boolean provideExecutor,
+        String content, String mediaType, boolean preserveTrailingSpaces, Integer maxLineLength)
+        throws IOException {
+
         server.enqueue(new MockResponse().setResponseCode(200));
         final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-
-        Request okHttp3Request = new Request.Builder()
-            .url(String.valueOf(server.url("/")))
-            .put(body)
-            .build();
 
         LoggerConfigBuilder builder = LoggerConfig.builder()
             .withThreadInfo(true)
@@ -250,26 +252,32 @@ public abstract class BaseTest {
         InterceptorVersion interceptorVersion = parse(loggerVersion);
         switch (interceptorVersion) {
             case OKHTTP:
+                com.squareup.okhttp.Request okHttpRequest = new com.squareup.okhttp.Request.Builder()
+                    .url(String.valueOf(server.url("/")))
+                    .put(com.squareup.okhttp.RequestBody.create(
+                        com.squareup.okhttp.MediaType.parse(mediaType), content))
+                    .build();
+
                 OkHttpLoggingInterceptor okhttpLoggingInterceptor
                     = new OkHttpLoggingInterceptor(loggerConfig);
 
-                final com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
-                    .url(String.valueOf(server.url("/")))
-                    .put(convertOkHttp3RequestBody(okHttp3Request))
-                    .build();
-
                 defaultOkHttpClientWithInterceptor(okhttpLoggingInterceptor)
-                    .newCall(request)
+                    .newCall(okHttpRequest)
                     .execute();
 
                 return testLogger.loggerOutput(preserveTrailingSpaces);
 
             case OKHTTP3:
+                Request okHttp3Request2 = new Request.Builder()
+                    .url(String.valueOf(server.url("/")))
+                    .put(RequestBody.create(MediaType.parse(mediaType), content))
+                    .build();
+
                 OkHttp3LoggingInterceptor okhttp3LoggingInterceptor
                     = new OkHttp3LoggingInterceptor(loggerConfig);
 
                 defaultOkHttp3ClientWithInterceptor(okhttp3LoggingInterceptor)
-                    .newCall(okHttp3Request)
+                    .newCall(okHttp3Request2)
                     .execute();
 
                 return testLogger.loggerOutput(preserveTrailingSpaces);
@@ -281,21 +289,14 @@ public abstract class BaseTest {
                 final ApacheHttpResponseInterceptor responseInterceptor
                     = new ApacheHttpResponseInterceptor(loggerConfig);
 
-
                 final HttpPut httpPut = new HttpPut(server.url("/").uri());
-                final MediaType mediaType =
-                    body.contentType() == null ? MediaType
-                        .parse(ContentType.APPLICATION_JSON.toString())
-                        : body.contentType();
 
-                ContentType contentType = ContentType.create(
-                    String.format("%s/%s", Objects.requireNonNull(mediaType).type(),
-                        mediaType.subtype()));
+                ContentType contentType2 = ContentType.create(mediaType);
 
-                final HttpEntity entity = okHttp3RequestBodyToStringEntity(body, contentType);
+                final HttpEntity entity = new StringEntity(content, contentType2);
 
                 httpPut.setEntity(entity);
-                httpPut.setHeader(new BasicHeader("Content-Type", mediaType.toString()));
+                httpPut.setHeader(new BasicHeader("Content-Type", mediaType));
                 defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                     .execute(httpPut);
 
@@ -307,58 +308,14 @@ public abstract class BaseTest {
         }
     }
 
-    private static HttpEntity okHttp3RequestBodyToStringEntity(RequestBody requestBody,
-        ContentType contentType) throws IOException {
-
-        if (requestBody == null) {
-            return new StringEntity("");
-        }
-
-        final String responseString;
-        try (final Buffer buffer = new Buffer()) {
-            requestBody.writeTo(buffer);
-            responseString = buffer.readUtf8();
-        }
-
-        return new StringEntity(responseString, contentType);
+    List<String> interceptedResponse(String loggerVersion, boolean provideExecutors,
+        String content, String contentType, boolean preserveTrailingSpaces) throws IOException {
+        return interceptedResponse(loggerVersion, provideExecutors, content, contentType, null,
+            preserveTrailingSpaces);
     }
 
-    private static com.squareup.okhttp.RequestBody convertOkHttp3RequestBody(
-        okhttp3.Request request) {
-        final com.squareup.okhttp.MediaType contentType =
-            request.body() == null ? com.squareup.okhttp.MediaType
-                .parse("")
-                : convertOkHttp3MediaType(request.body().contentType());
-        try {
-            final okhttp3.Request requestCopy = request.newBuilder().build();
-
-            String requestBodyString = "";
-            if (requestCopy.body() != null) {
-                final Buffer buffer = new Buffer();
-                requestCopy.body().writeTo(buffer);
-                requestBodyString = buffer.readUtf8();
-            }
-            return com.squareup.okhttp.RequestBody.create(contentType, requestBodyString);
-        } catch (final IOException e) {
-            return com.squareup.okhttp.RequestBody
-                .create(contentType, "[LoggingInterceptorError] : could not parse request body");
-        }
-    }
-
-    private static com.squareup.okhttp.MediaType convertOkHttp3MediaType(
-        okhttp3.MediaType okHttp3MediaType) {
-        return okHttp3MediaType == null ? com.squareup.okhttp.MediaType.parse("")
-            : com.squareup.okhttp.MediaType.parse(okHttp3MediaType.toString());
-    }
-
-    List<String> interceptedResponse(String contentType, String body, String loggerVersion,
-        boolean provideExecutors, boolean preserveTrailingSpaces) throws IOException {
-        return interceptedResponse(contentType, body, null, loggerVersion,
-            provideExecutors, preserveTrailingSpaces);
-    }
-
-    List<String> interceptedResponse(String contentType, String body, Integer maxLineLength,
-        String loggerVersion, boolean provideExecutors, boolean preserveTrailingSpaces)
+    List<String> interceptedResponse(String loggerVersion, boolean provideExecutors,
+        String body, String contentType, Integer maxLineLength, boolean preserveTrailingSpaces)
         throws IOException {
 
         server.enqueue(new MockResponse()
