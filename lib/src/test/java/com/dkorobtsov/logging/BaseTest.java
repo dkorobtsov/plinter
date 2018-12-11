@@ -8,7 +8,7 @@ import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
 import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
-import com.dkorobtsov.logging.utils.InterceptorVersion;
+import com.dkorobtsov.logging.utils.Interceptor;
 import com.dkorobtsov.logging.utils.TestLogger;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -22,7 +22,6 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -66,7 +65,7 @@ public abstract class BaseTest {
      *
      * Format: "Interceptor name 1", "Interceptor name 2" etc
      *
-     * For valid interceptor names please check: {@link InterceptorVersion}
+     * For valid interceptor names please check: {@link Interceptor}
      *
      * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in
      * child classes.
@@ -82,7 +81,7 @@ public abstract class BaseTest {
      *
      * Format: "Interceptor name, should use manually provided executor?"
      *
-     * For valid interceptor names please check: {@link InterceptorVersion}
+     * For valid interceptor names please check: {@link Interceptor}
      *
      * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in
      * child classes.
@@ -95,7 +94,7 @@ public abstract class BaseTest {
         };
     }
 
-    List<String> interceptedRequest(String loggerVersion, boolean withExecutor,
+    List<String> interceptedRequest(String interceptor, boolean withExecutor,
         String body, String mediaType, boolean preserveTrailingSpaces) {
 
         server.enqueue(new MockResponse().setResponseCode(200));
@@ -103,12 +102,12 @@ public abstract class BaseTest {
         final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
 
-        interceptWithConfig(loggerVersion, loggerConfig, body, mediaType);
+        interceptWithConfig(interceptor, loggerConfig, body, mediaType);
 
         return testLogger.loggerOutput(preserveTrailingSpaces);
     }
 
-    List<String> interceptedResponse(String loggerVersion, boolean withExecutor,
+    List<String> interceptedResponse(String interceptor, boolean withExecutor,
         String body, String contentType, boolean preserveTrailingSpaces) {
 
         server.enqueue(new MockResponse()
@@ -119,7 +118,7 @@ public abstract class BaseTest {
         final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
 
-        interceptWithConfig(loggerVersion, loggerConfig);
+        interceptWithConfig(interceptor, loggerConfig);
 
         return testLogger.loggerOutput(preserveTrailingSpaces);
     }
@@ -150,7 +149,7 @@ public abstract class BaseTest {
     void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
         String content, String mediaType) {
 
-        switch (InterceptorVersion.parse(interceptor)) {
+        switch (Interceptor.parse(interceptor)) {
             case OKHTTP:
                 logger.info("OkHttp Interceptor: {}",
                     loggerConfig.toString());
@@ -219,7 +218,7 @@ public abstract class BaseTest {
     /**
      * Returns OkHttp3 client for use in tests.
      */
-    OkHttpClient defaultOkHttp3Client(Interceptor interceptor) {
+    OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
         return new OkHttpClient.Builder()
             .connectionPool(CONNECTION_POOL)
             .dispatcher(DISPATCHER)

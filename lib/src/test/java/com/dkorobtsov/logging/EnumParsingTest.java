@@ -1,7 +1,7 @@
 package com.dkorobtsov.logging;
 
 import com.dkorobtsov.logging.internal.HttpStatusCode;
-import com.dkorobtsov.logging.utils.InterceptorVersion;
+import com.dkorobtsov.logging.utils.Interceptor;
 import org.junit.Test;
 
 public class EnumParsingTest {
@@ -13,8 +13,8 @@ public class EnumParsingTest {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test(expected = IllegalArgumentException.class)
-    public void unknownInterceptorVersionThrowsIllegalArgumentException() {
-        InterceptorVersion.parse("UnknownInterceptor");
+    public void unknownInterceptorThrowsIllegalArgumentException() {
+        Interceptor.parse("UnknownInterceptor");
     }
 
 }
