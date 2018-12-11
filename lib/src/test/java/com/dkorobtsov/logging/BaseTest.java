@@ -40,7 +40,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
 
 public abstract class BaseTest {
 
@@ -55,9 +54,6 @@ public abstract class BaseTest {
     @Rule
     public MockWebServer server = new MockWebServer();
 
-    @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
-
     @Before
     public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
         LogManager.getLogManager().reset();
@@ -65,41 +61,6 @@ public abstract class BaseTest {
         globalLogger.setLevel(Level.OFF);
     }
 
-    /**
-     * Returns OkHttpClient for all interceptor tests to use as a starting point.
-     *
-     * <p>The shared instance allows all tests to share a single connection pool, which prevents
-     * idle connections from consuming unnecessary resources while connections wait to be evicted.
-     */
-    OkHttpClient defaultOkHttp3Client(Interceptor interceptor) {
-        return new OkHttpClient.Builder()
-            .connectionPool(CONNECTION_POOL)
-            .dispatcher(DISPATCHER)
-            .addNetworkInterceptor(interceptor)
-            .build();
-    }
-
-    HttpClient defaultApacheClient(ApacheHttpRequestInterceptor requestInterceptor,
-        ApacheHttpResponseInterceptor responseInterceptor) {
-        return HttpClientBuilder
-            .create()
-            .addInterceptorFirst(requestInterceptor)
-            .addInterceptorFirst(responseInterceptor)
-            .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
-            .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
-            .build();
-    }
-
-    com.squareup.okhttp.OkHttpClient defaultOkHttpClient(
-        com.squareup.okhttp.Interceptor interceptor) {
-        final com.squareup.okhttp.OkHttpClient okHttpClient = new com.squareup.okhttp.OkHttpClient()
-            .setConnectionPool(
-                new com.squareup.okhttp.ConnectionPool(MAX_IDLE_CONNECTIONS,
-                    KEEP_ALIVE_DURATION_MS))
-            .setDispatcher(new com.squareup.okhttp.Dispatcher());
-        okHttpClient.interceptors().add(interceptor);
-        return okHttpClient;
-    }
 
     List<String> interceptedRequest(String loggerVersion, boolean withExecutor,
         String content, String mediaType, boolean preserveTrailingSpaces) {
@@ -191,7 +152,7 @@ public abstract class BaseTest {
         }
     }
 
-    private Response executeOkHttp3Request(
+    Response executeOkHttp3Request(
         OkHttpClient client, Request request) {
         try {
             return client.newCall(request).execute();
@@ -201,7 +162,7 @@ public abstract class BaseTest {
         return null;
     }
 
-    private com.squareup.okhttp.Response executeOkHttpRequest(
+    com.squareup.okhttp.Response executeOkHttpRequest(
         com.squareup.okhttp.OkHttpClient client,
         com.squareup.okhttp.Request request) {
         try {
@@ -212,7 +173,7 @@ public abstract class BaseTest {
         return null;
     }
 
-    private HttpResponse executeApacheRequest(HttpClient client,
+    HttpResponse executeApacheRequest(HttpClient client,
         HttpUriRequest request) {
         try {
             return client.execute(request);
@@ -220,6 +181,45 @@ public abstract class BaseTest {
             logger.error(e);
         }
         return null;
+    }
+
+    /**
+     * Returns OkHttp3 client for use in tests.
+     */
+    OkHttpClient defaultOkHttp3Client(Interceptor interceptor) {
+        return new OkHttpClient.Builder()
+            .connectionPool(CONNECTION_POOL)
+            .dispatcher(DISPATCHER)
+            .addNetworkInterceptor(interceptor)
+            .build();
+    }
+
+    /**
+     * Returns Apache client for use in tests.
+     */
+    HttpClient defaultApacheClient(ApacheHttpRequestInterceptor requestInterceptor,
+        ApacheHttpResponseInterceptor responseInterceptor) {
+        return HttpClientBuilder
+            .create()
+            .addInterceptorFirst(requestInterceptor)
+            .addInterceptorFirst(responseInterceptor)
+            .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
+            .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+            .build();
+    }
+
+    /**
+     * Returns OkHttp client for use in tests.
+     */
+    com.squareup.okhttp.OkHttpClient defaultOkHttpClient(
+        com.squareup.okhttp.Interceptor interceptor) {
+        final com.squareup.okhttp.OkHttpClient okHttpClient = new com.squareup.okhttp.OkHttpClient()
+            .setConnectionPool(
+                new com.squareup.okhttp.ConnectionPool(MAX_IDLE_CONNECTIONS,
+                    KEEP_ALIVE_DURATION_MS))
+            .setDispatcher(new com.squareup.okhttp.Dispatcher());
+        okHttpClient.interceptors().add(interceptor);
+        return okHttpClient;
     }
 
     /**
@@ -251,7 +251,7 @@ public abstract class BaseTest {
      * To add body to request both content and media type should be non null, otherwise request will
      * be empty.
      */
-    HttpUriRequest apacheHttpRequest(String content, String mediaType) {
+    private HttpUriRequest apacheHttpRequest(String content, String mediaType) {
         final HttpPut httpPut = new HttpPut(server.url("/").uri());
 
         if (nonNull(content) && nonNull(mediaType)) {
@@ -274,7 +274,7 @@ public abstract class BaseTest {
      * To add body to request both content and media type should be non null, otherwise request will
      * be empty.
      */
-    com.squareup.okhttp.Request okHttpRequest(String content, String mediaType) {
+    private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType) {
         com.squareup.okhttp.Request.Builder requestBuilder
             = new com.squareup.okhttp.Request.Builder()
             .url(String.valueOf(server.url("/")));
