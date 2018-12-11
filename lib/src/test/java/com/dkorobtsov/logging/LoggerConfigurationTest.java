@@ -5,30 +5,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
-import com.dkorobtsov.logging.interceptors.apache.ApacheHttpRequestInterceptor;
-import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
-import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
-import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
-import com.dkorobtsov.logging.utils.InterceptorVersion;
 import com.dkorobtsov.logging.utils.TestLogger;
 import com.dkorobtsov.logging.utils.TestUtil;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
-public class LoggingInterceptorsTests extends BaseTest {
-
-    private final Logger logger = LogManager.getLogger(Log4j2LoggerTest.class);
+public class LoggerConfigurationTest extends BaseTest {
 
     @Test
     @Parameters({
@@ -38,7 +26,11 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .build());
 
         assertTrue("Logger should publish events using only default configuration",
             testLogger.firstFormattedEvent(true)
@@ -53,7 +45,11 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .build());
 
         //Comparing message by length since on Gradle runner characters may be different
         //unless GradleVM executes with -Dfile.encoding=utf-8 option
@@ -70,7 +66,12 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger, false);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .loggable(false)
+                .build());
 
         assertTrue("Logger output should be empty if debug mode is off.",
             testLogger.formattedOutput().isEmpty());
@@ -84,7 +85,11 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger, true);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .build());
 
         assertTrue("Logger should publish intercepted events if debug mode is on.",
             testLogger.firstFormattedEvent(true)
@@ -98,7 +103,11 @@ public class LoggingInterceptorsTests extends BaseTest {
     public void defaultLoggerFormatCanBeModified(String interceptorVersion) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
-        interceptWithValues(interceptorVersion, testLogger);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .build());
 
         String logEntry = testLogger.lastFormattedEvent(true);
 
@@ -114,9 +123,14 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
-        interceptWithValues(interceptorVersion, testLogger, Level.NONE);
 
-        assertTrue("Logger output should be empty if debug mode is off.",
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .level(Level.NONE)
+                .build());
+
+        assertTrue("Logger output should be empty if level set to None.",
             testLogger.formattedOutput().isEmpty());
     }
 
@@ -128,7 +142,12 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
-        interceptWithValues(interceptorVersion, testLogger, Level.BODY);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .level(Level.BODY)
+                .build());
 
         assertFalse("Headers should not be logged when level set to Body.",
             testLogger.formattedOutput().contains("Headers"));
@@ -142,7 +161,12 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
-        interceptWithValues(interceptorVersion, testLogger, Level.HEADERS);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .level(Level.HEADERS)
+                .build());
 
         assertFalse("Body should not be logged when level set to Headers.",
             testLogger.formattedOutput().contains("body"));
@@ -156,7 +180,12 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
-        interceptWithValues(interceptorVersion, testLogger, Level.BASIC);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .level(Level.BASIC)
+                .build());
 
         assertTrue("Request section should be present in logger output.",
             testLogger.formattedOutput().contains("Request"));
@@ -184,11 +213,15 @@ public class LoggingInterceptorsTests extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void userShouldBeAbleToSupplyExecutor(String version) throws IOException {
+    public void userShouldBeAbleToSupplyExecutor(String interceptorVersion) throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
-        interceptWithValues(version, testLogger, Executors.newSingleThreadExecutor());
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .executor(Executors.newSingleThreadExecutor())
+                .build());
 
         assertTrue("User should be able to supply executor.",
             testLogger.formattedOutput().contains("thread"));
@@ -202,7 +235,12 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger, Level.BASIC, false);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .withThreadInfo(false)
+                .build());
 
         assertFalse("Thread info should not be logged if disabled.",
             testLogger.formattedOutput().contains("Thread"));
@@ -216,7 +254,12 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger, Level.BASIC, true);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .withThreadInfo(true)
+                .build());
 
         assertTrue("Thread info should not be logged if disabled.",
             testLogger.formattedOutput().contains("Thread"));
@@ -230,7 +273,11 @@ public class LoggingInterceptorsTests extends BaseTest {
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-        interceptWithValues(interceptorVersion, testLogger, Level.BASIC, null);
+
+        interceptWithConfig(interceptorVersion,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .build());
 
         assertFalse("Thread info should not be logged if disabled.",
             testLogger.formattedOutput().contains("Thread"));
@@ -240,118 +287,16 @@ public class LoggingInterceptorsTests extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void userShouldBeAbleToUseDefaultLogger(String version) {
+    public void userShouldBeAbleToUseDefaultLogger(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
 
         try {
-            interceptWithValues(version);
+            interceptWithConfig(interceptorVersion,
+                LoggerConfig.builder()
+                    .build());
         } catch (Exception e) {
             fail("User should be able to use default logger.");
             e.printStackTrace();
-        }
-    }
-
-    private void interceptWithValues(String version) throws IOException {
-        interceptWithValues(version, null, null, null, null, null);
-    }
-
-    private void interceptWithValues(String version, TestLogger testLogger) throws IOException {
-        interceptWithValues(version, testLogger, null, null, null, null);
-    }
-
-    private void interceptWithValues(String version,
-        TestLogger testLogger, Boolean loggable) throws IOException {
-        interceptWithValues(version, testLogger, loggable, null, null, null);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    private void interceptWithValues(String version,
-        TestLogger testLogger, Level level, Boolean withThreadInfo) throws IOException {
-        interceptWithValues(version, testLogger, null, level, null, withThreadInfo);
-    }
-
-    private void interceptWithValues(String version,
-        TestLogger testLogger, Level level) throws IOException {
-        interceptWithValues(version, testLogger, null, level, null, null);
-    }
-
-    private void interceptWithValues(String version, TestLogger testLogger, Executor runnable)
-        throws IOException {
-        interceptWithValues(version, testLogger, null, null, runnable, null);
-    }
-
-
-    private void interceptWithValues(String version, TestLogger testLogger, Boolean loggable,
-        Level level, Executor executor, Boolean withThreadInfo) throws IOException {
-
-        LoggerConfigBuilder configBuilder = LoggerConfig.builder();
-
-        if (Objects.nonNull(testLogger)) {
-            configBuilder.logger(testLogger);
-        }
-
-        if (Objects.nonNull(loggable)) {
-            configBuilder.loggable(loggable);
-        }
-
-        if (Objects.nonNull(level)) {
-            configBuilder.level(level);
-        }
-
-        if (Objects.nonNull(executor)) {
-            configBuilder.executor(executor);
-        }
-
-        if (Objects.nonNull(withThreadInfo)) {
-            configBuilder.withThreadInfo(withThreadInfo);
-        }
-
-        LoggerConfig loggerConfig = configBuilder.build();
-
-        switch (InterceptorVersion.parse(version)) {
-            case OKHTTP3:
-                OkHttp3LoggingInterceptor okHttp3LoggingInterceptor
-                    = new OkHttp3LoggingInterceptor(loggerConfig);
-
-                logger.info("OkHttp3 Interceptor: {}",
-                    okHttp3LoggingInterceptor.loggerConfig().toString());
-
-                defaultOkHttp3ClientWithInterceptor(okHttp3LoggingInterceptor)
-                    .newCall(defaultOkHttp3Request())
-                    .execute();
-                break;
-
-            case OKHTTP:
-                final OkHttpLoggingInterceptor okHttpLoggingInterceptor
-                    = new OkHttpLoggingInterceptor(loggerConfig);
-
-                logger.info("OkHttp Interceptor: {}",
-                    okHttpLoggingInterceptor.loggerConfig().toString());
-
-                defaultOkHttpClientWithInterceptor(okHttpLoggingInterceptor)
-                    .newCall(defaultOkHttpRequest())
-                    .execute();
-                break;
-
-            case APACHE_HTTPCLIENT_REQUEST:
-                final ApacheHttpRequestInterceptor requestInterceptor
-                    = new ApacheHttpRequestInterceptor(loggerConfig);
-
-                final ApacheHttpResponseInterceptor responseInterceptor
-                    = new ApacheHttpResponseInterceptor(loggerConfig);
-
-                logger.info("Apache Request Interceptor: {}",
-                    requestInterceptor.loggerConfig().toString());
-                logger.info("Apache Response Interceptor: {}",
-                    responseInterceptor.loggerConfig().toString());
-
-                defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
-                    .execute(defaultApacheHttpRequest());
-                break;
-
-            default:
-                fail("Unknown interceptor version: " + version);
-                break;
         }
     }
 

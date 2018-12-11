@@ -146,13 +146,9 @@ public class LoggerConfig {
             return this;
         }
 
-        public LoggingFormat getFormat() {
-            return this.format;
-        }
-
         public LoggerConfig build() {
-            return new LoggerConfig(isLoggable, level, logger, format, executor, maxLineLength,
-                withThreadInfo);
+            return new LoggerConfig(isLoggable, level, logger,
+                format, executor, maxLineLength, withThreadInfo);
         }
     }
 }

@@ -48,7 +48,7 @@ public class Log4j2LoggerTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptorVersion)
+    public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor)
         throws IOException {
         server.enqueue(new MockResponse().setResponseCode(200));
         final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
@@ -90,8 +90,10 @@ public class Log4j2LoggerTest extends BaseTest {
         log.debug("Adding test double appender for output validation.");
         addAppender(logWriter, "TestWriter", OK_HTTP_LOG_PATTERN);
 
-        log.debug("Attaching custom logger to interceptor.");
-        attachLoggerToInterceptorWithDefaultRequest(interceptorVersion, log4j2Writer);
+        interceptWithConfig(interceptor,
+            com.dkorobtsov.logging.LoggerConfig.builder()
+                .logger(log4j2Writer)
+                .build());
 
         log.debug("Retrieving logger output for validation.");
         final String logOutput = logWriter.toString();

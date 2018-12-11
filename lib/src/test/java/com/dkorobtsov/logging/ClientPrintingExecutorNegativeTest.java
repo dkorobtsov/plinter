@@ -6,7 +6,7 @@ import com.dkorobtsov.logging.internal.InterceptedResponse;
 import java.util.concurrent.Executors;
 import org.junit.Test;
 
-public class ClientPrintingExecutorNegativeUnitTests {
+public class ClientPrintingExecutorNegativeTest {
 
     @Test
     public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {

@@ -1,6 +1,7 @@
 package com.dkorobtsov.logging;
 
 import static com.dkorobtsov.logging.utils.InterceptorVersion.parse;
+import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 
 import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
@@ -44,6 +45,9 @@ import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 
 public abstract class BaseTest {
+
+    private static final org.apache.logging.log4j.Logger logger = org.apache.logging.log4j.LogManager
+        .getLogger(BaseTest.class);
 
     private static final ConnectionPool connectionPool = new ConnectionPool();
     private static final Dispatcher dispatcher = new Dispatcher();
@@ -120,104 +124,6 @@ public abstract class BaseTest {
         return okHttpClient;
     }
 
-    void attachLoggerToInterceptorWithDefaultRequest(String version, LogWriter log4j2Writer)
-        throws IOException {
-
-        InterceptorVersion interceptorVersion = parse(version);
-        switch (interceptorVersion) {
-            case OKHTTP3:
-                attachLoggerToOkHttp3InterceptorWithDefaultRequest(log4j2Writer);
-                break;
-            case OKHTTP:
-                attachLoggerToOkHttpInterceptorWithDefaultRequest(log4j2Writer);
-                break;
-            case APACHE_HTTPCLIENT_REQUEST:
-                attachLoggerToApacheRequestInterceptorWithDefaultRequest(log4j2Writer);
-                break;
-            default:
-                fail("Unknown interceptor version: " + interceptorVersion);
-                break;
-        }
-    }
-
-    void attachLoggerToInterceptor(String version, LogWriter logWriter,
-        Request okHttp3Request, com.squareup.okhttp.Request okHttpRequest,
-        HttpUriRequest apacheHttpRequest) throws IOException {
-
-        InterceptorVersion interceptorVersion = parse(version);
-        switch (interceptorVersion) {
-            case OKHTTP3:
-                attachLoggerToOkHttp3Interceptor(logWriter, okHttp3Request);
-                break;
-            case OKHTTP:
-                attachLoggerToOkHttpInterceptor(logWriter, okHttpRequest);
-                break;
-            case APACHE_HTTPCLIENT_REQUEST:
-                attachLoggerToApacheRequestInterceptor(logWriter, apacheHttpRequest);
-                break;
-            default:
-                fail("Unknown interceptor version: " + interceptorVersion);
-                break;
-        }
-    }
-
-    private void attachLoggerToOkHttpInterceptorWithDefaultRequest(LogWriter logWriter)
-        throws IOException {
-        attachLoggerToOkHttpInterceptor(logWriter, defaultOkHttpRequest());
-    }
-
-    private void attachLoggerToOkHttpInterceptor(LogWriter logWriter,
-        com.squareup.okhttp.Request request) throws IOException {
-        OkHttpLoggingInterceptor interceptor = new OkHttpLoggingInterceptor(
-            LoggerConfig.builder()
-                .logger(logWriter)
-                .build());
-
-        defaultOkHttpClientWithInterceptor(interceptor)
-            .newCall(request)
-            .execute();
-    }
-
-    private void attachLoggerToOkHttp3InterceptorWithDefaultRequest(LogWriter logWriter)
-        throws IOException {
-        attachLoggerToOkHttp3Interceptor(logWriter, defaultOkHttp3Request());
-    }
-
-    private void attachLoggerToOkHttp3Interceptor(LogWriter logWriter, Request request)
-        throws IOException {
-        OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
-            LoggerConfig.builder()
-                .logger(logWriter)
-                .build());
-
-        log.debug("Sending request.");
-        defaultOkHttp3ClientWithInterceptor(interceptor)
-            .newCall(request)
-            .execute();
-    }
-
-    private void attachLoggerToApacheRequestInterceptorWithDefaultRequest(LogWriter logWriter)
-        throws IOException {
-        attachLoggerToApacheRequestInterceptor(logWriter, defaultApacheHttpRequest());
-    }
-
-    private void attachLoggerToApacheRequestInterceptor(LogWriter logWriter, HttpUriRequest request)
-        throws IOException {
-        ApacheHttpRequestInterceptor requestInterceptor = new ApacheHttpRequestInterceptor(
-            LoggerConfig.builder()
-                .logger(logWriter)
-                .build());
-
-        ApacheHttpResponseInterceptor responseInterceptor = new ApacheHttpResponseInterceptor(
-            LoggerConfig.builder()
-                .logger(logWriter)
-                .build());
-
-        log.debug("Sending request.");
-        defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
-            .execute(request);
-    }
-
     List<String> interceptedRequest(String loggerVersion, boolean provideExecutor,
         String content, String contentType, boolean preserveTrailingSpaces) throws IOException {
 
@@ -264,8 +170,7 @@ public abstract class BaseTest {
                 defaultOkHttpClientWithInterceptor(okhttpLoggingInterceptor)
                     .newCall(okHttpRequest)
                     .execute();
-
-                return testLogger.loggerOutput(preserveTrailingSpaces);
+                break;
 
             case OKHTTP3:
                 Request okHttp3Request2 = new Request.Builder()
@@ -279,8 +184,7 @@ public abstract class BaseTest {
                 defaultOkHttp3ClientWithInterceptor(okhttp3LoggingInterceptor)
                     .newCall(okHttp3Request2)
                     .execute();
-
-                return testLogger.loggerOutput(preserveTrailingSpaces);
+                break;
 
             case APACHE_HTTPCLIENT_REQUEST:
                 final ApacheHttpRequestInterceptor requestInterceptor
@@ -299,13 +203,13 @@ public abstract class BaseTest {
                 httpPut.setHeader(new BasicHeader("Content-Type", mediaType));
                 defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
                     .execute(httpPut);
-
-                return testLogger.loggerOutput(preserveTrailingSpaces);
+                break;
 
             default:
                 fail("Unknown interceptor version: " + interceptorVersion);
                 return Arrays.asList(new String[1]);
         }
+        return testLogger.loggerOutput(preserveTrailingSpaces);
     }
 
     List<String> interceptedResponse(String loggerVersion, boolean provideExecutors,
@@ -334,7 +238,7 @@ public abstract class BaseTest {
                 new LinkedBlockingQueue<>()));
         }
 
-        if (Objects.nonNull(maxLineLength)) {
+        if (nonNull(maxLineLength)) {
             builder.maxLineLength(maxLineLength);
         }
 
@@ -378,6 +282,56 @@ public abstract class BaseTest {
         }
 
         return testLogger.loggerOutput(preserveTrailingSpaces);
+    }
+
+    void interceptWithConfig(String interceptor, LoggerConfig loggerConfig)
+        throws IOException {
+
+        switch (InterceptorVersion.parse(interceptor)) {
+            case OKHTTP3:
+                OkHttp3LoggingInterceptor okHttp3LoggingInterceptor
+                    = new OkHttp3LoggingInterceptor(loggerConfig);
+
+                logger.info("OkHttp3 Interceptor: {}",
+                    okHttp3LoggingInterceptor.loggerConfig().toString());
+
+                defaultOkHttp3ClientWithInterceptor(okHttp3LoggingInterceptor)
+                    .newCall(defaultOkHttp3Request())
+                    .execute();
+                break;
+
+            case OKHTTP:
+                final OkHttpLoggingInterceptor okHttpLoggingInterceptor
+                    = new OkHttpLoggingInterceptor(loggerConfig);
+
+                logger.info("OkHttp Interceptor: {}",
+                    okHttpLoggingInterceptor.loggerConfig().toString());
+
+                defaultOkHttpClientWithInterceptor(okHttpLoggingInterceptor)
+                    .newCall(defaultOkHttpRequest())
+                    .execute();
+                break;
+
+            case APACHE_HTTPCLIENT_REQUEST:
+                final ApacheHttpRequestInterceptor requestInterceptor
+                    = new ApacheHttpRequestInterceptor(loggerConfig);
+
+                final ApacheHttpResponseInterceptor responseInterceptor
+                    = new ApacheHttpResponseInterceptor(loggerConfig);
+
+                logger.info("Apache Request Interceptor: {}",
+                    requestInterceptor.loggerConfig().toString());
+                logger.info("Apache Response Interceptor: {}",
+                    responseInterceptor.loggerConfig().toString());
+
+                defaultApacheClientWithInterceptors(requestInterceptor, responseInterceptor)
+                    .execute(defaultApacheHttpRequest());
+                break;
+
+            default:
+                fail("Unknown interceptor version: " + interceptor);
+                break;
+        }
     }
 
 }
