@@ -1,5 +1,8 @@
 package com.dkorobtsov.logging;
 
+import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
+import static com.dkorobtsov.logging.internal.Util.APPLICATION_ZIP;
+
 import com.dkorobtsov.logging.internal.ClientPrintingExecutor;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.dkorobtsov.logging.internal.InterceptedResponse;
@@ -12,7 +15,7 @@ public class ClientPrintingExecutorNegativeTest {
     public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
         final InterceptedRequest request = new InterceptedRequest.Builder()
             .get()
-            .addHeader("Content-type", "application/json")
+            .addHeader("Content-type", APPLICATION_JSON)
             .url("http://google.com")
             .build();
 
@@ -27,7 +30,7 @@ public class ClientPrintingExecutorNegativeTest {
     public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
         final InterceptedRequest request = new InterceptedRequest.Builder()
             .get()
-            .addHeader("Content-type", "application/zip")
+            .addHeader("Content-type", APPLICATION_ZIP)
             .url("http://google.com")
             .build();
 
