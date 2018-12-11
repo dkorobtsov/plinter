@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 import com.dkorobtsov.logging.utils.TestLogger;
 import com.dkorobtsov.logging.utils.TestUtil;
 import com.squareup.okhttp.mockwebserver.MockResponse;
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -22,8 +21,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptorVersion)
-        throws IOException {
+    public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
@@ -41,8 +39,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptorVersion)
-        throws IOException {
+    public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
@@ -62,8 +59,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptorVersion)
-        throws IOException {
+    public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
@@ -81,8 +77,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptorVersion)
-        throws IOException {
+    public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
@@ -100,7 +95,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void defaultLoggerFormatCanBeModified(String interceptorVersion) throws IOException {
+    public void defaultLoggerFormatCanBeModified(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
@@ -119,8 +114,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptorVersion)
-        throws IOException {
+    public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
@@ -138,8 +132,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptorVersion)
-        throws IOException {
+    public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
@@ -157,8 +150,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptorVersion)
-        throws IOException {
+    public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
@@ -176,8 +168,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void allDetailsShouldBePrintedIfLevelSetToBasic(String interceptorVersion)
-        throws IOException {
+    public void allDetailsShouldBePrintedIfLevelSetToBasic(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
@@ -213,7 +204,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void userShouldBeAbleToSupplyExecutor(String interceptorVersion) throws IOException {
+    public void userShouldBeAbleToSupplyExecutor(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
@@ -231,8 +222,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void threadInfoShouldNotBeLoggedIfDisabled(String interceptorVersion)
-        throws IOException {
+    public void threadInfoShouldNotBeLoggedIfDisabled(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
@@ -250,8 +240,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void threadInfoShouldBeLoggedIfEnabled(String interceptorVersion)
-        throws IOException {
+    public void threadInfoShouldBeLoggedIfEnabled(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
@@ -269,8 +258,7 @@ public class LoggerConfigurationTest extends BaseTest {
     @Parameters({
         "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void threadInfoShouldNotBeLoggedByDefault(String interceptorVersion)
-        throws IOException {
+    public void threadInfoShouldNotBeLoggedByDefault(String interceptorVersion) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 

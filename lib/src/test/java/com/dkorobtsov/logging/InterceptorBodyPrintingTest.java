@@ -7,7 +7,6 @@ import static com.dkorobtsov.logging.internal.Util.TEXT_HTML;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -96,10 +95,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_simpleJsonRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_simpleJsonRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             SIMPLE_JSON, APPLICATION_JSON, true);
 
         assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
@@ -111,10 +110,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_simpleJsonResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_simpleJsonResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             SIMPLE_JSON, APPLICATION_JSON, true);
 
         assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
@@ -126,10 +125,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_jsonArrayRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_jsonArrayRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             JSON_ARRAY, APPLICATION_JSON, false);
 
         assertThat(loggerOutput).contains("{\"test1\": \"test1\"},");
@@ -142,10 +141,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_jsonArrayResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_jsonArrayResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             JSON_ARRAY, APPLICATION_JSON, false);
 
         assertThat(loggerOutput).contains("{\"test1\": \"test1\"},");
@@ -158,10 +157,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_preformattedJsonRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_preformattedJsonRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
         assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
@@ -173,10 +172,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_preformattedJsonResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_preformattedJsonResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
         assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
@@ -188,10 +187,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_malformedJsonRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_malformedJsonRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_JSON_BODY, APPLICATION_JSON, false);
 
         loggerOutput
@@ -210,10 +209,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_JsonRequestWithInvalidChar(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_JsonRequestWithInvalidChar(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_JSON_STARTING_WITH_INVALID_CHAR, APPLICATION_JSON, false);
 
         assertTrue("Interceptor should be able to log malformed json request body.",
@@ -226,10 +225,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_malformedJsonResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_malformedJsonResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_JSON_BODY, APPLICATION_JSON, false);
 
         loggerOutput
@@ -248,10 +247,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_JsonResponseWithInvalidChar(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_JsonResponseWithInvalidChar(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_JSON_STARTING_WITH_INVALID_CHAR, APPLICATION_JSON, false);
 
         assertTrue("Interceptor should be able to log malformed json request body.",
@@ -264,10 +263,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_htmlRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_htmlRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             HTML_BODY, TEXT_HTML, false);
 
         assertThat(loggerOutput).contains("<title>Error 404 Not Found</title>");
@@ -279,10 +278,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_htmlResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_htmlResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             HTML_BODY, "text/html", false);
 
         assertThat(loggerOutput).contains("<title>Error 404 Not Found</title>");
@@ -294,10 +293,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_malformedHtmlRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_malformedHtmlRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_HTML_BODY, TEXT_HTML, false);
 
         loggerOutput
@@ -316,10 +315,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_malformedHtmlResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_malformedHtmlResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_HTML_BODY, "text/html", false);
 
         loggerOutput
@@ -338,10 +337,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_xmlRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_xmlRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             XML_BODY, APPLICATION_XML, false);
 
         assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
@@ -354,10 +353,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_xmlResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_xmlResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             XML_BODY, APPLICATION_XML, false);
 
         assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
@@ -370,10 +369,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_malformedXmlRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_malformedXmlRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_XML_BODY, APPLICATION_XML, false);
 
         loggerOutput
@@ -392,10 +391,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_malformedXmlResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_malformedXmlResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_XML_BODY, APPLICATION_XML, false);
 
         loggerOutput
@@ -414,10 +413,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_fileRequest(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_fileRequest(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
 
         assertThat(loggerOutput).contains("  Omitted response body ");
@@ -429,10 +428,10 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         "okhttp3, true", "okhttp3, false",
         "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
     })
-    public void interceptorAbleToHandleBody_fileResponse(String loggerVersion,
-        boolean provideExecutor) throws IOException {
+    public void interceptorAbleToHandleBody_fileResponse(
+        String interceptor, boolean withExecutor) {
 
-        final List<String> loggerOutput = interceptedResponse(loggerVersion, provideExecutor,
+        final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_ZIP,
             true);
 

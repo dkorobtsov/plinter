@@ -4,8 +4,8 @@ import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
 import static org.junit.Assert.assertTrue;
 
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
-import java.io.IOException;
-import java.util.List;
+import com.dkorobtsov.logging.utils.TestLogger;
+import com.squareup.okhttp.mockwebserver.MockResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Assert;
@@ -19,17 +19,23 @@ public class OutputResizingTest extends BaseTest {
 
     @Test
     @Parameters({
-        "okhttp, false", "okhttp, true",
-        "okhttp3, false", "okhttp3, true",
-        "apacheHttpclientRequest, false", "apacheHttpclientRequest, true"
+        "okhttp", "okhttp3", "apacheHttpclientRequest"
     })
-    public void printerOutputResizingValidation(String loggerVersion,
-        boolean provideExecutor) throws IOException {
-        final List<String> loggerOutput = interceptedRequest(loggerVersion, provideExecutor,
-            TEST_JSON, APPLICATION_JSON, false, 10);
+    public void printerOutputCanBeResized(String interceptor) {
+        server.enqueue(new MockResponse().setResponseCode(200));
+        TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+
+        interceptWithConfig(interceptor,
+            LoggerConfig.builder()
+                .logger(testLogger)
+                .maxLineLength(10)
+                .build(), TEST_JSON, APPLICATION_JSON);
 
         assertTrue("Interceptor should be able to log simple json body.",
-            loggerOutput.contains("Method: @P"));
+            testLogger.formattedOutput().contains("Method: @P"));
+
+        assertTrue("Interceptor should be able to log simple json body.",
+            testLogger.formattedOutput().contains("cess : tru"));
     }
 
     @Test(expected = IllegalArgumentException.class)
