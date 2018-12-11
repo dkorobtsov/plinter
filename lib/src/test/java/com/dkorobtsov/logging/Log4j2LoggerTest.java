@@ -45,11 +45,8 @@ public class Log4j2LoggerTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp", "okhttp3", "apacheHttpclientRequest"
-    })
-    public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor)
-        throws IOException {
+    @Parameters(method = "interceptors")
+    public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor) {
         server.enqueue(new MockResponse().setResponseCode(200));
         final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
 

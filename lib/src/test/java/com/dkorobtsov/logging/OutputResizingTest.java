@@ -18,9 +18,7 @@ public class OutputResizingTest extends BaseTest {
     private static final String TEST_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
 
     @Test
-    @Parameters({
-        "okhttp", "okhttp3", "apacheHttpclientRequest"
-    })
+    @Parameters(method = "interceptors")
     public void printerOutputCanBeResized(String interceptor) {
         server.enqueue(new MockResponse().setResponseCode(200));
         TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);

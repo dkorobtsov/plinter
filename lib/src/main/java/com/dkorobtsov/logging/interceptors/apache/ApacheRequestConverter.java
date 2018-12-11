@@ -3,6 +3,7 @@ package com.dkorobtsov.logging.interceptors.apache;
 import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.readApacheHttpEntity;
 import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.recreateHttpEntityFromString;
 import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
+import static java.util.Objects.nonNull;
 
 import com.dkorobtsov.logging.RequestConverter;
 import com.dkorobtsov.logging.internal.HttpMethod;
@@ -10,6 +11,7 @@ import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.dkorobtsov.logging.internal.InterceptedRequestBody;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -44,11 +46,15 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
     }
 
     private InterceptedRequestBody interceptedRequestBody(HttpRequest request) {
+
         if (request instanceof HttpRequestWrapper) {
+
             final HttpRequest original = ((HttpRequestWrapper) request).getOriginal();
             if (original instanceof HttpEntityEnclosingRequestBase) {
+
                 final HttpEntity entity = ((HttpEntityEnclosingRequestBase) original).getEntity();
-                if (entity != null) {
+                if (nonNull(entity)) {
+
                     String requestBodyString;
                     try {
                         requestBodyString = readApacheHttpEntity(entity);
@@ -85,9 +91,9 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
     private String interceptedUrl(HttpRequest request) {
         final HttpHost target = ((HttpRequestWrapper) request).getTarget();
         final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
-        return String
-            .format("%s://%s%s%s", target.getSchemeName(), target.getHostName(), portString,
-                ((HttpRequestWrapper) request).getURI());
+        final URI uri = ((HttpRequestWrapper) request).getURI();
+        return String.format("%s://%s%s%s",
+            target.getSchemeName(), target.getHostName(), portString, uri);
     }
 
 }

@@ -90,14 +90,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
         + "<pre>Not Found</pre></div><tr><th></th><th><th></th><th></th></tr></body></html>";
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_simpleJsonRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_simpleJsonRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             SIMPLE_JSON, APPLICATION_JSON, true);
 
@@ -105,14 +99,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_simpleJsonResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_simpleJsonResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             SIMPLE_JSON, APPLICATION_JSON, true);
 
@@ -120,14 +108,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_jsonArrayRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_jsonArrayRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             JSON_ARRAY, APPLICATION_JSON, false);
 
@@ -136,14 +118,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_jsonArrayResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_jsonArrayResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             JSON_ARRAY, APPLICATION_JSON, false);
 
@@ -152,14 +128,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_preformattedJsonRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_preformattedJsonRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
@@ -167,14 +137,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_preformattedJsonResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_preformattedJsonResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
@@ -182,14 +146,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_malformedJsonRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_malformedJsonRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_JSON_BODY, APPLICATION_JSON, false);
 
@@ -204,14 +162,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_JsonRequestWithInvalidChar(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_JsonRequestWithInvalidChar(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_JSON_STARTING_WITH_INVALID_CHAR, APPLICATION_JSON, false);
 
@@ -220,14 +172,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_malformedJsonResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_malformedJsonResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_JSON_BODY, APPLICATION_JSON, false);
 
@@ -242,14 +188,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_JsonResponseWithInvalidChar(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_JsonResponseWithInvalidChar(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_JSON_STARTING_WITH_INVALID_CHAR, APPLICATION_JSON, false);
 
@@ -258,14 +198,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_htmlRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_htmlRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             HTML_BODY, TEXT_HTML, false);
 
@@ -273,14 +207,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_htmlResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_htmlResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             HTML_BODY, "text/html", false);
 
@@ -288,14 +216,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_malformedHtmlRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_malformedHtmlRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_HTML_BODY, TEXT_HTML, false);
 
@@ -310,14 +232,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_malformedHtmlResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_malformedHtmlResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_HTML_BODY, "text/html", false);
 
@@ -332,14 +248,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_xmlRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_xmlRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             XML_BODY, APPLICATION_XML, false);
 
@@ -348,14 +258,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_xmlResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_xmlResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             XML_BODY, APPLICATION_XML, false);
 
@@ -364,14 +268,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_malformedXmlRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_malformedXmlRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             MALFORMED_XML_BODY, APPLICATION_XML, false);
 
@@ -386,14 +284,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_malformedXmlResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_malformedXmlResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             MALFORMED_XML_BODY, APPLICATION_XML, false);
 
@@ -408,14 +300,8 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_fileRequest(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_fileRequest(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
 
@@ -423,20 +309,13 @@ public class InterceptorBodyPrintingTest extends BaseTest {
     }
 
     @Test
-    @Parameters({
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
-    })
-    public void interceptorAbleToHandleBody_fileResponse(
-        String interceptor, boolean withExecutor) {
-
+    @Parameters(method = "interceptorsWithExecutors")
+    public void bodyHandling_fileResponse(String interceptor, boolean withExecutor) {
         final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
             PREFORMATTED_JSON_BODY, APPLICATION_ZIP,
             true);
 
         assertThat(loggerOutput).contains("  Omitted response body ");
     }
-
 
 }

@@ -61,6 +61,39 @@ public abstract class BaseTest {
         globalLogger.setLevel(Level.OFF);
     }
 
+    /**
+     * Returns list of parameters for data driven tests.
+     *
+     * Format: "Interceptor name, should use manually provided executor?"
+     *
+     * For valid interceptor names please check: {@link InterceptorVersion}
+     *
+     * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in
+     * child classes.
+     */
+    String[] interceptorsWithExecutors() {
+        return new String[]{
+            "okhttp, true", "okhttp, false",
+            "okhttp3, true", "okhttp3, false",
+            "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+        };
+    }
+
+    /**
+     * Returns list of parameters for data driven tests.
+     *
+     * Format: "Interceptor name 1", "Interceptor name 2" etc
+     *
+     * For valid interceptor names please check: {@link InterceptorVersion}
+     *
+     * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in
+     * child classes.
+     */
+    String[] interceptors() {
+        return new String[]{
+            "okhttp", "okhttp3", "apacheHttpclientRequest"
+        };
+    }
 
     List<String> interceptedRequest(String loggerVersion, boolean withExecutor,
         String content, String mediaType, boolean preserveTrailingSpaces) {
@@ -285,5 +318,6 @@ public abstract class BaseTest {
         }
         return requestBuilder.build();
     }
+
 
 }

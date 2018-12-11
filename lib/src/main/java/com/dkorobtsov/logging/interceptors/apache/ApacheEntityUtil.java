@@ -1,6 +1,8 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
 import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -16,12 +18,12 @@ import org.apache.http.entity.ContentType;
 
 class ApacheEntityUtil {
 
-    private ApacheEntityUtil(){
+    private ApacheEntityUtil() {
 
     }
 
     static String readApacheHttpEntity(HttpEntity entity) throws IOException {
-        if (entity != null) {
+        if (nonNull(entity)) {
             StringBuilder textBuilder = new StringBuilder();
             try (Reader reader = new BufferedReader(new InputStreamReader
                 (entity.getContent(), Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -40,7 +42,8 @@ class ApacheEntityUtil {
         HttpEntity entity) {
         final Header contentType = entity.getContentType();
         final String contentTypeValue
-            = contentType == null ? APPLICATION_JSON
+            = isNull(contentType)
+            ? APPLICATION_JSON
             : contentType.getValue();
 
         final Header contentEncodingHeader = entity.getContentEncoding();
@@ -49,7 +52,7 @@ class ApacheEntityUtil {
             .setContentType(ContentType.parse(contentTypeValue))
             .setStream(new ByteArrayInputStream(httpEntityContent.getBytes()));
 
-        if (contentEncodingHeader != null) {
+        if (nonNull(contentEncodingHeader)) {
             return entityBuilder
                 .setContentEncoding(String
                     .format("%s/%s", contentEncodingHeader.getName(),
