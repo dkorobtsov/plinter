@@ -64,6 +64,22 @@ public abstract class BaseTest {
     /**
      * Returns list of parameters for data driven tests.
      *
+     * Format: "Interceptor name 1", "Interceptor name 2" etc
+     *
+     * For valid interceptor names please check: {@link InterceptorVersion}
+     *
+     * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in
+     * child classes.
+     */
+    String[] interceptors() {
+        return new String[]{
+            "okhttp", "okhttp3", "apacheHttpclientRequest"
+        };
+    }
+
+    /**
+     * Returns list of parameters for data driven tests.
+     *
      * Format: "Interceptor name, should use manually provided executor?"
      *
      * For valid interceptor names please check: {@link InterceptorVersion}
@@ -79,31 +95,15 @@ public abstract class BaseTest {
         };
     }
 
-    /**
-     * Returns list of parameters for data driven tests.
-     *
-     * Format: "Interceptor name 1", "Interceptor name 2" etc
-     *
-     * For valid interceptor names please check: {@link InterceptorVersion}
-     *
-     * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in
-     * child classes.
-     */
-    String[] interceptors() {
-        return new String[]{
-            "okhttp", "okhttp3", "apacheHttpclientRequest"
-        };
-    }
-
     List<String> interceptedRequest(String loggerVersion, boolean withExecutor,
-        String content, String mediaType, boolean preserveTrailingSpaces) {
+        String body, String mediaType, boolean preserveTrailingSpaces) {
 
         server.enqueue(new MockResponse().setResponseCode(200));
 
         final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
         LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
 
-        interceptWithConfig(loggerVersion, loggerConfig, content, mediaType);
+        interceptWithConfig(loggerVersion, loggerConfig, body, mediaType);
 
         return testLogger.loggerOutput(preserveTrailingSpaces);
     }

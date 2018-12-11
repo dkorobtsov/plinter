@@ -60,7 +60,6 @@ public class LoggerConfigDefaultsTest {
         assertNotNull("Default Logger", loggerConfig.logger);
     }
 
-
     @Test
     public void loggerConfigDefaultConfiguration_formatCanBeChanged() {
         final LoggerConfigBuilder builder = LoggerConfig.builder();
