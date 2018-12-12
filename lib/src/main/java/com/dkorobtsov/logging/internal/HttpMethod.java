@@ -13,36 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.dkorobtsov.logging.internal;
 
 /**
- * NB: Class copied with some small modifications from OkHttp3 client (removed external
- * dependencies and unused methods). Idea was to remove hard dependency on OkHttp3, so
- * request/response handling logic was made a part of this library.
+ * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
+ * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
+ * logic was made a part of this library.
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
 public final class HttpMethod {
 
-    private HttpMethod() {
-    }
+  private HttpMethod() {
+  }
 
-    public static boolean requiresRequestBody(String method) {
-        return method.equals("POST")
-            || method.equals("PUT")
-            || method.equals("PATCH")
-            || method.equals("PROPPATCH") // WebDAV
-            || method.equals("REPORT");   // CalDAV/CardDAV (defined in WebDAV Versioning)
-    }
+  public static boolean requiresRequestBody(String method) {
+    return method.equals("POST")
+        || method.equals("PUT")
+        || method.equals("PATCH")
+        || method.equals("PROPPATCH") // WebDAV
+        || method.equals("REPORT");   // CalDAV/CardDAV (defined in WebDAV Versioning)
+  }
 
-    public static boolean permitsRequestBody(String method) {
-        return requiresRequestBody(method)
-            || method.equals("OPTIONS")
-            || method.equals("DELETE")    // Permitted as spec is ambiguous.
-            || method.equals("PROPFIND")  // (WebDAV) without body: request <allprop/>
-            || method.equals("MKCOL")
-            // (WebDAV) may contain a body, but behaviour is unspecified
-            || method.equals("LOCK");     // (WebDAV) body: create lock, without body: refresh lock
-    }
+  public static boolean permitsRequestBody(String method) {
+    return requiresRequestBody(method)
+        || method.equals("OPTIONS")
+        || method.equals("DELETE")    // Permitted as spec is ambiguous.
+        || method.equals("PROPFIND")  // (WebDAV) without body: request <allprop/>
+        || method.equals("MKCOL")
+        // (WebDAV) may contain a body, but behaviour is unspecified
+        || method.equals("LOCK");     // (WebDAV) body: create lock, without body: refresh lock
+  }
 
 }

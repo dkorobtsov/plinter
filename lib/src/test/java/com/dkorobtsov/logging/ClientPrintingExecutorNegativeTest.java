@@ -11,44 +11,44 @@ import org.junit.Test;
 
 public class ClientPrintingExecutorNegativeTest {
 
-    @Test
-    public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
-        final InterceptedRequest request = new InterceptedRequest.Builder()
-            .get()
-            .addHeader("Content-type", APPLICATION_JSON)
-            .url("http://google.com")
-            .build();
+  @Test
+  public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
+    final InterceptedRequest request = new InterceptedRequest.Builder()
+        .get()
+        .addHeader("Content-type", APPLICATION_JSON)
+        .url("http://google.com")
+        .build();
 
-        final LoggerConfig loggerConfig = LoggerConfig.builder()
-            .executor(Executors.newCachedThreadPool()).build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder()
+        .executor(Executors.newCachedThreadPool()).build();
 
-        Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printRequest(loggerConfig, request);
-    }
+    Thread.currentThread().interrupt();
+    ClientPrintingExecutor.printRequest(loggerConfig, request);
+  }
 
-    @Test
-    public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
-        final InterceptedRequest request = new InterceptedRequest.Builder()
-            .get()
-            .addHeader("Content-type", APPLICATION_ZIP)
-            .url("http://google.com")
-            .build();
+  @Test
+  public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
+    final InterceptedRequest request = new InterceptedRequest.Builder()
+        .get()
+        .addHeader("Content-type", APPLICATION_ZIP)
+        .url("http://google.com")
+        .build();
 
-        final LoggerConfig loggerConfig = LoggerConfig.builder()
-            .executor(Executors.newCachedThreadPool()).build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder()
+        .executor(Executors.newCachedThreadPool()).build();
 
-        Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printRequest(loggerConfig, request);
-    }
+    Thread.currentThread().interrupt();
+    ClientPrintingExecutor.printRequest(loggerConfig, request);
+  }
 
-    @Test
-    public void testInterruptingPrintingResponseDoesntCrashProcess() {
-        final InterceptedResponse responseDetails = InterceptedResponse.builder().build();
-        final LoggerConfig loggerConfig = LoggerConfig.builder()
-            .executor(Executors.newCachedThreadPool()).build();
+  @Test
+  public void testInterruptingPrintingResponseDoesntCrashProcess() {
+    final InterceptedResponse responseDetails = InterceptedResponse.builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder()
+        .executor(Executors.newCachedThreadPool()).build();
 
-        Thread.currentThread().interrupt();
-        ClientPrintingExecutor.printResponse(loggerConfig, responseDetails);
-    }
+    Thread.currentThread().interrupt();
+    ClientPrintingExecutor.printResponse(loggerConfig, responseDetails);
+  }
 
 }

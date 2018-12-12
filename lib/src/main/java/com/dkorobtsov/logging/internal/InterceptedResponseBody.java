@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.dkorobtsov.logging.internal;
 
 import static com.dkorobtsov.logging.internal.Util.UTF_8;
@@ -29,7 +30,7 @@ import okio.BufferedSource;
  * dependencies and unused methods). Idea was to remove hard dependency on OkHttp3, so
  * request/response handling logic was made a part of this library.
  *
- * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
+ * @see <a href="https://github.com/square/okhttp">OkHttp3</a>.
  * --------------------------------------------------------------------------------------
  *
  * A one-shot stream from the origin server to the client application with the raw bytes of the
@@ -104,132 +105,132 @@ import okio.BufferedSource;
  */
 public abstract class InterceptedResponseBody implements Closeable {
 
-    /**
-     * Returns a new response body that transmits {@code content}. If {@code contentType} is
-     * non-null and lacks a charset, this will use UTF-8.
-     */
-    public static InterceptedResponseBody create(InterceptedMediaType contentType, String content) {
-        Charset charset = UTF_8;
-        if (contentType != null) {
-            charset = contentType.charset();
-            if (charset == null) {
-                charset = UTF_8;
-                contentType = InterceptedMediaType.parse(contentType + "; charset=utf-8");
-            }
-        }
-        try (Buffer buffer = new Buffer().writeString(content, charset)) {
-            return create(contentType, buffer.size(), buffer);
-        }
+  /**
+   * Returns a new response body that transmits {@code content}. If {@code contentType} is non-null
+   * and lacks a charset, this will use UTF-8.
+   */
+  public static InterceptedResponseBody create(InterceptedMediaType contentType, String content) {
+    Charset charset = UTF_8;
+    if (contentType != null) {
+      charset = contentType.charset();
+      if (charset == null) {
+        charset = UTF_8;
+        contentType = InterceptedMediaType.parse(contentType + "; charset=utf-8");
+      }
+    }
+    try (Buffer buffer = new Buffer().writeString(content, charset)) {
+      return create(contentType, buffer.size(), buffer);
+    }
+  }
+
+  /**
+   * Returns a new response body that transmits {@code content}.
+   */
+  public static InterceptedResponseBody create(final InterceptedMediaType contentType,
+      byte[] content) {
+    try (Buffer buffer = new Buffer().write(content)) {
+      return create(contentType, content.length, buffer);
+    }
+  }
+
+  /**
+   * Returns a new response body that transmits {@code content}.
+   */
+  public static InterceptedResponseBody create(final InterceptedMediaType contentType,
+      final long contentLength, final BufferedSource content) {
+    if (content == null) {
+      throw new NullPointerException("source == null");
+    }
+    return new InterceptedResponseBody() {
+      @Override
+      public InterceptedMediaType contentType() {
+        return contentType;
+      }
+
+      @Override
+      public long contentLength() {
+        return contentLength;
+      }
+
+      @Override
+      public BufferedSource source() {
+        return content;
+      }
+    };
+  }
+
+  public abstract InterceptedMediaType contentType();
+
+  /**
+   * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or
+   * -1 if unknown.
+   */
+  public abstract long contentLength();
+
+  public final InputStream byteStream() {
+    return source().inputStream();
+  }
+
+  public abstract BufferedSource source();
+
+  /**
+   * Returns the response as a byte array.
+   *
+   * <p>This method loads entire response body into memory. If the response body is very large
+   * this may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
+   * possibility for your response.
+   */
+  public final byte[] bytes() throws IOException {
+    long contentLength = contentLength();
+    if (contentLength > Integer.MAX_VALUE) {
+      throw new IOException("Cannot buffer entire body for content length: " + contentLength);
     }
 
-    /**
-     * Returns a new response body that transmits {@code content}.
-     */
-    public static InterceptedResponseBody create(final InterceptedMediaType contentType,
-        byte[] content) {
-        try (Buffer buffer = new Buffer().write(content)) {
-            return create(contentType, content.length, buffer);
-        }
+    BufferedSource source = source();
+    byte[] bytes;
+    try {
+      bytes = source.readByteArray();
+    } finally {
+      Util.closeQuietly(source);
     }
-
-    /**
-     * Returns a new response body that transmits {@code content}.
-     */
-    public static InterceptedResponseBody create(final InterceptedMediaType contentType,
-        final long contentLength, final BufferedSource content) {
-        if (content == null) {
-            throw new NullPointerException("source == null");
-        }
-        return new InterceptedResponseBody() {
-            @Override
-            public InterceptedMediaType contentType() {
-                return contentType;
-            }
-
-            @Override
-            public long contentLength() {
-                return contentLength;
-            }
-
-            @Override
-            public BufferedSource source() {
-                return content;
-            }
-        };
+    if (contentLength != -1 && contentLength != bytes.length) {
+      throw new IOException("Content-Length ("
+          + contentLength
+          + ") and stream length ("
+          + bytes.length
+          + ") disagree");
     }
+    return bytes;
+  }
 
-    public abstract InterceptedMediaType contentType();
-
-    /**
-     * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream},
-     * or -1 if unknown.
-     */
-    public abstract long contentLength();
-
-    public final InputStream byteStream() {
-        return source().inputStream();
+  /**
+   * Returns the response as a string decoded with the charset of the Content-Type header. If that
+   * header is either absent or lacks a charset, this will attempt to decode the response body in
+   * accordance to <a href="https://en.wikipedia.org/wiki/Byte_order_mark">its BOM</a> or UTF-8.
+   * Closes {@link InterceptedResponseBody} automatically.
+   *
+   * <p>This method loads entire response body into memory. If the response body is very large
+   * this may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
+   * possibility for your response.
+   */
+  public final String string() throws IOException {
+    BufferedSource source = source();
+    try {
+      Charset charset = Util.bomAwareCharset(source, charset());
+      return source.readString(charset);
+    } finally {
+      Util.closeQuietly(source);
     }
+  }
 
-    public abstract BufferedSource source();
+  private Charset charset() {
+    InterceptedMediaType contentType = contentType();
+    return contentType != null ? contentType.charset(UTF_8) : UTF_8;
+  }
 
-    /**
-     * Returns the response as a byte array.
-     *
-     * <p>This method loads entire response body into memory. If the response body is very large
-     * this may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
-     * possibility for your response.
-     */
-    public final byte[] bytes() throws IOException {
-        long contentLength = contentLength();
-        if (contentLength > Integer.MAX_VALUE) {
-            throw new IOException("Cannot buffer entire body for content length: " + contentLength);
-        }
-
-        BufferedSource source = source();
-        byte[] bytes;
-        try {
-            bytes = source.readByteArray();
-        } finally {
-            Util.closeQuietly(source);
-        }
-        if (contentLength != -1 && contentLength != bytes.length) {
-            throw new IOException("Content-Length ("
-                + contentLength
-                + ") and stream length ("
-                + bytes.length
-                + ") disagree");
-        }
-        return bytes;
-    }
-
-    /**
-     * Returns the response as a string decoded with the charset of the Content-Type header. If that
-     * header is either absent or lacks a charset, this will attempt to decode the response body in
-     * accordance to <a href="https://en.wikipedia.org/wiki/Byte_order_mark">its BOM</a> or UTF-8.
-     * Closes {@link InterceptedResponseBody} automatically.
-     *
-     * <p>This method loads entire response body into memory. If the response body is very large
-     * this may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
-     * possibility for your response.
-     */
-    public final String string() throws IOException {
-        BufferedSource source = source();
-        try {
-            Charset charset = Util.bomAwareCharset(source, charset());
-            return source.readString(charset);
-        } finally {
-            Util.closeQuietly(source);
-        }
-    }
-
-    private Charset charset() {
-        InterceptedMediaType contentType = contentType();
-        return contentType != null ? contentType.charset(UTF_8) : UTF_8;
-    }
-
-    @Override
-    public void close() {
-        Util.closeQuietly(source());
-    }
+  @Override
+  public void close() {
+    Util.closeQuietly(source());
+  }
 
 }

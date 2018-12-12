@@ -18,48 +18,49 @@ import org.apache.http.entity.ContentType;
 
 class ApacheEntityUtil {
 
-    private ApacheEntityUtil() {
+  private ApacheEntityUtil() {
+  }
 
-    }
-
-    static String readApacheHttpEntity(HttpEntity entity) throws IOException {
-        if (nonNull(entity)) {
-            StringBuilder textBuilder = new StringBuilder();
-            try (Reader reader = new BufferedReader(new InputStreamReader
-                (entity.getContent(), Charset.forName(StandardCharsets.UTF_8.name())))) {
-                int c;
-                while ((c = reader.read()) != -1) {
-                    textBuilder.append((char) c);
-                }
-                return textBuilder.toString();
-            }
-        } else {
-            return "";
+  static String readApacheHttpEntity(HttpEntity entity) throws IOException {
+    if (nonNull(entity)) {
+      StringBuilder textBuilder = new StringBuilder();
+      try (Reader reader = new BufferedReader(
+          new InputStreamReader(
+              entity.getContent(),
+              Charset.forName(StandardCharsets.UTF_8.name())))) {
+        int c;
+        while ((c = reader.read()) != -1) {
+          textBuilder.append((char) c);
         }
+        return textBuilder.toString();
+      }
+    } else {
+      return "";
     }
+  }
 
-    static HttpEntity recreateHttpEntityFromString(String httpEntityContent,
-        HttpEntity entity) {
-        final Header contentType = entity.getContentType();
-        final String contentTypeValue
-            = isNull(contentType)
-            ? APPLICATION_JSON
-            : contentType.getValue();
+  static HttpEntity recreateHttpEntityFromString(String httpEntityContent,
+      HttpEntity entity) {
+    final Header contentType = entity.getContentType();
+    final String contentTypeValue
+        = isNull(contentType)
+        ? APPLICATION_JSON
+        : contentType.getValue();
 
-        final Header contentEncodingHeader = entity.getContentEncoding();
-        final EntityBuilder entityBuilder = EntityBuilder
-            .create()
-            .setContentType(ContentType.parse(contentTypeValue))
-            .setStream(new ByteArrayInputStream(httpEntityContent.getBytes()));
+    final Header contentEncodingHeader = entity.getContentEncoding();
+    final EntityBuilder entityBuilder = EntityBuilder
+        .create()
+        .setContentType(ContentType.parse(contentTypeValue))
+        .setStream(new ByteArrayInputStream(httpEntityContent.getBytes()));
 
-        if (nonNull(contentEncodingHeader)) {
-            return entityBuilder
-                .setContentEncoding(String
-                    .format("%s/%s", contentEncodingHeader.getName(),
-                        contentEncodingHeader.getValue()))
-                .build();
-        }
-        return entityBuilder.build();
+    if (nonNull(contentEncodingHeader)) {
+      return entityBuilder
+          .setContentEncoding(String
+              .format("%s/%s", contentEncodingHeader.getName(),
+                  contentEncodingHeader.getValue()))
+          .build();
     }
+    return entityBuilder.build();
+  }
 
 }

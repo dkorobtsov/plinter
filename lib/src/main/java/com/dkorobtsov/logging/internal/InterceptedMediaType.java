@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.dkorobtsov.logging.internal;
 
 import java.nio.charset.Charset;
@@ -26,119 +27,118 @@ import java.util.regex.Pattern;
  *
  * --------------------------------------------------------------------------------------
  *
- * NB: Class copied with some small modifications from OkHttp3 client (removed external
- * dependencies and unused methods). Idea was to remove hard dependency on OkHttp3, so
- * request/response handling logic was made a part of this library.
+ * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
+ * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
+ * logic was made a part of this library.
  *
- * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
+ * @see <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
 public final class InterceptedMediaType {
 
-    private static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
-    private static final String QUOTED = "\"([^\"]*)\"";
-    private static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + "/" + TOKEN);
-    private static final Pattern PARAMETER = Pattern.compile(
-        ";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
+  private static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
+  private static final String QUOTED = "\"([^\"]*)\"";
+  private static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + "/" + TOKEN);
+  private static final Pattern PARAMETER = Pattern.compile(
+      ";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
 
-    private final String mediaType;
-    private final String subtype;
-    private final String charset;
+  private final String mediaType;
+  private final String subtype;
+  private final String charset;
 
-    private InterceptedMediaType(String mediaType, String subtype, String charset) {
-        this.mediaType = mediaType;
-        this.subtype = subtype;
-        this.charset = charset;
+  private InterceptedMediaType(String mediaType, String subtype, String charset) {
+    this.mediaType = mediaType;
+    this.subtype = subtype;
+    this.charset = charset;
+  }
+
+  /**
+   * Returns a media type for {@code string}, or null if {@code string} is not a well-formed media
+   * type.
+   */
+  public static InterceptedMediaType parse(String string) {
+    Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
+    if (!typeSubtype.lookingAt()) {
+      return null;
     }
 
-    /**
-     * Returns a media type for {@code string}, or null if {@code string} is not a well-formed media
-     * type.
-     */
-    public static InterceptedMediaType parse(String string) {
-        Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
-        if (!typeSubtype.lookingAt()) {
-            return null;
-        }
+    String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
 
-        String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
+    String charset = null;
+    Matcher parameter = PARAMETER.matcher(string);
+    for (int s = typeSubtype.end(); s < string.length(); s = parameter.end()) {
+      parameter.region(s, string.length());
+      if (!parameter.lookingAt()) {
+        return null; // This is not a well-formed media type.
+      }
 
-        String charset = null;
-        Matcher parameter = PARAMETER.matcher(string);
-        for (int s = typeSubtype.end(); s < string.length(); s = parameter.end()) {
-            parameter.region(s, string.length());
-            if (!parameter.lookingAt()) {
-                return null; // This is not a well-formed media type.
-            }
-
-            String name = parameter.group(1);
-            if (name == null || !name.equalsIgnoreCase("charset")) {
-                continue;
-            }
-            String charsetParameter;
-            String token = parameter.group(2);
-            if (token != null) {
-                // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
-                charsetParameter =
-                    (token.startsWith("'") && token.endsWith("'") && token.length() > 2)
-                        ? token.substring(1, token.length() - 1)
-                        : token;
-            } else {
-                // Value is "double-quoted". That's valid and our regex group already strips the quotes.
-                charsetParameter = parameter.group(3);
-            }
-            if (charset != null && !charsetParameter.equalsIgnoreCase(charset)) {
-                return null; // Multiple different charsets!
-            }
-            charset = charsetParameter;
-        }
-
-        return new InterceptedMediaType(string, subtype, charset);
+      String name = parameter.group(1);
+      if (name == null || !name.equalsIgnoreCase("charset")) {
+        continue;
+      }
+      String charsetParameter;
+      String token = parameter.group(2);
+      if (token != null) {
+        // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
+        charsetParameter =
+            (token.startsWith("'") && token.endsWith("'") && token.length() > 2)
+                ? token.substring(1, token.length() - 1)
+                : token;
+      } else {
+        // Value is "double-quoted". That's valid and our regex group already strips the quotes.
+        charsetParameter = parameter.group(3);
+      }
+      if (charset != null && !charsetParameter.equalsIgnoreCase(charset)) {
+        return null; // Multiple different charsets!
+      }
+      charset = charsetParameter;
     }
 
-    /**
-     * Returns a specific media subtype, such as "plain" or "png", "mpeg", "mp4" or "xml".
-     */
-    public String subtype() {
-        return subtype;
-    }
+    return new InterceptedMediaType(string, subtype, charset);
+  }
 
-    /**
-     * Returns the charset of this media type, or null if this media type doesn't specify a
-     * charset.
-     */
-    public Charset charset() {
-        return charset(null);
-    }
+  /**
+   * Returns a specific media subtype, such as "plain" or "png", "mpeg", "mp4" or "xml".
+   */
+  public String subtype() {
+    return subtype;
+  }
 
-    /**
-     * Returns the charset of this media type, or {@code defaultValue} if either this media type
-     * doesn't specify a charset, of it its charset is unsupported by the current runtime.
-     */
-    public Charset charset(Charset defaultValue) {
-        try {
-            return charset != null ? Charset.forName(charset) : defaultValue;
-        } catch (IllegalArgumentException e) {
-            return defaultValue; // This charset is invalid or unsupported. Give up.
-        }
-    }
+  /**
+   * Returns the charset of this media type, or null if this media type doesn't specify a charset.
+   */
+  public Charset charset() {
+    return charset(null);
+  }
 
-    /**
-     * Returns the encoded media type, like "text/plain; charset=utf-8", appropriate for use in a
-     * Content-Type header.
-     */
-    @Override
-    public String toString() {
-        return mediaType;
+  /**
+   * Returns the charset of this media type, or {@code defaultValue} if either this media type
+   * doesn't specify a charset, of it its charset is unsupported by the current runtime.
+   */
+  public Charset charset(Charset defaultValue) {
+    try {
+      return charset != null ? Charset.forName(charset) : defaultValue;
+    } catch (IllegalArgumentException e) {
+      return defaultValue; // This charset is invalid or unsupported. Give up.
     }
+  }
 
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof InterceptedMediaType && ((InterceptedMediaType) other).mediaType
-            .equals(mediaType);
-    }
+  /**
+   * Returns the encoded media type, like "text/plain; charset=utf-8", appropriate for use in a
+   * Content-Type header.
+   */
+  @Override
+  public String toString() {
+    return mediaType;
+  }
 
-    @Override
-    public int hashCode() {
-        return mediaType.hashCode();
-    }
+  @Override
+  public boolean equals(Object other) {
+    return other instanceof InterceptedMediaType && ((InterceptedMediaType) other).mediaType
+        .equals(mediaType);
+  }
+
+  @Override
+  public int hashCode() {
+    return mediaType.hashCode();
+  }
 }

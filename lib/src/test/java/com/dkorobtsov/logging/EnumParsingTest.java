@@ -6,15 +6,15 @@ import org.junit.Test;
 
 public class EnumParsingTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void unknownHttpStatusCodeThrowsIllegalArgumentException() {
-        HttpStatusCode.findMessage(999);
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void unknownHttpStatusCodeThrowsIllegalArgumentException() {
+    HttpStatusCode.findMessage(999);
+  }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    @Test(expected = IllegalArgumentException.class)
-    public void unknownInterceptorThrowsIllegalArgumentException() {
-        Interceptor.parse("UnknownInterceptor");
-    }
+  @SuppressWarnings("ResultOfMethodCallIgnored")
+  @Test(expected = IllegalArgumentException.class)
+  public void unknownInterceptorThrowsIllegalArgumentException() {
+    Interceptor.parse("UnknownInterceptor");
+  }
 
 }
