@@ -94,6 +94,22 @@ public abstract class BaseTest {
     };
   }
 
+  /**
+   * Method intended for request validation. Intercepts http request with provided body details sent
+   * with default client implementation and gets mocked server response with status 200.
+   *
+   * @param interceptor Interceptor version (like OkHttp3, Apache etc.) Check {@link Interceptor}
+   * for valid values.
+   * @param withExecutor if value is true, logger will print traffic in separate thread
+   * @param body request body content as String, can be null
+   * @param mediaType request body media type, can be null
+   * @param preserveTrailingSpaces if true, logger output will have trailing spaces - exactly the
+   * way it's displayed in console, if false, trailing spaces will be trimmed, leaving only string
+   * contents for validation
+   * @return logger output for validation
+   *
+   * NB. If content and media type params are not provided request won't have body.
+   */
   List<String> interceptedRequest(String interceptor, boolean withExecutor,
       String body, String mediaType, boolean preserveTrailingSpaces) {
 
@@ -107,12 +123,28 @@ public abstract class BaseTest {
     return testLogger.loggerOutput(preserveTrailingSpaces);
   }
 
+  /**
+   * Method intended for response validation. Sends http request with empty body using default
+   * client implementation intercepting mocked server response with provided body and media type.
+   *
+   * @param interceptor Interceptor version (like OkHttp3, Apache etc.) Check {@link Interceptor}
+   * for valid values.
+   * @param withExecutor if value is true, logger will print traffic in separate thread
+   * @param body response body content as String, can be null
+   * @param mediaType response body media type, can be null
+   * @param preserveTrailingSpaces if true, logger output will have trailing spaces - exactly the
+   * way it's displayed in console, if false, trailing spaces will be trimmed, leaving only string
+   * contents for validation
+   * @return logger output for validation
+   *
+   * NB. If content and media type params are not provided response won't have body.
+   */
   List<String> interceptedResponse(String interceptor, boolean withExecutor,
-      String body, String contentType, boolean preserveTrailingSpaces) {
+      String body, String mediaType, boolean preserveTrailingSpaces) {
 
     server.enqueue(new MockResponse()
         .setResponseCode(200)
-        .setHeader("Content-Type", contentType)
+        .setHeader("Content-Type", mediaType)
         .setBody(body));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
@@ -142,12 +174,33 @@ public abstract class BaseTest {
     return builder.build();
   }
 
+  /**
+   * Method executes empty http request using default client implementation. Given test logger was
+   * provided to logger configuration, after this method execution we can validate test logger
+   * output.
+   */
   void interceptWithConfig(String interceptor, LoggerConfig loggerConfig) {
     interceptWithConfig(interceptor, loggerConfig, null, null);
   }
 
+  /**
+   * Method executes http request with provided body details using default client implementation.
+   * Given test logger was provided to logger configuration, after this method execution we can
+   * validate test logger output.
+   *
+   * @param interceptor Interceptor version (like OkHttp3, Apache etc.) Check {@link Interceptor}
+   * for valid values.
+   * @param loggerConfig LoggerConfiguration that will be used to print intercepted traffic
+   * @param body body content as String, can be null
+   * @param mediaType body media type, can be null
+   *
+   * NB. Note that if this method executed directly, server response should be mocked otherwise
+   * connection will time out.
+   *
+   * NB. If content and media type params are not provided request won't have body.
+   */
   void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
-      String content, String mediaType) {
+      String body, String mediaType) {
 
     switch (Interceptor.parse(interceptor)) {
       case OKHTTP:
@@ -156,7 +209,7 @@ public abstract class BaseTest {
 
         executeOkHttpRequest(
             defaultOkHttpClient(new OkHttpLoggingInterceptor(loggerConfig)),
-            okHttpRequest(content, mediaType));
+            okHttpRequest(body, mediaType));
         break;
 
       case OKHTTP3:
@@ -165,7 +218,7 @@ public abstract class BaseTest {
 
         executeOkHttp3Request(
             defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
-            okHttp3Request(content, mediaType));
+            okHttp3Request(body, mediaType));
         break;
 
       case APACHE_HTTPCLIENT_REQUEST:
@@ -175,7 +228,7 @@ public abstract class BaseTest {
         executeApacheRequest(defaultApacheClient(
             new ApacheHttpRequestInterceptor(loggerConfig),
             new ApacheHttpResponseInterceptor(loggerConfig)),
-            apacheHttpRequest(content, mediaType));
+            apacheHttpRequest(body, mediaType));
         break;
 
       default:
@@ -317,6 +370,5 @@ public abstract class BaseTest {
     }
     return requestBuilder.build();
   }
-
 
 }
