@@ -82,8 +82,8 @@ public class TestLogger implements LogWriter {
       // logger output with manually added executor are randomly failing
       // (part of output is missing). Suppose root cause is that we are
       // flashing output before all lines get in buffer
-      // NB: random failures occur when value < 25
-      Thread.sleep(30);
+      // NB: random failures occur when value < 10
+      Thread.sleep(10);
     } catch (InterruptedException e) {
       logger.log(Level.SEVERE, e.getMessage(), e);
     }
