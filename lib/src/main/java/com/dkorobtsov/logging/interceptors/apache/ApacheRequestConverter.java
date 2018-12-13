@@ -3,6 +3,7 @@ package com.dkorobtsov.logging.interceptors.apache;
 import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.readApacheHttpEntity;
 import static com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil.recreateHttpEntityFromString;
 import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
+import static com.dkorobtsov.logging.internal.Util.CONTENT_TYPE;
 import static java.util.Objects.nonNull;
 
 import com.dkorobtsov.logging.RequestConverter;
@@ -73,9 +74,9 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
 
           final Header contentTypeHeader = Arrays
               .stream(((HttpRequestWrapper) request).getOriginal().getAllHeaders())
-              .filter(header -> header.getName().equals("Content-Type"))
+              .filter(header -> header.getName().equals(CONTENT_TYPE))
               .findFirst()
-              .orElse(new BasicHeader("Content-Type", APPLICATION_JSON));
+              .orElse(new BasicHeader(CONTENT_TYPE, APPLICATION_JSON));
 
           return InterceptedRequestBody
               .create(InterceptedMediaType

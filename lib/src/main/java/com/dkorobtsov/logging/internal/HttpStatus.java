@@ -2,7 +2,7 @@ package com.dkorobtsov.logging.internal;
 
 import java.util.Arrays;
 
-public enum HttpStatusCode {
+public enum HttpStatus {
   CONTINUE(100, "CONTINUE"),
   SWITCHING_PROTOCOLS(101, "SWITCHING_PROTOCOLS"),
   PROCESSING(102, "PROCESSING"),
@@ -55,12 +55,12 @@ public enum HttpStatusCode {
   private int statusCode;
   private String message;
 
-  HttpStatusCode(int statusCode, String message) {
+  HttpStatus(int statusCode, String message) {
     this.statusCode = statusCode;
     this.message = message;
   }
 
-  public static String findMessage(int code) {
+  public static String fromCode(int code) {
     return Arrays.stream(values())
         .filter(httpStatusCode -> httpStatusCode.getStatusCode() == code)
         .findFirst()

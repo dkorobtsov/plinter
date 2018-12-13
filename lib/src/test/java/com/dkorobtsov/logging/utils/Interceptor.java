@@ -11,7 +11,7 @@ public enum Interceptor {
     this.name = name;
   }
 
-  public static Interceptor parse(String name) {
+  public static Interceptor fromString(String name) {
     switch (name) {
       case "okhttp":
         return OKHTTP;

@@ -43,6 +43,7 @@ import okio.ByteString;
  */
 public final class Util {
 
+  public static final String CONTENT_TYPE = "Content-Type";
   public static final String TEXT_HTML = "text/html";
   public static final String APPLICATION_JSON = "application/json";
   public static final String APPLICATION_ZIP = "application/zip";

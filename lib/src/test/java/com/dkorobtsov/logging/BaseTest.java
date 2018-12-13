@@ -1,5 +1,6 @@
 package com.dkorobtsov.logging;
 
+import static com.dkorobtsov.logging.internal.Util.CONTENT_TYPE;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 
@@ -40,6 +41,10 @@ import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Rule;
 
+/**
+ * Starting point for all tests. Contains all general methods for use in child tests. Check specific
+ * method javadocs for details.
+ */
 public abstract class BaseTest {
 
   private static final org.apache.logging.log4j.Logger logger
@@ -47,6 +52,7 @@ public abstract class BaseTest {
 
   private static final ConnectionPool CONNECTION_POOL = new ConnectionPool();
   private static final Dispatcher DISPATCHER = new Dispatcher();
+  private static final String MOCK_SERVER_PATH = "/";
   private static final int MAX_IDLE_CONNECTIONS = 10;
   private static final int KEEP_ALIVE_DURATION_MS = 60 * 1000;
 
@@ -144,7 +150,7 @@ public abstract class BaseTest {
 
     server.enqueue(new MockResponse()
         .setResponseCode(200)
-        .setHeader("Content-Type", mediaType)
+        .setHeader(CONTENT_TYPE, mediaType)
         .setBody(body));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
@@ -202,7 +208,7 @@ public abstract class BaseTest {
   void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
       String body, String mediaType) {
 
-    switch (Interceptor.parse(interceptor)) {
+    switch (Interceptor.fromString(interceptor)) {
       case OKHTTP:
         logger.info("OkHttp Interceptor: {}",
             loggerConfig.toString());
@@ -318,7 +324,7 @@ public abstract class BaseTest {
    */
   Request okHttp3Request(String content, String mediaType) {
     Request.Builder requestBuilder = new Request.Builder()
-        .url(String.valueOf(server.url("/")));
+        .url(String.valueOf(server.url(MOCK_SERVER_PATH)));
 
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(RequestBody.create(
@@ -337,7 +343,7 @@ public abstract class BaseTest {
    * be empty.
    */
   private HttpUriRequest apacheHttpRequest(String content, String mediaType) {
-    final HttpPut httpPut = new HttpPut(server.url("/").uri());
+    final HttpPut httpPut = new HttpPut(server.url(MOCK_SERVER_PATH).uri());
 
     if (nonNull(content) && nonNull(mediaType)) {
       ContentType contentType = ContentType.create(mediaType);
@@ -345,7 +351,7 @@ public abstract class BaseTest {
       final HttpEntity entity = new StringEntity(content, contentType);
 
       httpPut.setEntity(entity);
-      httpPut.setHeader(new BasicHeader("Content-Type", mediaType));
+      httpPut.setHeader(new BasicHeader(CONTENT_TYPE, mediaType));
     }
     return httpPut;
   }
@@ -362,7 +368,7 @@ public abstract class BaseTest {
   private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType) {
     com.squareup.okhttp.Request.Builder requestBuilder
         = new com.squareup.okhttp.Request.Builder()
-        .url(String.valueOf(server.url("/")));
+        .url(String.valueOf(server.url(MOCK_SERVER_PATH)));
 
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(com.squareup.okhttp.RequestBody.create(

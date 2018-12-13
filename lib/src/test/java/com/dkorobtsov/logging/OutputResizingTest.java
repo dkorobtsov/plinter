@@ -23,11 +23,10 @@ public class OutputResizingTest extends BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
     TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor,
-        LoggerConfig.builder()
-            .logger(testLogger)
-            .maxLineLength(10)
-            .build(), TEST_JSON, APPLICATION_JSON);
+    interceptWithConfig(interceptor, LoggerConfig.builder()
+        .logger(testLogger)
+        .maxLineLength(10)
+        .build(), TEST_JSON, APPLICATION_JSON);
 
     assertTrue("Interceptor should be able to log simple json body.",
         testLogger.formattedOutput().contains("Method: @P"));

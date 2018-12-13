@@ -6,7 +6,7 @@ import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
 import static java.util.Objects.isNull;
 
 import com.dkorobtsov.logging.ResponseConverter;
-import com.dkorobtsov.logging.internal.HttpStatusCode;
+import com.dkorobtsov.logging.internal.HttpStatus;
 import com.dkorobtsov.logging.internal.InterceptedHeaders;
 import com.dkorobtsov.logging.internal.InterceptedMediaType;
 import com.dkorobtsov.logging.internal.InterceptedResponse;
@@ -43,7 +43,7 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
           .headers(interceptedHeaders(httpResponse.getAllHeaders()))
           .isSuccessful(code >= 200 && code <= 300)
           .mediaType(responseBody.contentType())
-          .message(HttpStatusCode.findMessage(code))
+          .message(HttpStatus.fromCode(code))
           .responseBody(responseBody)
           .build();
     }
