@@ -6,9 +6,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class BodyWithJsonPrintingTest extends BaseTest {
 
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";

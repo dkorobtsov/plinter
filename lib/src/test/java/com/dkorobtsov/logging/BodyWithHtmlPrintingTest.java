@@ -4,9 +4,12 @@ import static com.dkorobtsov.logging.internal.Util.TEXT_HTML;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class BodyWithHtmlPrintingTest extends BaseTest {
 
   private static final String HTML_BODY = ""
