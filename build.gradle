@@ -1,0 +1,23 @@
+plugins {
+    id 'java'
+}
+
+project.ext {
+    url = "https://github.com/dkorobtsov/LoggingInterceptor"
+    version = "5.0-SNAPSHOT"
+}
+
+version = project.version
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+
+dependencies {
+    testCompile project(':interceptor-tests')
+}
+

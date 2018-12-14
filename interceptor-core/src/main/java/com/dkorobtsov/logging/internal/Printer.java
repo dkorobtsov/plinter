@@ -37,7 +37,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 import okio.Buffer;
-import org.apache.http.util.TextUtils;
 
 class Printer {
 
@@ -209,7 +208,7 @@ class Printer {
         ? ""
         : " - " + EXECUTION_TIME_TAG + interceptedResponse.chainMs + "ms";
 
-    final String log = (!TextUtils.isEmpty(segmentString)
+    final String log = (!isEmpty(segmentString)
         ? segmentString + " - "
         : "") + "is success : "
         + interceptedResponse.isSuccessful + receivedTags
@@ -219,6 +218,7 @@ class Printer {
         + printHeaderIfLoggable(interceptedResponse.header, isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
   }
+
 
   private static String slashSegments(List<String> segments) {
     if (segments.isEmpty()) {
@@ -272,10 +272,10 @@ class Printer {
   }
 
   private static boolean isEmpty(String line) {
-    return TextUtils.isEmpty(line)
+    return Util.isEmpty(line)
         || N.equals(line)
         || T.equals(line)
-        || TextUtils.isEmpty(line.trim());
+        || Util.isEmpty(line.trim());
   }
 
   private static String dotHeaders(String header) {

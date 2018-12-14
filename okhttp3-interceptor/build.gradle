@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+version "5.0-SNAPSHOT"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+ext {
+    coreVersion = "5.0-SNAPSHOT"
+    okhttp3Version = "3.9.1"
+}
+
+dependencies {
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
+    implementation("com.dkorobtsov.logging:interceptor-core:$coreVersion") {
+        changing = true
+    }
+}

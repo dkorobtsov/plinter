@@ -1,1 +1,6 @@
-include ':interceptor-core'
+include 'interceptor-core'
+include 'apache-interceptor'
+include 'interceptor-tests'
+include 'okhttp3-interceptor'
+include 'okhttp-interceptor'
+

@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+version "5.0-SNAPSHOT"
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+ext {
+    coreVersion = "5.0-SNAPSHOT"
+    apacheHttpClientVersion = "4.5.1"
+    apacheHttpAsyncClientVersion = "4.1.4"
+    apacheHttpMimeTypeVersion = "4.5.6"
+}
+
+dependencies {
+    implementation "org.apache.httpcomponents:httpasyncclient:$apacheHttpAsyncClientVersion"
+    implementation "org.apache.httpcomponents:httpclient:$apacheHttpClientVersion"
+    implementation "org.apache.httpcomponents:httpmime:$apacheHttpMimeTypeVersion"
+    implementation("com.dkorobtsov.logging:interceptor-core:$coreVersion") {
+        changing = true
+    }
+}

@@ -1,6 +1,7 @@
 package com.dkorobtsov.logging.interceptors.okhttp3;
 
-import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
+
+import static okhttp3.internal.http.HttpMethod.permitsRequestBody;
 
 import com.dkorobtsov.logging.RequestConverter;
 import com.dkorobtsov.logging.internal.CacheControl;

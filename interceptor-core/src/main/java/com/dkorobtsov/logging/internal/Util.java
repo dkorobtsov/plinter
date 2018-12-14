@@ -187,4 +187,9 @@ public final class Util {
         || mediaType.contains("html")));
   }
 
+  static boolean isEmpty(CharSequence str) {
+    return str == null || str.length() == 0;
+  }
+
+
 }
