@@ -1,14 +1,12 @@
 import java.nio.charset.StandardCharsets
 
 plugins {
-    id 'java-library'
-    id 'maven'
-    id 'jacoco'
-    id 'project-report'
+    id "java-library"
+    id "maven"
+    id "jacoco"
+    id "project-report"
     id "org.sonarqube" version "2.6"
 }
-
-group = 'com.github.dkorobtsov'
 
 //noinspection GroovyUnusedAssignment
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -16,30 +14,83 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
-group = 'com.dkorobtsov.logging'
-version = '4.5'
+group = "com.dkorobtsov.logging"
+archivesBaseName = "interceptor-core"
+version = "5.0-SNAPSHOT"
+
+def _name = "Pretty Logging Interceptor: Core"
+def _description = "Core library for Logging Interceptors"
+def _projectUrl = "https://github.com/dkorobtsov/LoggingInterceptor"
+def _mavenLocal = this.hasProperty("maven.repo.local")
+        ? this.property("maven.repo.local") : "./build/repo"
+def _encoding = StandardCharsets.UTF_8.name()
 
 ext {
-    encoding = StandardCharsets.UTF_8.name()
-    mockWebserverVersion = '2.7.5'
-    jsonVersion = '20180130'
-    okhttp3Version = '3.9.1'
-    okhttpVersion = '2.7.5'
-    okioVersion = '2.1.0'
-    junit4Version = '4.12'
-    log4j2Version = '2.11.0'
-    junitParamsVersion = '1.1.1'
-    apacheHttpClientVersion = '4.5.1'
-    apacheHttpAsyncClientVersion = '4.1.4'
-    apacheHttpMimeTypeVersion = '4.5.6'
-    assertjVersion = '3.11.1'
+    mockWebserverVersion = "2.7.5"
+    jsonVersion = "20180130"
+    okhttp3Version = "3.9.1"
+    okhttpVersion = "2.7.5"
+    okioVersion = "2.1.0"
+    junit4Version = "4.12"
+    log4j2Version = "2.11.0"
+    junitParamsVersion = "1.1.1"
+    apacheHttpClientVersion = "4.5.1"
+    apacheHttpAsyncClientVersion = "4.1.4"
+    apacheHttpMimeTypeVersion = "4.5.6"
+    assertjVersion = "3.11.1"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": _name,
+                "Automatic-Module-Name": project.group + "." + project.name,
+                "Implementation-Version": version,
+                "Implementation-URL": _projectUrl
+        )
+    }
+    from sourceSets.main.output
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
+
+javadoc {
+    failOnError = false
+    source = sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = "javadoc"
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+if (this.hasProperty("remote")) {
+    apply plugin: "signing"
+
+    signing {
+        sign configurations.archives
+    }
 }
 
 tasks.withType(JavaCompile) {
-    options.encoding = encoding
+    options.encoding = _encoding
     options.debug = true
 }
 
@@ -78,4 +129,71 @@ dependencies {
     testImplementation "junit:junit:$junit4Version"
     testImplementation "pl.pragmatists:JUnitParams:$junitParamsVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
+
+// Username & password for Sonatype, stored in gradle.properties
+def _ossrhUsername = this.properties['ossrhUsername']
+def _ossrhPassword = this.properties['ossrhPassword']
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+            //use: gradle uploadArchives -Premote
+            if (this.hasProperty("remote")) {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: _ossrhUsername, password: _ossrhPassword)
+                }
+
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: _ossrhUsername, password: _ossrhPassword)
+                }
+            } else {
+                repository(url: uri(_mavenLocal))
+            }
+
+            pom.project {
+                name _name
+                packaging "jar"
+                artifactId archivesBaseName
+                description _description
+                url _projectUrl
+                inceptionYear "2018"
+
+                scm {
+                    url _projectUrl
+                    connection "scm:" + _projectUrl + ".git"
+                    developerConnection "scm:" + _projectUrl + ".git"
+                }
+
+
+                licenses {
+                    license {
+                        name "MIT"
+                        url "https://opensource.org/licenses/MIT"
+                        distribution "repo"
+                    }
+                }
+
+                developers {
+                    developer {
+                        id "dkorobtsov"
+                        name "Dmitri Korobtsov"
+                        email "dmitri.korobtsov@gmail.com"
+                    }
+                }
+
+                issueManagement {
+                    system "GitHub issues"
+                    url _projectUrl + "/issues"
+                }
+            }
+        }
+    }
+}
+
+task getDependencies(type: Copy) {
+    from sourceSets.main.runtimeClasspath
+    into "runtime/"
 }
