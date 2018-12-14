@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class BodyWithXmlPrintingTest extends BaseTest {
 
-
   private static final String XML_BODY =
       "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
           + "<mammals>"

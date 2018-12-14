@@ -31,6 +31,7 @@ import okio.BufferedSource;
  * request/response handling logic was made a part of this library.
  *
  * @see <a href="https://github.com/square/okhttp">OkHttp3</a>.
+ *
  * --------------------------------------------------------------------------------------
  *
  * A one-shot stream from the origin server to the client application with the raw bytes of the

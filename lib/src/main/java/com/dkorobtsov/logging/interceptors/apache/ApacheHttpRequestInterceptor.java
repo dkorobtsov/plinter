@@ -1,9 +1,10 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
+import static com.dkorobtsov.logging.internal.ClientPrintingExecutor.printRequest;
+
 import com.dkorobtsov.logging.AbstractInterceptor;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.RequestConverter;
-import com.dkorobtsov.logging.internal.ClientPrintingExecutor;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -22,8 +23,9 @@ public class ApacheHttpRequestInterceptor extends AbstractInterceptor
   @Override
   public void process(HttpRequest request, HttpContext context) {
     if (!skipLogging()) {
-      final InterceptedRequest interceptedRequest = requestConverter.convertFrom(request);
-      ClientPrintingExecutor.printRequest(loggerConfig, interceptedRequest);
+      final InterceptedRequest interceptedRequest = requestConverter.from(request);
+
+      printRequest(loggerConfig, interceptedRequest);
     }
   }
 

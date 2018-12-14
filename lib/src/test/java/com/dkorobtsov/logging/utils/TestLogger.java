@@ -99,7 +99,6 @@ public class TestLogger implements LogWriter {
       // tests with manually added executor will eventually fail.
       // So idea is simple - we won't flush buffer until there is at least one
       // active printing thread.
-      logger.info(Thread.currentThread().getName());
       Optional<Thread> printerThread = Thread.getAllStackTraces().keySet()
           .stream()
           .filter(it -> it.getName().startsWith(PRINTING_THREAD_PREFIX))

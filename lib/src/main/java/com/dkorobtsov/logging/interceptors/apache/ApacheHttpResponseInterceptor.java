@@ -1,9 +1,10 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
+import static com.dkorobtsov.logging.internal.ClientPrintingExecutor.printResponse;
+
 import com.dkorobtsov.logging.AbstractInterceptor;
 import com.dkorobtsov.logging.LoggerConfig;
 import com.dkorobtsov.logging.ResponseConverter;
-import com.dkorobtsov.logging.internal.ClientPrintingExecutor;
 import com.dkorobtsov.logging.internal.InterceptedResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -18,20 +19,20 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
 
   private static final Logger logger = Logger
       .getLogger(ApacheHttpResponseInterceptor.class.getName());
-  private ResponseConverter<HttpResponse> responseAdapter;
+  private ResponseConverter<HttpResponse> responseConverter;
 
   public ApacheHttpResponseInterceptor(LoggerConfig loggerConfig) {
-    this.responseAdapter = new ApacheResponseConverter();
+    this.responseConverter = new ApacheResponseConverter();
     this.loggerConfig = loggerConfig;
   }
 
   @Override
   public void process(HttpResponse response, HttpContext context) {
     if (!skipLogging()) {
-      final InterceptedResponse interceptedResponse = responseAdapter.convertFrom(
+      final InterceptedResponse interceptedResponse = responseConverter.from(
           response, urlFrom(context), null);
 
-      ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
+      printResponse(loggerConfig, interceptedResponse);
     }
   }
 

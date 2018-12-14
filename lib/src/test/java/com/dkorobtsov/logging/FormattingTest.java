@@ -82,7 +82,6 @@ public class FormattingTest {
         testLogger.lastFormattedEvent(true));
   }
 
-
   @Test
   public void formatterTest_dateMessage_containsTwoElements() {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_MESSAGE);
