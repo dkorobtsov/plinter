@@ -2,10 +2,10 @@ LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp)
 (version for use with Java logging frameworks - jul, log4j, slf4j, logback, log4j2 etc)
 --------
 [![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
-![quality gate](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=alert_status)
-![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Alib&metric=reliability_rating)
-![security](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=security_rating)
-![coverage](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=coverage)
+![quality gate](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Ainterceptor-core&metric=alert_status)
+![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Ainterceptor-core&metric=reliability_rating)
+![security](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Ainterceptor-core&metric=security_rating)
+![coverage](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Ainterceptor-core&metric=coverage)
 
 
 Description
