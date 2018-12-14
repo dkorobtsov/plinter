@@ -23,6 +23,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,16 +49,16 @@ public final class Util {
   public static final String APPLICATION_JSON = "application/json";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
-  static final Charset UTF_8 = Charset.forName("UTF-8");
+  static final Charset UTF_8 = StandardCharsets.UTF_8;
+  private static final Charset UTF_16_BE = StandardCharsets.UTF_16BE;
+  private static final Charset UTF_16_LE = StandardCharsets.UTF_16LE;
+  private static final Charset UTF_32_BE = Charset.forName("UTF-32BE");
+  private static final Charset UTF_32_LE = Charset.forName("UTF-32LE");
   private static final ByteString UTF_8_BOM = ByteString.decodeHex("efbbbf");
   private static final ByteString UTF_16_BE_BOM = ByteString.decodeHex("feff");
   private static final ByteString UTF_16_LE_BOM = ByteString.decodeHex("fffe");
   private static final ByteString UTF_32_BE_BOM = ByteString.decodeHex("0000ffff");
   private static final ByteString UTF_32_LE_BOM = ByteString.decodeHex("ffff0000");
-  private static final Charset UTF_16_BE = Charset.forName("UTF-16BE");
-  private static final Charset UTF_16_LE = Charset.forName("UTF-16LE");
-  private static final Charset UTF_32_BE = Charset.forName("UTF-32BE");
-  private static final Charset UTF_32_LE = Charset.forName("UTF-32LE");
 
   private Util() {
   }
