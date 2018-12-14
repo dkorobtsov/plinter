@@ -1,5 +1,8 @@
 package com.dkorobtsov.logging.utils;
 
+import static com.dkorobtsov.logging.utils.TestUtil.PRINTING_THREAD_PREFIX;
+import static java.lang.Thread.State.RUNNABLE;
+
 import com.dkorobtsov.logging.LogWriter;
 import com.dkorobtsov.logging.LoggingFormat;
 import java.io.ByteArrayOutputStream;
@@ -8,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import java.util.stream.Collectors;
@@ -20,12 +23,14 @@ import java.util.stream.Collectors;
  */
 public class TestLogger implements LogWriter {
 
-  private static final Logger logger = Logger.getLogger(TestLogger.class.getName());
+  private static final org.apache.logging.log4j.Logger logger
+      = org.apache.logging.log4j.LogManager.getLogger(TestLogger.class.getName());
 
+  private static final String REGEX_LINE_SEPARATOR = "\r?\n";
   private final List<String> events = new ArrayList<>(Collections.emptyList());
   private StreamHandler logOutputHandler;
   private OutputStream logOut;
-  private Logger testLogger = Logger.getLogger("TestLogger");
+  private Logger testLogger = Logger.getLogger(TestLogger.class.getName());
 
   public TestLogger(LoggingFormat logFormatter) {
     testLogger.setUseParentHandlers(false);
@@ -77,18 +82,41 @@ public class TestLogger implements LogWriter {
    * @return Returns all formatted events published by current logger as String
    */
   public String formattedOutput() {
-    try {
-      // Don't like this solution, but without this wait tests verifying
-      // logger output with manually added executor are randomly failing
-      // (part of output is missing). Suppose root cause is that we are
-      // flashing output before all lines get in buffer
-      // NB: random failures occur when value < 10
-      Thread.sleep(10);
-    } catch (InterruptedException e) {
-      logger.log(Level.SEVERE, e.getMessage(), e);
-    }
+    waitForPrinterThreadToFinish();
     logOutputHandler.flush();
+    logOutputHandler.close();
     return logOut.toString();
+  }
+
+  /**
+   * Method waits up to 30 ms until any active Printer thread becomes idle.
+   */
+  private void waitForPrinterThreadToFinish() {
+    try {
+      // Hack for cases when printer is working in separate thread
+      // If we will flush the buffer before logger finished publishing all current events,
+      // (and we don't know when this actually happens!)
+      // tests with manually added executor will eventually fail.
+      // So idea is simple - we won't flush buffer until there is at least one
+      // active printing thread.
+      logger.info(Thread.currentThread().getName());
+      Optional<Thread> printerThread = Thread.getAllStackTraces().keySet()
+          .stream()
+          .filter(it -> it.getName().startsWith(PRINTING_THREAD_PREFIX))
+          .filter(it -> it.getState().equals(RUNNABLE))
+          .findFirst();
+
+      // obviously we don't want to fall into to endless loop
+      int maxThreadSleep = 30;
+      int i = 0;
+      while (printerThread.isPresent()
+          && printerThread.get().getState().equals(RUNNABLE) && i < maxThreadSleep) {
+        Thread.sleep(1);
+        i++;
+      }
+    } catch (InterruptedException e) {
+      logger.error(e);
+    }
   }
 
   /**
@@ -96,10 +124,10 @@ public class TestLogger implements LogWriter {
    */
   public List<String> loggerOutput(boolean preserveTrailingSpaces) {
     if (preserveTrailingSpaces) {
-      return Arrays.asList(formattedOutput().split("\r?\n"));
+      return Arrays.asList(formattedOutput().split(REGEX_LINE_SEPARATOR));
     }
     return Arrays.stream(formattedOutput()
-        .split("\r?\n"))
+        .split(REGEX_LINE_SEPARATOR))
         .map(String::trim).collect(Collectors.toList());
   }
 

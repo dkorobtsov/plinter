@@ -9,6 +9,8 @@ import org.junit.Assert;
 
 public final class TestUtil {
 
+  public static final String PRINTING_THREAD_PREFIX = "Printer";
+
   public static void assertEntryStartsWithParsableDate(String rawEntry) {
     String[] entryElements = TestUtil
         .extractTextFromLogEntrySeparatedByBrackets(rawEntry);

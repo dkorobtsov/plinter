@@ -1,6 +1,7 @@
 package com.dkorobtsov.logging;
 
 import static com.dkorobtsov.logging.internal.Util.CONTENT_TYPE;
+import static com.dkorobtsov.logging.utils.TestUtil.PRINTING_THREAD_PREFIX;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 
@@ -15,9 +16,9 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -173,8 +174,15 @@ public abstract class BaseTest {
         .logger(testLogger);
 
     if (withExecutor) {
-      builder.executor(new ThreadPoolExecutor(1, 1,
-          50L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>()));
+      builder.executor(Executors.newSingleThreadExecutor(new ThreadFactory() {
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+        @Override
+        public Thread newThread(Runnable r) {
+          return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
+        }
+
+      }));
     }
 
     return builder.build();
