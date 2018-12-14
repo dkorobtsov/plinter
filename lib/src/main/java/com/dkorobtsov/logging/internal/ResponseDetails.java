@@ -8,26 +8,36 @@ public class ResponseDetails {
   public final boolean isSuccessful;
   public final String message;
   public final InterceptedMediaType mediaType;
+  public final Protocol protocol;
 
   ResponseDetails(InterceptedResponseBody responseBody, InterceptedHeaders headers, int code,
       boolean isSuccessful,
-      String message, InterceptedMediaType mediaType) {
+      String message, InterceptedMediaType mediaType,
+      Protocol protocol) {
     this.responseBody = responseBody;
     this.headers = headers;
     this.code = code;
     this.isSuccessful = isSuccessful;
     this.message = message;
     this.mediaType = mediaType;
+    this.protocol = protocol;
   }
 
   public static ResponseDetailsBuilder builder() {
     return new ResponseDetailsBuilder();
   }
 
+  @Override
   public String toString() {
-    return "ResponseDetails(responseBody=" + this.responseBody + ", headers=" + this.headers
-        + ", code=" + this.code + ", isSuccessful=" + this.isSuccessful + ", message="
-        + this.message + ", mediaType=" + this.mediaType + ", url=" + ", originalBody=" + ")";
+    return "ResponseDetails{" +
+        "responseBody=" + responseBody +
+        ", headers=" + headers +
+        ", code=" + code +
+        ", isSuccessful=" + isSuccessful +
+        ", message='" + message + '\'' +
+        ", mediaType=" + mediaType +
+        ", protocol=" + protocol +
+        '}';
   }
 
   public static class ResponseDetailsBuilder {
@@ -38,6 +48,7 @@ public class ResponseDetails {
     private boolean isSuccessful;
     private String message;
     private InterceptedMediaType mediaType;
+    private Protocol protocol;
 
     ResponseDetailsBuilder() {
     }
@@ -73,9 +84,14 @@ public class ResponseDetails {
       return this;
     }
 
+    public ResponseDetailsBuilder protocol(Protocol protocol) {
+      this.protocol = protocol;
+      return this;
+    }
+
     public ResponseDetails build() {
-      return new ResponseDetails(responseBody, headers, code, isSuccessful, message,
-          mediaType);
+      return new ResponseDetails(responseBody, headers, code, isSuccessful, message, mediaType,
+          protocol);
     }
 
     public String toString() {

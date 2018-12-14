@@ -41,7 +41,8 @@ public class ResponseHandler {
     final InterceptedResponseBody responseBody = response.responseBody;
     final InterceptedMediaType contentType = Objects.requireNonNull(responseBody).contentType();
     final String url = Objects.isNull(requestUrl) ? "" : requestUrl.toString();
-    final String originalBody = originalBodyFrom(responseBody);
+
+    final byte[] originalBody = originalBodyFrom(responseBody);
 
     return InterceptedResponse
         .builder()
@@ -58,12 +59,12 @@ public class ResponseHandler {
         .build();
   }
 
-  private static String originalBodyFrom(InterceptedResponseBody responseBody) {
-    String originalBody;
+  private static byte[] originalBodyFrom(InterceptedResponseBody responseBody) {
+    byte[] originalBody;
     try {
-      originalBody = responseBody.string();
+      originalBody = responseBody.bytes();
     } catch (IOException e) {
-      originalBody = "";
+      originalBody = "".getBytes();
       logger.log(Level.SEVERE, e.getMessage(), e);
     }
     return originalBody;

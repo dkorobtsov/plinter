@@ -11,13 +11,13 @@ public final class InterceptedResponse {
   public final String message;
   public final InterceptedMediaType contentType;
   public final String url;
-  public final String originalBody;
+  public final byte[] originalBody;
   public final boolean hasPrintableBody;
   public final long chainMs;
 
   InterceptedResponse(List<String> segmentList, String header, int code, boolean isSuccessful,
       String message, InterceptedMediaType contentType, String url,
-      String originalBody, boolean hasPrintableBody, long chainMs) {
+      byte[] originalBody, boolean hasPrintableBody, long chainMs) {
     this.segmentList = segmentList;
     this.header = header;
     this.code = code;
@@ -43,7 +43,7 @@ public final class InterceptedResponse {
     private String message;
     private InterceptedMediaType contentType;
     private String url;
-    private String originalBody;
+    private byte[] originalBody;
     private boolean hasPrintableBody;
     private long chainMs;
 
@@ -90,7 +90,7 @@ public final class InterceptedResponse {
       return this;
     }
 
-    public ResponseDetailsBuilder originalBody(String originalBody) {
+    public ResponseDetailsBuilder originalBody(byte[] originalBody) {
       this.originalBody = originalBody;
       return this;
     }

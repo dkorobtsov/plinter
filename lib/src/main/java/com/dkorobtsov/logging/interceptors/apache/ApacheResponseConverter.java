@@ -27,7 +27,7 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
   private static final Logger logger = Logger.getLogger(ApacheResponseConverter.class.getName());
 
   @Override
-  public InterceptedResponse convertFrom(HttpResponse response, URL requestUrl, Long ms) {
+  public InterceptedResponse from(HttpResponse response, URL requestUrl, Long ms) {
     return ResponseHandler.interceptedResponse(responseDetails(response), requestUrl, ms);
   }
 

@@ -18,20 +18,21 @@ class BodyFormatter {
   private BodyFormatter() {
   }
 
-  static String formattedBody(final String msg) {
+  static String formattedBody(final byte[] msg) {
+    String bodyAsString = new String(msg);
     String message;
     try {
-      if (msg.trim().startsWith("{")) {
-        message = formatAsJsonObject(msg);
-      } else if (msg.trim().startsWith("[")) {
-        message = formatAsJsonArray(msg);
-      } else if (msg.trim().startsWith("<")) {
-        message = formatAsXml(msg);
+      if (bodyAsString.trim().startsWith("{")) {
+        message = formatAsJsonObject(bodyAsString);
+      } else if (bodyAsString.trim().startsWith("[")) {
+        message = formatAsJsonArray(bodyAsString);
+      } else if (bodyAsString.trim().startsWith("<")) {
+        message = formatAsXml(bodyAsString);
       } else {
-        message = msg;
+        message = bodyAsString;
       }
     } catch (JSONException e) {
-      message = msg;
+      message = bodyAsString;
     }
     return message;
   }

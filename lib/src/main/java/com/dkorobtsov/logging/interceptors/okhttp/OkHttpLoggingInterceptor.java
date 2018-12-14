@@ -10,12 +10,9 @@ import com.dkorobtsov.logging.ResponseConverter;
 import com.dkorobtsov.logging.internal.InterceptedRequest;
 import com.dkorobtsov.logging.internal.InterceptedResponse;
 import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Interceptor {
@@ -38,30 +35,20 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
       return chain.proceed(request);
     }
 
-    final InterceptedRequest interceptedRequest = requestConverter.convertFrom(request);
+    final InterceptedRequest interceptedRequest = requestConverter.from(request);
+
     printRequest(loggerConfig, interceptedRequest);
 
     final long startTime = System.nanoTime();
     final Response response = chain.proceed(request);
-    final long ms = TimeUnit.NANOSECONDS
-        .toMillis(System.nanoTime() - startTime);
+    final long executionTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
 
-    final URL url = interceptedRequest.url();
-    InterceptedResponse interceptedResponse = responseConverter.convertFrom(response, url, ms);
+    InterceptedResponse interceptedResponse = responseConverter
+        .from(response, interceptedRequest.url(), executionTime);
 
     printResponse(loggerConfig, interceptedResponse);
 
-    final ResponseBody body;
-    if (interceptedResponse.hasPrintableBody) {
-      final MediaType mediaType = MediaType.parse(interceptedResponse.contentType.toString());
-      body = ResponseBody.create(mediaType, interceptedResponse.originalBody);
-    } else {
-      return response;
-    }
-
-    return response.newBuilder()
-        .body(body)
-        .build();
+    return response;
   }
 
 }

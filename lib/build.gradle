@@ -44,6 +44,22 @@ ext {
     assertjVersion = "3.11.1"
 }
 
+dependencies {
+    implementation "com.squareup.okio:okio:$okioVersion"
+    implementation "org.json:json:$jsonVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
+    implementation "com.squareup.okhttp:logging-interceptor:$okhttpVersion"
+    implementation "org.apache.httpcomponents:httpclient:$apacheHttpClientVersion"
+    implementation "org.apache.httpcomponents:httpasyncclient:$apacheHttpAsyncClientVersion"
+    implementation "org.apache.httpcomponents:httpmime:$apacheHttpMimeTypeVersion"
+
+    testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
+    testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
+    testImplementation "junit:junit:$junit4Version"
+    testImplementation "pl.pragmatists:JUnitParams:$junitParamsVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
+
 jar {
     manifest {
         attributes(
@@ -112,23 +128,6 @@ test {
     testLogging {
         showStandardStreams = false
     }
-
-}
-
-dependencies {
-    implementation "com.squareup.okio:okio:$okioVersion"
-    implementation "org.json:json:$jsonVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
-    implementation "com.squareup.okhttp:logging-interceptor:$okhttpVersion"
-    implementation "org.apache.httpcomponents:httpclient:$apacheHttpClientVersion"
-    implementation "org.apache.httpcomponents:httpasyncclient:$apacheHttpAsyncClientVersion"
-    implementation "org.apache.httpcomponents:httpmime:$apacheHttpMimeTypeVersion"
-
-    testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
-    testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
-    testImplementation "junit:junit:$junit4Version"
-    testImplementation "pl.pragmatists:JUnitParams:$junitParamsVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
 }
 
 // Username & password for Sonatype, stored in gradle.properties

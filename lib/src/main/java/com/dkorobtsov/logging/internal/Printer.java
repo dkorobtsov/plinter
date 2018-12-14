@@ -244,7 +244,7 @@ class Printer {
         return "";
       }
       copy.body().writeTo(buffer);
-      return formattedBody(buffer.readUtf8());
+      return formattedBody(buffer.readByteArray());
     } catch (final IOException e) {
       return "{\"err\": \"" + e.getMessage() + "\"}";
     }

@@ -29,7 +29,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
   private static final Logger logger = Logger.getLogger(ApacheRequestConverter.class.getName());
 
   @Override
-  public InterceptedRequest convertFrom(HttpRequest apacheHttpRequest) {
+  public InterceptedRequest from(HttpRequest apacheHttpRequest) {
     final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
     builder.url(interceptedUrl(apacheHttpRequest));
 

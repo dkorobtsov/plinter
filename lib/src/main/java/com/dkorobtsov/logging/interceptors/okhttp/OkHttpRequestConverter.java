@@ -19,7 +19,7 @@ import okio.Buffer;
 class OkHttpRequestConverter implements RequestConverter<Request> {
 
   @Override
-  public InterceptedRequest convertFrom(com.squareup.okhttp.Request okHttpRequest) {
+  public InterceptedRequest from(com.squareup.okhttp.Request okHttpRequest) {
     final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
     builder.url(okHttpRequest.url());
     final Map<String, List<String>> headersMap = okHttpRequest.headers().toMultimap();
