@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
  * A Cache-Control header with cache directives from a server or client. These directives set policy
  * on what responses can be stored, and which requests can be satisfied by those stored responses.
  *
- * @see <a href="https://tools.ietf.org/html/rfc7234#section-5.2">RFC 7234, 5.2</a>>
+ * @see <a href="https://tools.ietf.org/html/rfc7234#section-5.2">RFC 7234, 5.2</a>
  *
  * --------------------------------------------------------------------------------------
  *

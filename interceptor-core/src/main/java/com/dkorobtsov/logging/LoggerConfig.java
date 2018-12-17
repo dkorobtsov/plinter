@@ -82,7 +82,7 @@ public class LoggerConfig {
      *         .logger(new LogWriter() {
      *           final Logger log = LogManager.getLogger("OkHttpLogger");
      *
-     *           @Override
+     *           Override
      *           public void log(String msg) {
      *             log.debug(msg);
      *           }
