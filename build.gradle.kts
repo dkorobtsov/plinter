@@ -9,9 +9,9 @@ val archivesBaseName: String by extra { "LoggingInterceptor" }
 val projectVersion: String by extra { "5.0-SNAPSHOT" }
 
 plugins {
-    java
     maven
     jacoco
+    id("java-library")
     id("project-report")
     id("org.sonarqube") version "2.6.2"
 }
@@ -112,15 +112,6 @@ configure(subprojects) {
         into("runtime/")
     }
 
-    tasks.register<Delete>("cleanAll") {
-        delete("out", "apache-interceptor/out")
-        delete("out", "okhttp-interceptor/out")
-        delete("out", "okhttp3-interceptor/out")
-        delete("out", "interceptor-core/out")
-        delete("out", "interceptor-tests/out")
-        isFollowSymlinks = true
-    }
-
     tasks.named<Test>("test") {
         useJUnit()
 
@@ -146,6 +137,11 @@ configure(subprojects) {
 
     tasks {
         getByName<Upload>("uploadArchives") {
+
+            onlyIf {
+                // skipping publishing for test only modules
+                !project.sourceSets["main"].allJava.isEmpty
+            }
 
             repositories {
 
@@ -199,6 +195,22 @@ configure(subprojects) {
             }
         }
     }
+}
+
+tasks.register<Delete>("cleanAll") {
+    delete("build",
+            "apache-interceptor/build",
+            "okhttp-interceptor/build",
+            "okhttp3-interceptor/build",
+            "interceptor-core/build",
+            "interceptor-tests/build")
+    delete("out",
+            "apache-interceptor/out",
+            "okhttp-interceptor/out",
+            "okhttp3-interceptor/out",
+            "interceptor-core/out",
+            "interceptor-tests/out")
+    isFollowSymlinks = true
 }
 
 fun sonarExclusions(): String {
