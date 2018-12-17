@@ -30,7 +30,7 @@ import java.util.List;
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
  *
- * @see <a href="https://github.com/square/okhttp">OkHttp3</a>.
+ * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
 public final class InterceptedRequest {
 
