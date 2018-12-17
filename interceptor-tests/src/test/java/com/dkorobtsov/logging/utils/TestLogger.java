@@ -110,7 +110,7 @@ public class TestLogger implements LogWriter {
       int i = 0;
       while (printerThread.isPresent()
           && printerThread.get().getState().equals(RUNNABLE) && i < maxThreadSleep) {
-        Thread.sleep(1);
+        Thread.sleep(2);
         i++;
       }
     } catch (InterruptedException e) {
