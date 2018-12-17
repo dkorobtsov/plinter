@@ -1,6 +1,6 @@
 *.iml
 .gradle
 .idea/
-lib/out/
-/lib/build/
+**/out/
+**/build/
 /$WERCKER_CACHE_DIR/
