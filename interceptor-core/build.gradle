@@ -1,6 +1,0 @@
-archivesBaseName = "interceptor-core"
-
-dependencies {
-    implementation("com.squareup.okio:okio:2.1.0")
-    implementation("org.json:json:20180130")
-}
