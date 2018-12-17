@@ -1,54 +1,20 @@
-plugins {
-    id "java"
-    id "maven"
-    id "jacoco"
-    id "project-report"
-    id "org.sonarqube" version "2.6"
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-version "5.0-SNAPSHOT"
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-ext {
-    coreVersion = "5.0-SNAPSHOT"
-    mockWebserverVersion = "2.7.5"
-    jsonVersion = "20180130"
-    okhttp3Version = "3.9.1"
-    okhttpVersion = "2.7.5"
-    okioVersion = "2.1.0"
-    junit4Version = "4.12"
-    log4j2Version = "2.11.0"
-    junitParamsVersion = "1.1.1"
-    apacheHttpClientVersion = "4.5.1"
-    apacheHttpAsyncClientVersion = "4.1.4"
-    apacheHttpMimeTypeVersion = "4.5.6"
-    assertjVersion = "3.11.1"
-}
+archivesBaseName = "interceptor-tests"
 
 dependencies {
     testImplementation project(":interceptor-core")
     testImplementation project(":apache-interceptor")
     testImplementation project(":okhttp-interceptor")
     testImplementation project(":okhttp3-interceptor")
-
-    testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpClientVersion"
-    testImplementation "org.apache.httpcomponents:httpasyncclient:$apacheHttpAsyncClientVersion"
-    testImplementation "org.apache.httpcomponents:httpmime:$apacheHttpMimeTypeVersion"
-    testImplementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
-    testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
-    testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
-    testImplementation "pl.pragmatists:JUnitParams:$junitParamsVersion"
-    testImplementation "org.assertj:assertj-core:$assertjVersion"
-    testImplementation "junit:junit:$junit4Version"
-
-/*    testImplementation("com.dkorobtsov.logging:interceptor-core:$coreVersion") {
+    testImplementation("org.apache.httpcomponents:httpclient:4.5.1")
+    testImplementation("org.apache.httpcomponents:httpasyncclient:4.1.4")
+    testImplementation("org.apache.httpcomponents:httpmime:4.5.6")
+    testImplementation("com.squareup.okhttp3:logging-interceptor:3.9.1")
+    testImplementation("com.squareup.okhttp:mockwebserver:2.7.5")
+    testImplementation("org.apache.logging.log4j:log4j-core:2.11.0")
+    testImplementation("pl.pragmatists:JUnitParams:1.1.1")
+    testImplementation("org.assertj:assertj-core:3.11.1")
+    testImplementation("junit:junit:4.12")
+    testImplementation("com.dkorobtsov.logging:interceptor-core:5.0-SNAPSHOT") {
         changing = true
-    }*/
+    }
 }

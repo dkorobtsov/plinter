@@ -1,24 +1,10 @@
-plugins {
-    id 'java'
-}
-
-version "5.0-SNAPSHOT"
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-ext {
-    coreVersion = "5.0-SNAPSHOT"
-    okhttpVersion = "2.7.5"
-}
+archivesBaseName = "okhttp-interceptor"
 
 dependencies {
-    implementation "com.squareup.okhttp:logging-interceptor:$okhttpVersion"
-    implementation("com.dkorobtsov.logging:interceptor-core:$coreVersion") {
+    implementation project(":interceptor-core")
+    implementation("com.squareup.okio:okio:2.1.0")
+    implementation("com.squareup.okhttp:logging-interceptor:2.7.5")
+    implementation("com.dkorobtsov.logging:interceptor-core:5.0-SNAPSHOT") {
         changing = true
     }
 }
