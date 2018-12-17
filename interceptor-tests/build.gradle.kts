@@ -1,6 +1,5 @@
 val archivesBaseName: String by extra { "interceptor-tests" }
 val artefactName: String by extra { "Logging Interceptor Tests" }
-val artefactDescription: String by extra { "Logging Interceptor tests package" }
 
 dependencies {
     testImplementation(project(":interceptor-core"))
@@ -25,7 +24,6 @@ tasks.named<Jar>("jar") {
     manifest {
         attributes(mapOf(
                 "Implementation-Title" to artefactName,
-                "Implementation-Description" to artefactDescription,
                 "Automatic-Module-Name" to "com.dkorobtsov.logging$archivesBaseName"
         ))
     }

@@ -2,7 +2,7 @@ import groovy.xml.dom.DOMCategory.attributes
 import java.nio.charset.StandardCharsets
 
 val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
-val projectDescription: String by extra { "HTTP traffic Pretty Logger" }
+val projectDescription: String by extra { "HTTP traffic Pretty Logging Interceptor" }
 val projectName: String by extra { "Pretty Logging Interceptor" }
 val projectGroup: String by extra { "com.dkorobtsov.logging" }
 val archivesBaseName: String by extra { "LoggingInterceptor" }
@@ -24,10 +24,6 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType(JavaCompile::class) {
-    options.encoding = "UTF-8"
-    options.isDebug = true
-}
 
 sonarqube {
     properties {
@@ -56,7 +52,7 @@ configure(subprojects) {
     apply(plugin = "java")
     apply(plugin = "maven")
     apply(plugin = "jacoco")
-
+    
     repositories {
         mavenLocal()
         mavenCentral()
@@ -71,33 +67,42 @@ configure(subprojects) {
     tasks.named<Jar>("jar") {
         manifest {
             attributes(mapOf(
-                    "Implementation-Title" to project.name,
                     "Implementation-Version" to project.version,
+                    "Implementation-Title" to project.name,
                     "Implementation-URL" to projectUrl
             ))
         }
+    }
+
+    tasks.withType(JavaCompile::class) {
+        options.encoding = StandardCharsets.UTF_8.displayName()
+        options.isDebug = false
+        options.isDeprecation = false
+        options.compilerArgs.add("-nowarn")
+        options.compilerArgs.add("-Xlint:none")
+    }
+
+    tasks.withType(Javadoc::class) {
+        isFailOnError = true
+        options.outputLevel = JavadocOutputLevel.QUIET
+        (options as StandardJavadocDocletOptions)
+                .addStringOption("Xdoclint:none", "-nodeprecated")
     }
 
     val sourceSets = project.the<SourceSetContainer>()
 
     val sourceJar by tasks.creating(Jar::class) {
         from(sourceSets.getByName("main").allJava)
-        classifier = "sources"
+        this.archiveClassifier.set("sources")
     }
 
     val javadocJar by tasks.creating(Jar::class) {
         from(tasks.getByName("javadoc"))
-        classifier = "javadoc"
-    }
-
-    tasks.withType(Javadoc::class) {
-        isFailOnError = true
-        (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+        this.archiveClassifier.set("javadoc")
     }
 
     artifacts.add("archives", sourceJar)
     artifacts.add("archives", javadocJar)
-
 
     fun mavenUrl(): String {
         return when {

@@ -1,6 +1,5 @@
 val archivesBaseName: String by extra { "apache-interceptor" }
 val artefactName: String by extra { "Apache Logging Interceptor" }
-val artefactDescription: String by extra { "Logging Interceptor for Apache HTTP Client" }
 
 dependencies {
     implementation(project(":interceptor-core"))
@@ -16,7 +15,6 @@ tasks.named<Jar>("jar") {
     manifest {
         attributes(mapOf(
                 "Implementation-Title" to artefactName,
-                "Implementation-Description" to artefactDescription,
                 "Automatic-Module-Name" to "com.dkorobtsov.logging$archivesBaseName"
         ))
     }

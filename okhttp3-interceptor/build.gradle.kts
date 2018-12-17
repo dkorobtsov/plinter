@@ -1,6 +1,5 @@
 val archivesBaseName: String by extra { "okhttp3-interceptor" }
 val artefactName: String by extra { "OkHttp3 Logging Interceptor" }
-val artefactDescription: String by extra { "Logging Interceptor for OkHttp3 Client" }
 
 dependencies {
     implementation(project(":interceptor-core"))
@@ -14,7 +13,6 @@ tasks.named<Jar>("jar") {
     manifest {
         attributes(mapOf(
                 "Implementation-Title" to artefactName,
-                "Implementation-Description" to artefactDescription,
                 "Automatic-Module-Name" to "com.dkorobtsov.logging$archivesBaseName"
         ))
     }
