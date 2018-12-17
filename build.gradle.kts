@@ -2,10 +2,11 @@ import groovy.xml.dom.DOMCategory.attributes
 import java.nio.charset.StandardCharsets
 
 val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
-val archivesBaseName: String by extra { "LoggingInterceptor" }
+val projectDescription: String by extra { "HTTP traffic Pretty Logger" }
 val projectName: String by extra { "Pretty Logging Interceptor" }
-val projectDescription: String by extra { "Library for pretty logging HTTP traffic" }
-val allTestCoverageFile: String by extra { "/${project.rootDir}/jacoco/allTestCoverage.exec" }
+val projectGroup: String by extra { "com.dkorobtsov.logging" }
+val archivesBaseName: String by extra { "LoggingInterceptor" }
+val projectVersion: String by extra { "5.0-SNAPSHOT" }
 
 plugins {
     java
@@ -14,6 +15,9 @@ plugins {
     id("project-report")
     id("org.sonarqube") version "2.6.2"
 }
+
+group = projectGroup
+version = projectVersion
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -27,25 +31,27 @@ tasks.withType(JavaCompile::class) {
 
 sonarqube {
     properties {
-        property("sonar.jacoco.reportPaths", allTestCoverageFile)
+        property("sonar.jacoco.reportPaths", "${project.rootDir}/interceptor-tests/build/jacoco/test.exec")
         property("sonar.dynamicAnalysis", "reuseReports")
-        property("sonar.jacoco.reportPath", allTestCoverageFile)
         property("sonar.language", "java")
         property("sonar.projectKey", "LoggingInterceptor")
         property("sonar.organization", "dkorobtsov-github")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.login", project.property("sonar.login"))
+        property("sonar.coverage.exclusions", coverageExclusions())
+        property("sonar.cpd.exclusions", duplicationExclusions())
+        property("sonar.exclusions", sonarExclusions())
     }
 }
 
 configure(listOf(rootProject)) {
-    description = "HTTP traffic Pretty Logger"
+    description = projectDescription
 }
 
 configure(subprojects) {
     val project = this
-    group = "com.dkorobtsov.logging"
-    version = "5.0-SNAPSHOT"
+    group = projectGroup
+    version = projectVersion
 
     apply(plugin = "java")
     apply(plugin = "maven")
@@ -193,5 +199,37 @@ configure(subprojects) {
             }
         }
     }
+}
 
+fun sonarExclusions(): String {
+    return arrayOf(
+            "**/CacheControl.java",
+            "**/InterceptedRequestBody.java",
+            "**/InterceptedHeaders.java",
+            "**/InterceptedMediaType.java",
+            "**/Protocol.java",
+            "**/Util.java"
+    ).joinToString(separator = ", ")
+}
+
+fun duplicationExclusions(): String {
+    return arrayOf(
+            "**/interceptors/okhttp/**",
+            "**/interceptors/okhttp3/**"
+    ).joinToString(separator = ", ")
+}
+
+fun coverageExclusions(): String {
+    return arrayOf(
+            "**/CacheControl.java",
+            "**/HttpHeaders.java",
+            "**/InterceptedHeaders.java",
+            "**/HttpMethod.java",
+            "**/InterceptedMediaType.java",
+            "**/InterceptedRequest.java",
+            "**/InterceptedRequestBody.java",
+            "**/InterceptedResponseBody.java",
+            "**/Protocol.java",
+            "**/Util.java"
+    ).joinToString(separator = ", ")
 }
