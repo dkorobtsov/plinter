@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id "java"
 }
 
 version "5.0-SNAPSHOT"

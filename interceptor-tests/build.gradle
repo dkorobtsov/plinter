@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id "java"
     id "maven"
     id "jacoco"
     id "project-report"
@@ -15,10 +15,6 @@ version "5.0-SNAPSHOT"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
 
 ext {
     coreVersion = "5.0-SNAPSHOT"
@@ -37,19 +33,21 @@ ext {
 }
 
 dependencies {
-    testCompile project(':interceptor-core')
-    testCompile project(':apache-interceptor')
-    testCompile project(':okhttp-interceptor')
-    testCompile project(':okhttp3-interceptor')
+    testImplementation project(":interceptor-core")
+    testImplementation project(":apache-interceptor")
+    testImplementation project(":okhttp-interceptor")
+    testImplementation project(":okhttp3-interceptor")
+
     testImplementation "org.apache.httpcomponents:httpclient:$apacheHttpClientVersion"
     testImplementation "org.apache.httpcomponents:httpasyncclient:$apacheHttpAsyncClientVersion"
     testImplementation "org.apache.httpcomponents:httpmime:$apacheHttpMimeTypeVersion"
     testImplementation "com.squareup.okhttp3:logging-interceptor:$okhttp3Version"
     testImplementation "com.squareup.okhttp:mockwebserver:$mockWebserverVersion"
     testImplementation "org.apache.logging.log4j:log4j-core:$log4j2Version"
-    testImplementation "junit:junit:$junit4Version"
     testImplementation "pl.pragmatists:JUnitParams:$junitParamsVersion"
     testImplementation "org.assertj:assertj-core:$assertjVersion"
+    testImplementation "junit:junit:$junit4Version"
+
 /*    testImplementation("com.dkorobtsov.logging:interceptor-core:$coreVersion") {
         changing = true
     }*/

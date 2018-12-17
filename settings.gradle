@@ -1,6 +1,6 @@
-include 'interceptor-core'
-include 'apache-interceptor'
-include 'interceptor-tests'
-include 'okhttp3-interceptor'
-include 'okhttp-interceptor'
-
+rootProject.name = "LoggingInterceptor"
+include "interceptor-core"
+include "apache-interceptor"
+include "okhttp-interceptor"
+include "okhttp3-interceptor"
+include "interceptor-tests"

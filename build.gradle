@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id "java"
 }
 
 project.ext {
@@ -18,6 +18,14 @@ repositories {
 
 
 dependencies {
-    testCompile project(':interceptor-tests')
+    testCompile project(":interceptor-tests")
 }
 
+task cleanAll(type: Delete) {
+    delete "out", "apache-interceptor/out"
+    delete "out", "okhttp-interceptor/out"
+    delete "out", "okhttp3-interceptor/out"
+    delete "out", "interceptor-core/out"
+    delete "out", "interceptor-tests/out"
+    followSymlinks = true
+}
