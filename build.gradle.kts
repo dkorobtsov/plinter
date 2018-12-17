@@ -24,10 +24,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-
 sonarqube {
     properties {
-        property("sonar.jacoco.reportPaths", "${project.rootDir}/interceptor-tests/build/jacoco/test.exec")
         property("sonar.dynamicAnalysis", "reuseReports")
         property("sonar.language", "java")
         property("sonar.projectKey", "LoggingInterceptor")
@@ -37,6 +35,7 @@ sonarqube {
         property("sonar.coverage.exclusions", coverageExclusions())
         property("sonar.cpd.exclusions", duplicationExclusions())
         property("sonar.exclusions", sonarExclusions())
+        property("sonar.jacoco.reportPaths", "${project.rootDir}/interceptor-tests/build/jacoco/test.exec")
     }
 }
 
@@ -52,7 +51,15 @@ configure(subprojects) {
     apply(plugin = "java")
     apply(plugin = "maven")
     apply(plugin = "jacoco")
-    
+
+    tasks.withType(JavaCompile::class) {
+        options.encoding = StandardCharsets.UTF_8.displayName()
+        options.isDebug = true
+        options.isDeprecation = false
+        options.compilerArgs.add("-nowarn")
+        options.compilerArgs.add("-Xlint:none")
+    }
+
     repositories {
         mavenLocal()
         mavenCentral()
@@ -74,13 +81,6 @@ configure(subprojects) {
         }
     }
 
-    tasks.withType(JavaCompile::class) {
-        options.encoding = StandardCharsets.UTF_8.displayName()
-        options.isDebug = false
-        options.isDeprecation = false
-        options.compilerArgs.add("-nowarn")
-        options.compilerArgs.add("-Xlint:none")
-    }
 
     tasks.withType(Javadoc::class) {
         isFailOnError = true
@@ -161,12 +161,6 @@ configure(subprojects) {
 
                         pom.project {
                             withGroovyBuilder {
-                                "parent" {
-                                    "groupId"(project.group)
-                                    "artifactId"(archivesBaseName)
-                                    "version"(project.version)
-                                }
-
                                 "licenses" {
                                     "license" {
                                         "name"("MIT")
