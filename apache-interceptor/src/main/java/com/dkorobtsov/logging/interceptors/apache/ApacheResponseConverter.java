@@ -81,5 +81,4 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
         .create(InterceptedMediaType.parse(APPLICATION_JSON), "");
   }
 
-
 }

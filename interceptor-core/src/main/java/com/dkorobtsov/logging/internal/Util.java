@@ -46,6 +46,7 @@ public final class Util {
 
   public static final String CONTENT_TYPE = "Content-Type";
   public static final String TEXT_HTML = "text/html";
+  public static final String TEXT_PLAIN = "text/plain";
   public static final String APPLICATION_JSON = "application/json";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";

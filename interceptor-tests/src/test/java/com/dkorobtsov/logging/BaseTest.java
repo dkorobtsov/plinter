@@ -32,6 +32,7 @@ import okhttp3.Response;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.ContentType;
@@ -298,6 +299,7 @@ public abstract class BaseTest {
    */
   HttpClient defaultApacheClient(ApacheHttpRequestInterceptor requestInterceptor,
       ApacheHttpResponseInterceptor responseInterceptor) {
+
     return HttpClientBuilder
         .create()
         .addInterceptorFirst(requestInterceptor)
@@ -342,7 +344,8 @@ public abstract class BaseTest {
   }
 
   /**
-   * Returns default Apache HTTP request for use in tests.
+   * Returns default Apache HTTP request for use in tests. If body is not provided, GET request will
+   * be sent, otherwise default request is PUT.
    *
    * @param content Request body content as String. Can be null.
    * @param mediaType Request body media type. Can be null.
@@ -351,17 +354,20 @@ public abstract class BaseTest {
    * be empty.
    */
   private HttpUriRequest apacheHttpRequest(String content, String mediaType) {
-    final HttpPut httpPut = new HttpPut(server.url(MOCK_SERVER_PATH).uri());
+    final HttpUriRequest request;
 
     if (nonNull(content) && nonNull(mediaType)) {
+      request = new HttpPut(server.url(MOCK_SERVER_PATH).uri());
       ContentType contentType = ContentType.create(mediaType);
 
       final HttpEntity entity = new StringEntity(content, contentType);
 
-      httpPut.setEntity(entity);
-      httpPut.setHeader(new BasicHeader(CONTENT_TYPE, mediaType));
+      ((HttpPut) request).setEntity(entity);
+      request.setHeader(new BasicHeader(CONTENT_TYPE, mediaType));
+    } else {
+      request = new HttpGet(server.url(MOCK_SERVER_PATH).uri());
     }
-    return httpPut;
+    return request;
   }
 
   /**
