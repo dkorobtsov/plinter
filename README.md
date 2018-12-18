@@ -5,12 +5,15 @@ Just attach interceptor to your favorite HTTP client and forward all requests an
 Simple as that.
 
 --------
-[![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
 ![quality gate](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=alert_status)
 ![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=reliability_rating)
 ![maintainability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=sqale_rating)
 ![security](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=security_rating)
 ![coverage](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=coverage)
+
+
+[![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_shield)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ###Features
@@ -42,9 +45,10 @@ To start using interceptor with OkHttp client add following dependency to classp
 <dependency>
    <groupId>com.dkorobtsov.logging</groupId>
    <artifactId>okhttp-interceptor</artifactId>
-   <version>$LATEST_VERSION</version>
 </dependency>
 ```
+Check [releases](https://github.com/dkorobtsov/LoggingInterceptor/releases) for latest interceptor version.
+
 Basic usage example:
 ```java
     OkHttpLoggingInterceptor interceptor = new OkHttpLoggingInterceptor(LoggerConfig.builder().build());
@@ -65,6 +69,8 @@ To start using interceptor with OkHttp3 client add following dependency to class
    <version>$LATEST_VERSION</version>
 </dependency>
 ```
+Check [releases](https://github.com/dkorobtsov/LoggingInterceptor/releases) for latest interceptor version.
+
 Basic usage example:
 ```java
     OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(LoggerConfig.builder().build());
@@ -83,6 +89,8 @@ To start using interceptor with Apache Http client add following dependency to c
    <version>$LATEST_VERSION</version>
 </dependency>
 ```
+Check [releases](https://github.com/dkorobtsov/LoggingInterceptor/releases) for latest interceptor version.
+
 Basic usage example:
 ```java
     ApacheRequestInterceptor requestInterceptor = new ApacheRequestInterceptor(LoggerConfig.builder().build());
@@ -181,7 +189,7 @@ Example:
 #Logger Configuration
 Interceptor can be configured by providing your own LoggerConfig. 
 
-Check supported options description below:
+Check supported options descriptions below:
 
 ###Format
 Default logger's format can be easily changed using predefined JUL logging patterns:
@@ -234,10 +242,14 @@ Enable or disable interceptor. If set to false, interceptor will ignore all traf
 ```
 
 ##Credits
-
 This library was initially forked from 
-[LoggingInterceptor for Android](https://github.com/ihsanbal/LoggingInterceptor) and completely rewritten to 
-provide more flexibility and support for native Java loggers and other HTTP clients.
+[LoggingInterceptor for Android](https://github.com/ihsanbal/LoggingInterceptor) by [Ihsan Bal](https://github.com/ihsanbal) 
+and completely rewritten by [Dmitri Korobtsov](https://github.com/dkorobtsov) to 
+provide more flexibility and support for native Java loggers. Support for OkHttp2 and Apache clients introduced by [Andrew Zakordonets](https://github.com/azakordonets).
+Part of internal requests/responses handling logic based on [OkHttp3](https://github.com/square/okhttp) client's code with slight modifications to remove external dependencies.
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_large)
 
 -----
 
