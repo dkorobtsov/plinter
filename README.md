@@ -43,7 +43,7 @@ By default JUL logger will be used with INFO level and minimal format displaying
 To start using interceptor with OkHttp client add following dependency to classpath:
 ```xml
 <dependency>
-   <groupId>io.github.dkorobtsov</groupId>
+   <groupId>io.github.dkorobtsov.logging</groupId>
    <artifactId>okhttp-interceptor</artifactId>
 </dependency>
 ```
@@ -64,7 +64,7 @@ Basic usage example:
 To start using interceptor with OkHttp3 client add following dependency to classpath:
 ```xml
 <dependency>
-   <groupId>io.github.dkorobtsov</groupId>
+   <groupId>io.github.dkorobtsov.logging</groupId>
    <artifactId>okhttp3-interceptor</artifactId>
    <version>$LATEST_VERSION</version>
 </dependency>
@@ -84,7 +84,7 @@ Basic usage example:
 To start using interceptor with Apache Http client add following dependency to classpath:
 ```xml
 <dependency>
-   <groupId>io.github.dkorobtsov</groupId>
+   <groupId>io.github.dkorobtsov.logging</groupId>
    <artifactId>apache-interceptor</artifactId>
    <version>$LATEST_VERSION</version>
 </dependency>
