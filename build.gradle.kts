@@ -1,4 +1,6 @@
+import com.github.spotbugs.SpotBugsExtension
 import groovy.xml.dom.DOMCategory.attributes
+import ru.vyarus.gradle.plugin.quality.QualityExtension
 import java.nio.charset.StandardCharsets
 
 val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
@@ -14,6 +16,7 @@ plugins {
     id("java-library")
     id("project-report")
     id("org.sonarqube") version "2.6.2"
+    id("ru.vyarus.quality") version "3.3.0"
 }
 
 group = projectGroup
@@ -51,6 +54,7 @@ configure(subprojects) {
     apply(plugin = "java")
     apply(plugin = "maven")
     apply(plugin = "jacoco")
+    apply(plugin = "ru.vyarus.quality")
 
     tasks.withType(JavaCompile::class) {
         options.encoding = StandardCharsets.UTF_8.displayName()
@@ -89,10 +93,8 @@ configure(subprojects) {
                 .addStringOption("Xdoclint:none", "-nodeprecated")
     }
 
-    val sourceSets = project.the<SourceSetContainer>()
-
     val sourceJar by tasks.creating(Jar::class) {
-        from(sourceSets.getByName("main").allJava)
+        from(project.the<SourceSetContainer>().getByName("main").allJava)
         this.archiveClassifier.set("sources")
     }
 
@@ -194,6 +196,106 @@ configure(subprojects) {
             }
         }
     }
+
+    configure<QualityExtension> {
+
+        checkstyleVersion = "8.12"
+        pmdVersion = "6.7.0"
+        spotbugsVersion = "3.1.9"
+        codenarcVersion = "1.2.1"
+        autoRegistration = true
+        checkstyle = true
+        pmd = true
+
+        // For some reason Spotbugs config failing with Kotlin DSL, disabled for a while
+        spotbugs = false
+
+        // Disabled since there is no Groovy code in project
+        codenarc = false
+
+        /**
+         * The analysis effort level. The value specified should be one of min, default,
+         * or max. Higher levels increase precision and find more bugs at the expense of
+         * running time and memory consumption. Default is "max".
+         */
+        spotbugsEffort = "max"
+
+        /**
+         * The priority threshold for reporting bugs. If set to low, all bugs are reported.
+         * If set to medium, medium and high priority bugs are reported.
+         * If set to high, only high priority bugs are reported. Default is "medium".
+         */
+        spotbugsEffort = "max"
+
+        /**
+         * Javac lint options to show compiler warnings, not visible by default.
+         * Applies to all CompileJava tasks.
+         * Options will be added as -Xlint:option
+         *
+         * Full list of options:
+         *
+         * http://docs.oracle.com/javase/8/docs/technotes/tools/windows/javac.html#BHCJCABJ
+         */
+        lintOptions = listOf("deprecation", "unchecked")
+
+        /**
+         * Strict quality leads to build fail on any violation found. If disabled,
+         * all violation are just printed to console.
+         */
+        strict = false
+
+        /**
+         * When false, disables quality tasks execution. Allows disabling tasks without removing plugins.
+         * Quality tasks are still registered, but skip execution, except when task called directly or through
+         * checkQualityMain (or other source set) grouping task.
+         */
+        enabled = true
+
+        /**
+         * When false, disables reporting quality issues to console. Only gradle general error messages will
+         * remain in logs. This may be useful in cases when project contains too many warnings.
+         * Also, console reporting require xml reports parsing, which could be time consuming in case of too
+         * many errors (large xml reports).
+         * True by default.
+         */
+        consoleReporting = true
+
+        /**
+         * When false, no html reports will be built. True by default.
+         */
+        htmlReports = true
+
+        /**
+         * Source sets to apply checks on.
+         * Default is [sourceSets.main] to apply only for project sources, excluding tests.
+         */
+        sourceSets = listOf(project.sourceSets["main"], project.sourceSets["test"])
+
+        /**
+         * Source patterns (relative to source dir) to exclude from checks. Simply sets exclusions to quality tasks.
+         *
+         * Animalsniffer is not affected because
+         * it"s a different kind of check (and, also, it operates on classes so source patterns may not comply).
+         *
+         * Spotbugs (Findbugs) does not support exclusion directly, but plugin will resolve excluded classes and apply
+         * them to xml exclude file (default one or provided by user).
+         *
+         * By default nothing is excluded.
+         *
+         * IMPORTANT: Patterns are checked relatively to source set dirs (not including them). So you can only
+         * match source files and packages, but not absolute file path (this is gradle specific, not plugin).
+         *
+         * @see org.gradle.api.tasks.SourceTask#exclude(java.lang.Iterable) (base class for all quality tasks)
+         */
+        exclude = listOf()
+
+        /**
+         * User configuration files directory. Files in this directory will be
+         * used instead of default (bundled) configs.
+         */
+        configDir = "config"
+    }
+
 }
 
 tasks.register<Delete>("cleanAll") {
