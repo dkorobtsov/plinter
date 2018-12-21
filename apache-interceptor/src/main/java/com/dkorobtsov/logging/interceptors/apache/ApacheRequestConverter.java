@@ -30,7 +30,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
   private static final Logger logger = Logger.getLogger(ApacheRequestConverter.class.getName());
 
   @Override
-  public InterceptedRequest from(HttpRequest apacheHttpRequest) {
+  public InterceptedRequest from(final HttpRequest apacheHttpRequest) {
     final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
     builder.url(interceptedUrl(apacheHttpRequest));
 
@@ -47,7 +47,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
     return builder.build();
   }
 
-  private InterceptedRequestBody interceptedRequestBody(HttpRequest request) {
+  private InterceptedRequestBody interceptedRequestBody(final HttpRequest request) {
 
     if (request instanceof HttpRequestWrapper) {
 
@@ -89,7 +89,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
         .create(InterceptedMediaType.parse(TEXT_PLAIN), "");
   }
 
-  private String interceptedUrl(HttpRequest request) {
+  private String interceptedUrl(final HttpRequest request) {
     final HttpHost target = ((HttpRequestWrapper) request).getTarget();
     final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
     final URI uri = ((HttpRequestWrapper) request).getURI();

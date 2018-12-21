@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 /**
  * Utility class intended to reduce code duplication on Response converters.
  */
-public class ResponseHandler {
+public final class ResponseHandler {
 
   private static final Logger logger = Logger.getLogger(ResponseHandler.class.getName());
 

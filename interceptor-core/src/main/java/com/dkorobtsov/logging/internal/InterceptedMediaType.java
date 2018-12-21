@@ -55,28 +55,29 @@ public final class InterceptedMediaType {
    * Returns a media type for {@code string}, or null if {@code string} is not a well-formed media
    * type.
    */
+  @SuppressWarnings("checkstyle:MultipleStringLiterals")
   public static InterceptedMediaType parse(String string) {
-    Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
+    final Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
     if (!typeSubtype.lookingAt()) {
       return null;
     }
 
-    String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
+    final String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
 
     String charset = null;
-    Matcher parameter = PARAMETER.matcher(string);
+    final Matcher parameter = PARAMETER.matcher(string);
     for (int s = typeSubtype.end(); s < string.length(); s = parameter.end()) {
       parameter.region(s, string.length());
       if (!parameter.lookingAt()) {
         return null; // This is not a well-formed media type.
       }
 
-      String name = parameter.group(1);
-      if (name == null || !name.equalsIgnoreCase("charset")) {
+      final String name = parameter.group(1);
+      if (!"charset".equalsIgnoreCase(name)) {
         continue;
       }
-      String charsetParameter;
-      String token = parameter.group(2);
+      final String charsetParameter;
+      final String token = parameter.group(2);
       if (token != null) {
         // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
         charsetParameter =

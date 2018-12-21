@@ -38,7 +38,8 @@ import java.util.List;
 import java.util.Objects;
 import okio.Buffer;
 
-class Printer {
+@SuppressWarnings("PMD")
+final class Printer {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private static final String REGEX_LINE_SEPARATOR = "\r?\n";
@@ -118,7 +119,7 @@ class Printer {
 
   private static void printDebugDetails(boolean isRequest) {
     if (loggerConfig.withThreadInfo) {
-      String debugDetails = LINE_SEPARATOR
+      final String debugDetails = LINE_SEPARATOR
           + String.format(isRequest ? SENT_STRING_FORMAT : RECEIVED_STRING_FORMAT,
           THREAD_TAG, Thread.currentThread().getName(),
           isRequest ? SENT_TAG : RECEIVED_TAG,
@@ -148,7 +149,7 @@ class Printer {
   private static void printRequestBody(InterceptedRequest request) {
     if (bodyShouldBePrinted()) {
       if (hasPrintableBody(mediaType(request))) {
-        String requestBody = LINE_SEPARATOR
+        final String requestBody = LINE_SEPARATOR
             + BODY_TAG
             + LINE_SEPARATOR
             + bodyToString(request);
@@ -189,10 +190,10 @@ class Printer {
   }
 
   private static String[] requestDetails(InterceptedRequest request) {
-    boolean isLoggable = loggerConfig.level == Level.HEADERS
+    final boolean isLoggable = loggerConfig.level == Level.HEADERS
         || loggerConfig.level == Level.BASIC;
 
-    String requestDetails = METHOD_TAG + request.method()
+    final String requestDetails = METHOD_TAG + request.method()
         + DOUBLE_SEPARATOR
         + printHeaderIfLoggable(request.headers().toString(), isLoggable);
 
@@ -224,9 +225,9 @@ class Printer {
     if (segments.isEmpty()) {
       return "";
     }
-    StringBuilder segmentString = new StringBuilder();
+    final StringBuilder segmentString = new StringBuilder();
     for (String segment : segments) {
-      segmentString.append("/").append(segment);
+      segmentString.append('/').append(segment);
     }
     return segmentString.toString();
   }
@@ -239,7 +240,7 @@ class Printer {
 
   private static String bodyToString(final InterceptedRequest request) {
     final InterceptedRequest copy = request.newBuilder().build();
-    try (final Buffer buffer = new Buffer()) {
+    try (Buffer buffer = new Buffer()) {
       if (Objects.isNull(copy.body())) {
         return "";
       }
@@ -259,10 +260,10 @@ class Printer {
       if (isEmpty(line)) {
         loggerConfig.logger.log(startingWith);
       } else {
-        int lineLength = line.length();
-        int maxLongSize = withLineSize ? loggerConfig.maxLineLength : lineLength;
+        final int lineLength = line.length();
+        final int maxLongSize = withLineSize ? loggerConfig.maxLineLength : lineLength;
         for (int i = 0; i <= lineLength / maxLongSize; i++) {
-          int start = i * maxLongSize;
+          final int start = i * maxLongSize;
           int end = (i + 1) * maxLongSize;
           end = end > line.length() ? line.length() : end;
           loggerConfig.logger.log(startingWith + line.substring(start, end));
@@ -279,9 +280,9 @@ class Printer {
   }
 
   private static String dotHeaders(String header) {
-    String[] headers = header.split(REGEX_LINE_SEPARATOR);
+    final String[] headers = header.split(REGEX_LINE_SEPARATOR);
 
-    StringBuilder builder = new StringBuilder();
+    final StringBuilder builder = new StringBuilder();
     String tag = "─ ";
     if (headers.length > 1) {
       for (int i = 0; i < headers.length; i++) {

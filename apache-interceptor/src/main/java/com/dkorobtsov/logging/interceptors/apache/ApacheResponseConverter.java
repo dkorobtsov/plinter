@@ -49,7 +49,7 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
     }
   }
 
-  private InterceptedHeaders interceptedHeaders(Header[] headers) {
+  private InterceptedHeaders interceptedHeaders(Header... headers) {
     final InterceptedHeaders.Builder headersBuilder = new InterceptedHeaders.Builder();
     Arrays.stream(headers).forEach(it -> headersBuilder.add(it.getName(), it.getValue()));
     return headersBuilder.build();
@@ -58,7 +58,7 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
   private InterceptedResponseBody interceptedResponseBody(HttpResponse response) {
     final HttpEntity entity = response.getEntity();
     if (entity != null) {
-      String requestBodyString;
+      final String requestBodyString;
       try {
         requestBodyString = readApacheHttpEntity(entity);
       } catch (IOException e) {

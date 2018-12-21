@@ -51,10 +51,7 @@ public class LoggerConfig {
     private LogWriter logger = new DefaultLogger(this.format);
     private Executor executor;
     private int maxLineLength = 110;
-    private boolean withThreadInfo = false;
-
-    LoggerConfigBuilder() {
-    }
+    private boolean withThreadInfo;
 
     /**
      * @param isLoggable specifies if logger is enabled
@@ -151,4 +148,5 @@ public class LoggerConfig {
           format, executor, maxLineLength, withThreadInfo);
     }
   }
+
 }

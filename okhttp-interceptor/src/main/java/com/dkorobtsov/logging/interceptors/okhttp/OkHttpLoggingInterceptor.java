@@ -17,10 +17,10 @@ import java.util.concurrent.TimeUnit;
 
 public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Interceptor {
 
-  private RequestConverter<Request> requestConverter;
-  private ResponseConverter<Response> responseConverter;
+  private final RequestConverter<Request> requestConverter;
+  private final ResponseConverter<Response> responseConverter;
 
-  public OkHttpLoggingInterceptor(LoggerConfig loggerConfig) {
+  public OkHttpLoggingInterceptor(final LoggerConfig loggerConfig) {
     this.requestConverter = new OkHttpRequestConverter();
     this.responseConverter = new OkHttpResponseConverter();
     this.loggerConfig = loggerConfig;
@@ -28,8 +28,8 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
 
   @Override
   @SuppressWarnings("Duplicates")
-  public Response intercept(Chain chain) throws IOException {
-    Request request = chain.request();
+  public Response intercept(final Chain chain) throws IOException {
+    final Request request = chain.request();
 
     if (skipLogging()) {
       return chain.proceed(request);
@@ -43,7 +43,7 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
     final Response response = chain.proceed(request);
     final long executionTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
 
-    InterceptedResponse interceptedResponse = responseConverter
+    final InterceptedResponse interceptedResponse = responseConverter
         .from(response, interceptedRequest.url(), executionTime);
 
     printResponse(loggerConfig, interceptedResponse);

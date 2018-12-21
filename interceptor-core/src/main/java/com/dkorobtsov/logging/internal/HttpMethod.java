@@ -25,6 +25,7 @@ package com.dkorobtsov.logging.internal;
  */
 public final class HttpMethod {
 
+  //CHECKSTYLE:OFF
   private HttpMethod() {
   }
 
@@ -45,5 +46,6 @@ public final class HttpMethod {
         // (WebDAV) may contain a body, but behaviour is unspecified
         || method.equals("LOCK");     // (WebDAV) body: create lock, without body: refresh lock
   }
+  //CHECKSTYLE:ON
 
 }

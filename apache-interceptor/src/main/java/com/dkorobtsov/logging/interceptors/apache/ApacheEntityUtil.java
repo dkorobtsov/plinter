@@ -21,7 +21,8 @@ final class ApacheEntityUtil {
   private ApacheEntityUtil() {
   }
 
-  static String readApacheHttpEntity(HttpEntity entity) throws IOException {
+  @SuppressWarnings("PMD.AssignmentInOperand")
+  static String readApacheHttpEntity(final HttpEntity entity) throws IOException {
     if (nonNull(entity)) {
       final StringBuilder textBuilder = new StringBuilder();
       try (Reader reader = new BufferedReader(
@@ -39,8 +40,8 @@ final class ApacheEntityUtil {
     }
   }
 
-  static HttpEntity recreateHttpEntityFromString(String httpEntityContent,
-      HttpEntity entity) {
+  static HttpEntity recreateHttpEntityFromString(final String httpEntityContent,
+      final HttpEntity entity) {
     final Header contentType = entity.getContentType();
     final String contentTypeValue
         = isNull(contentType)

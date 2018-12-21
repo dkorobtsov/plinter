@@ -74,6 +74,7 @@ public final class Util {
    * Closes {@code closeable}, ignoring any checked exceptions. Does nothing if {@code closeable} is
    * null.
    */
+  @SuppressWarnings("PMD.AvoidRethrowingException")
   public static void closeQuietly(Closeable closeable) {
     if (closeable != null) {
       try {
@@ -81,6 +82,7 @@ public final class Util {
       } catch (RuntimeException rethrown) {
         throw rethrown;
       } catch (Exception ignored) {
+        // Ignored
       }
     }
   }
@@ -163,29 +165,32 @@ public final class Util {
    * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
    */
   public static List<String> encodedPathSegments(URL url) {
+    //CHECKSTYLE:OFF
     if (isNull(url)) {
       return Collections.emptyList();
     }
-    String urlString = url.toString();
-    String scheme = url.getProtocol();
+    final String urlString = url.toString();
+    final String scheme = url.getProtocol();
 
-    int pathStart = urlString.indexOf('/', scheme.length() + 3);
-    int pathEnd = delimiterOffset(urlString, pathStart, urlString.length(), "?#");
-    List<String> result = new ArrayList<>();
+    final int pathStart = urlString.indexOf('/', scheme.length() + 3);
+    final int pathEnd = delimiterOffset(urlString, pathStart, urlString.length(), "?#");
+    final List<String> result = new ArrayList<>();
     for (int i = pathStart; i < pathEnd; ) {
-      i++; // Skip the '/'.
-      int segmentEnd = delimiterOffset(urlString, i, pathEnd, '/');
+      i++;  // Skip the '/'.
+      final int segmentEnd = delimiterOffset(urlString, i, pathEnd, '/');
       result.add(urlString.substring(i, segmentEnd));
       i = segmentEnd;
     }
     return result;
+    //CHECKSTYLE:ON
   }
 
   public static boolean hasPrintableBody(final String mediaType) {
-    return (nonNull(mediaType) && (mediaType.contains("json")
+    return nonNull(mediaType)
+        && (mediaType.contains("json")
         || mediaType.contains("xml")
         || mediaType.contains("plain")
-        || mediaType.contains("html")));
+        || mediaType.contains("html"));
   }
 
   static boolean isEmpty(CharSequence str) {

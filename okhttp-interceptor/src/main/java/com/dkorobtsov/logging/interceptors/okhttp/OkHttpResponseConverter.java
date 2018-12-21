@@ -28,12 +28,12 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
   private static final Logger logger = Logger.getLogger(OkHttpResponseConverter.class.getName());
 
   @Override
-  public InterceptedResponse from(Response response, URL requestUrl, Long ms) {
+  public InterceptedResponse from(final Response response, final URL requestUrl, final Long ms) {
     return ResponseHandler
         .interceptedResponse(responseDetails(response), requestUrl, ms);
   }
 
-  private ResponseDetails responseDetails(Response response) {
+  private ResponseDetails responseDetails(final Response response) {
     if (isNull(response)) {
       throw new IllegalStateException("httpResponse == null");
     } else {
@@ -48,13 +48,13 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
     }
   }
 
-  private InterceptedHeaders interceptedHeaders(Headers headers) {
+  private InterceptedHeaders interceptedHeaders(final Headers headers) {
     final InterceptedHeaders.Builder headersBuilder = new InterceptedHeaders.Builder();
     headers.names().forEach(name -> headersBuilder.add(name, headers.get(name)));
     return headersBuilder.build();
   }
 
-  private InterceptedResponseBody interceptedResponseBody(ResponseBody responseBody) {
+  private InterceptedResponseBody interceptedResponseBody(final ResponseBody responseBody) {
     ResponseBody responseBodyCopy = null;
     try {
       // Since body is readable only once, here we applying this hack to get a copy.
@@ -100,15 +100,17 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
    * NB: Method copied with some small modifications from OkHttp3 client's Response#peekBody
    * (removed deprecated method).
    *
-   * @see <a href="https://github.com/square/okhttp">OkHttp3</a>.
+   * See <a href="https://github.com/square/okhttp">OkHttp3</a>
    */
-  private ResponseBody copyBody(ResponseBody responseBody, long byteCount) throws IOException {
-    BufferedSource source = responseBody.source();
+  private ResponseBody copyBody(final ResponseBody responseBody, final long byteCount)
+      throws IOException {
+
+    final BufferedSource source = responseBody.source();
     source.request(byteCount);
-    Buffer copy = source.getBuffer().clone();
+    final Buffer copy = source.getBuffer().clone();
 
     // There may be more than byteCount bytes in source.buffer(). If there is, return a prefix.
-    Buffer result;
+    final Buffer result;
     if (copy.size() > byteCount) {
       result = new Buffer();
       result.write(copy, byteCount);

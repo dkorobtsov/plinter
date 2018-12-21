@@ -46,6 +46,7 @@ public enum Protocol {
    *
    * @deprecated OkHttp has dropped support for SPDY. Prefer {@link #HTTP_2}.
    */
+  @Deprecated
   SPDY_3("spdy/3.1"),
 
   /**

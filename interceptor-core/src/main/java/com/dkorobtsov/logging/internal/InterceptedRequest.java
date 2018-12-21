@@ -90,11 +90,11 @@ public final class InterceptedRequest {
 
   public static class Builder {
 
-    URL url;
-    String method;
-    InterceptedHeaders.Builder headers;
-    InterceptedRequestBody body;
-    Object tag;
+    private URL url;
+    private String method;
+    private InterceptedHeaders.Builder headers;
+    private InterceptedRequestBody body;
+    private Object tag;
 
     public Builder() {
       this.method = "GET";
@@ -129,7 +129,7 @@ public final class InterceptedRequest {
         url = "https:" + url.substring(4);
       }
 
-      URL parsed;
+      final URL parsed;
       try {
         parsed = new URL(url);
       } catch (MalformedURLException e) {
@@ -179,7 +179,7 @@ public final class InterceptedRequest {
      * cache-control headers.
      */
     public Builder cacheControl(CacheControl cacheControl) {
-      String value = cacheControl.toString();
+      final String value = cacheControl.toString();
       if (value.isEmpty()) {
         return removeHeader("Cache-Control");
       }

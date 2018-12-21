@@ -27,12 +27,12 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
   private static final Logger logger = Logger.getLogger(OkHttp3ResponseConverter.class.getName());
 
   @Override
-  public InterceptedResponse from(Response response, URL requestUrl, Long ms) {
+  public InterceptedResponse from(final Response response, final URL requestUrl, final Long ms) {
     return ResponseHandler
         .interceptedResponse(responseDetails(response), requestUrl, ms);
   }
 
-  private ResponseDetails responseDetails(Response response) {
+  private ResponseDetails responseDetails(final Response response) {
     if (isNull(response)) {
       throw new IllegalStateException("httpResponse == null");
     } else {
@@ -51,13 +51,13 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
     }
   }
 
-  private InterceptedHeaders interceptedHeaders(Headers headers) {
+  private InterceptedHeaders interceptedHeaders(final Headers headers) {
     final InterceptedHeaders.Builder headersBuilder = new InterceptedHeaders.Builder();
     headers.names().forEach(name -> headersBuilder.add(name, headers.get(name)));
     return headersBuilder.build();
   }
 
-  private InterceptedResponseBody interceptedResponseBody(Response response) {
+  private InterceptedResponseBody interceptedResponseBody(final Response response) {
     ResponseBody responseBodyCopy = null;
     try {
       // Since body is readable only once, here we applying this hack to get a copy.
@@ -84,7 +84,7 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
     }
   }
 
-  private InterceptedMediaType interceptedMediaType(MediaType mediaType) {
+  private InterceptedMediaType interceptedMediaType(final MediaType mediaType) {
     return mediaType == null ? InterceptedMediaType.parse("")
         : InterceptedMediaType.parse(mediaType.toString());
   }

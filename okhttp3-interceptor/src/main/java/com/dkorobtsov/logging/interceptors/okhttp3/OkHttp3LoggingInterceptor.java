@@ -16,10 +16,10 @@ import okhttp3.Response;
 
 public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements Interceptor {
 
-  private RequestConverter<Request> requestConverter;
-  private ResponseConverter<Response> responseConverter;
+  private final RequestConverter<Request> requestConverter;
+  private final ResponseConverter<Response> responseConverter;
 
-  public OkHttp3LoggingInterceptor(LoggerConfig loggerConfig) {
+  public OkHttp3LoggingInterceptor(final LoggerConfig loggerConfig) {
     this.requestConverter = new OkHttp3RequestConverter();
     this.responseConverter = new OkHttp3ResponseConverter();
     this.loggerConfig = loggerConfig;
@@ -27,8 +27,8 @@ public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements In
 
   @Override
   @SuppressWarnings("Duplicates")
-  public Response intercept(Chain chain) throws IOException {
-    Request request = chain.request();
+  public Response intercept(final Chain chain) throws IOException {
+    final Request request = chain.request();
 
     if (skipLogging()) {
       return chain.proceed(request);
@@ -39,7 +39,7 @@ public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements In
     printRequest(loggerConfig, interceptedRequest);
 
     final Response response = chain.proceed(request);
-    InterceptedResponse interceptedResponse = responseConverter
+    final InterceptedResponse interceptedResponse = responseConverter
         .from(response, interceptedRequest.url(),
             response.receivedResponseAtMillis() - response.sentRequestAtMillis());
 

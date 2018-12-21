@@ -56,8 +56,9 @@
         <module name="ThrowsCount"/>
         <module name="VisibilityModifier">
             <property name="protectedAllowed" value="true"/>
+            <property name="allowPublicFinalFields" value="true"/>
+            <property name="allowPublicImmutableFields" value="true"/>
         </module>
-
 
         <!-- Coding (http://checkstyle.sourceforge.net/config_coding.html) -->
         <module name="ArrayTrailingComma"/>
@@ -83,7 +84,9 @@
         <!--<module name="MissingCtor"/>-->
         <module name="MissingSwitchDefault"/>
         <module name="ModifiedControlVariable"/>
-        <module name="MultipleStringLiterals"/>
+        <module name="MultipleStringLiterals">
+            <property name="severity" value="ignore"/>
+        </module>
         <module name="MultipleVariableDeclarations"/>
         <module name="NestedForDepth">
             <property name="max" value="2"/>
@@ -99,10 +102,12 @@
         <module name="OneStatementPerLine"/>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="PackageDeclaration"/>
-        <module name="ParameterAssignment"/>  <!-- more strict version is FinalParameters -->
+        <module name="ParameterAssignment">
+            <property name="severity" value="ignore"/>
+        </module>
         <!--<module name="RequireThis"/>-->
         <module name="ReturnCount">
-            <property name="max" value="2"/>
+            <property name="max" value="6"/>
             <property name="maxForVoid" value="1"/>
         </module>
         <module name="SimplifyBooleanExpression"/>
@@ -148,10 +153,14 @@
 
 
         <!-- Metrics (http://checkstyle.sourceforge.net/config_metrics.html) -->
-        <module name="BooleanExpressionComplexity"/>
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="4"/>
+        </module>
         <module name="ClassDataAbstractionCoupling"/>
         <module name="ClassFanOutComplexity"/>
-        <module name="CyclomaticComplexity"/>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="30"/>
+        </module>
         <module name="JavaNCSS"/>
         <module name="NPathComplexity"/>
 
@@ -169,7 +178,7 @@
         </module>
         <module name="OuterTypeFilename"/>
         <!--<module name="TodoComment"/>-->
-        <module name="TrailingComment"/>
+        <!--<module name="TrailingComment"/>-->
         <!--<module name="UncommentedMain"/>-->
         <module name="UpperEll"/>
 
@@ -216,15 +225,22 @@
 
 
         <!-- Size Violations (http://checkstyle.sourceforge.net/config_sizes.html) -->
-        <module name="AnonInnerLength"/>
-        <module name="ExecutableStatementCount"/>
+        <module name="AnonInnerLength">
+            <property name="max" value="30"/>
+        </module>
+        <module name="ExecutableStatementCount">
+            <property name="max" value="30"/>
+            <property name="tokens" value="CTOR_DEF,METHOD_DEF"/>
+        </module>
         <module name="LineLength">
             <property name="max" value="120"/>
         </module>
         <module name="MethodCount"/>
         <module name="MethodLength"/>
         <module name="OuterTypeNumber"/>
-        <module name="ParameterNumber"/>
+        <module name="ParameterNumber">
+            <property name="max" value="16"/>
+        </module>
 
 
         <!-- Whitespace (http://checkstyle.sourceforge.net/config_whitespace.html) -->

@@ -1,5 +1,6 @@
 package com.dkorobtsov.logging;
 
+@SuppressWarnings("checkstyle:JavadocStyle")
 public enum Level {
   /**
    * No logs.

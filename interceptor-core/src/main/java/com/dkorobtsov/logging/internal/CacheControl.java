@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 public final class CacheControl {
 
+  //CHECKSTYLE:OFF
   private final boolean noCache;
   private final boolean noStore;
   private final int maxAgeSeconds;
@@ -305,4 +306,5 @@ public final class CacheControl {
       return new CacheControl(this);
     }
   }
+  //CHECKSTYLE:ON
 }

@@ -47,6 +47,7 @@ import java.util.Map;
  *
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
+@SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
 public final class InterceptedHeaders {
 
   private final String[] namesAndValues;
@@ -92,8 +93,8 @@ public final class InterceptedHeaders {
 
     // Check for malformed headers.
     for (int i = 0; i < namesAndValues.length; i += 2) {
-      String name = namesAndValues[i];
-      String value = namesAndValues[i + 1];
+      final String name = namesAndValues[i];
+      final String value = namesAndValues[i + 1];
       if (name.length() == 0 || name.indexOf('\0') != -1 || value.indexOf('\0') != -1) {
         throw new IllegalArgumentException("Unexpected header: " + name + ": " + value);
       }
@@ -111,14 +112,14 @@ public final class InterceptedHeaders {
     }
 
     // Make a defensive copy and clean it up.
-    String[] namesAndValues = new String[headers.size() * 2];
+    final String[] namesAndValues = new String[headers.size() * 2];
     int i = 0;
     for (Map.Entry<String, String> header : headers.entrySet()) {
       if (header.getKey() == null || header.getValue() == null) {
         throw new IllegalArgumentException("Headers cannot be null");
       }
-      String name = header.getKey().trim();
-      String value = header.getValue().trim();
+      final String name = header.getKey().trim();
+      final String value = header.getValue().trim();
       if (name.length() == 0 || name.indexOf('\0') != -1 || value.indexOf('\0') != -1) {
         throw new IllegalArgumentException("Unexpected header: " + name + ": " + value);
       }
@@ -177,7 +178,7 @@ public final class InterceptedHeaders {
   }
 
   public Builder newBuilder() {
-    Builder result = new Builder();
+    final Builder result = new Builder();
     Collections.addAll(result.namesAndValues, namesAndValues);
     return result;
   }
@@ -221,7 +222,7 @@ public final class InterceptedHeaders {
 
   @Override
   public String toString() {
-    StringBuilder result = new StringBuilder();
+    final StringBuilder result = new StringBuilder();
     for (int i = 0, size = size(); i < size; i++) {
       result.append(name(i)).append(": ").append(value(i)).append("\n");
     }
@@ -280,7 +281,7 @@ public final class InterceptedHeaders {
         throw new IllegalArgumentException("name is empty");
       }
       for (int i = 0, length = name.length(); i < length; i++) {
-        char c = name.charAt(i);
+        final char c = name.charAt(i);
         if (c <= '\u0020' || c >= '\u007f') {
           throw new IllegalArgumentException(Util.format(
               "Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
@@ -290,7 +291,7 @@ public final class InterceptedHeaders {
         throw new NullPointerException("value for name " + name + " == null");
       }
       for (int i = 0, length = value.length(); i < length; i++) {
-        char c = value.charAt(i);
+        final char c = value.charAt(i);
         if ((c <= '\u001f' && c != '\t') || c >= '\u007f') {
           throw new IllegalArgumentException(Util.format(
               "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));

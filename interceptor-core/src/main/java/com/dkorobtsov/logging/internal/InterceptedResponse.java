@@ -34,6 +34,7 @@ public final class InterceptedResponse {
     return new ResponseDetailsBuilder();
   }
 
+  @SuppressWarnings("PMD")
   public static class ResponseDetailsBuilder {
 
     private List<String> segmentList;
@@ -46,9 +47,6 @@ public final class InterceptedResponse {
     private byte[] originalBody;
     private boolean hasPrintableBody;
     private long chainMs;
-
-    ResponseDetailsBuilder() {
-    }
 
     public ResponseDetailsBuilder segmentList(List<String> segmentList) {
       this.segmentList = segmentList;

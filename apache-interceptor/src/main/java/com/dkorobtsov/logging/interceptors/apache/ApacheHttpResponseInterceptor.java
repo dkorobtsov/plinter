@@ -19,7 +19,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
 
   private static final Logger logger = Logger
       .getLogger(ApacheHttpResponseInterceptor.class.getName());
-  private ResponseConverter<HttpResponse> responseConverter;
+  private final ResponseConverter<HttpResponse> responseConverter;
 
   public ApacheHttpResponseInterceptor(LoggerConfig loggerConfig) {
     this.responseConverter = new ApacheResponseConverter();
@@ -27,7 +27,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
   }
 
   @Override
-  public void process(HttpResponse response, HttpContext context) {
+  public void process(final HttpResponse response, final HttpContext context) {
     if (!skipLogging()) {
       final InterceptedResponse interceptedResponse = responseConverter.from(
           response, urlFrom(context), null);
@@ -36,7 +36,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
     }
   }
 
-  URL urlFrom(HttpContext context) {
+  URL urlFrom(final HttpContext context) {
     final HttpRequestWrapper request
         = (HttpRequestWrapper) context.getAttribute("http.request");
 

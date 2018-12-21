@@ -48,9 +48,10 @@ final class HttpHeaders {
    * Returns the next non-whitespace character in {@code input} that is white space. Result is
    * undefined if input contains newline characters.
    */
+  @SuppressWarnings("checkstyle:ParameterAssignment")
   static int skipWhitespace(String input, int pos) {
     for (; pos < input.length(); pos++) {
-      char c = input.charAt(pos);
+      final char c = input.charAt(pos);
       if (c != ' ' && c != '\t') {
         break;
       }
@@ -64,7 +65,7 @@ final class HttpHeaders {
    */
   static int parseSeconds(String value, int defaultValue) {
     try {
-      long seconds = Long.parseLong(value);
+      final long seconds = Long.parseLong(value);
       if (seconds > Integer.MAX_VALUE) {
         return Integer.MAX_VALUE;
       } else if (seconds < 0) {

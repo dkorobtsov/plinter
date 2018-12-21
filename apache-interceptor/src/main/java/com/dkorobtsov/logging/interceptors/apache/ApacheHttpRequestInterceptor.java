@@ -13,15 +13,15 @@ import org.apache.http.protocol.HttpContext;
 public class ApacheHttpRequestInterceptor extends AbstractInterceptor
     implements HttpRequestInterceptor {
 
-  private RequestConverter<HttpRequest> requestConverter;
+  private final RequestConverter<HttpRequest> requestConverter;
 
-  public ApacheHttpRequestInterceptor(LoggerConfig loggerConfig) {
+  public ApacheHttpRequestInterceptor(final LoggerConfig loggerConfig) {
     this.requestConverter = new ApacheRequestConverter();
     this.loggerConfig = loggerConfig;
   }
 
   @Override
-  public void process(HttpRequest request, HttpContext context) {
+  public void process(final HttpRequest request, final HttpContext context) {
     if (!skipLogging()) {
       final InterceptedRequest interceptedRequest = requestConverter.from(request);
 

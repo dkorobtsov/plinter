@@ -19,7 +19,7 @@ import okio.Buffer;
 class OkHttpRequestConverter implements RequestConverter<Request> {
 
   @Override
-  public InterceptedRequest from(com.squareup.okhttp.Request okHttpRequest) {
+  public InterceptedRequest from(final Request okHttpRequest) {
     final InterceptedRequest.Builder builder = new InterceptedRequest.Builder();
     builder.url(okHttpRequest.url());
     final Map<String, List<String>> headersMap = okHttpRequest.headers().toMultimap();
@@ -38,7 +38,7 @@ class OkHttpRequestConverter implements RequestConverter<Request> {
     return builder.build();
   }
 
-  private InterceptedRequestBody interceptedRequestBody(Request request) {
+  private InterceptedRequestBody interceptedRequestBody(final Request request) {
     final InterceptedMediaType contentType = request.body() == null
         ? InterceptedMediaType.parse("")
         : interceptedMediaType(request.body().contentType());
@@ -59,12 +59,12 @@ class OkHttpRequestConverter implements RequestConverter<Request> {
     }
   }
 
-  private InterceptedMediaType interceptedMediaType(MediaType mediaType) {
+  private InterceptedMediaType interceptedMediaType(final MediaType mediaType) {
     return mediaType == null ? InterceptedMediaType.parse("")
         : InterceptedMediaType.parse(mediaType.toString());
   }
 
-  private CacheControl cacheControl(com.squareup.okhttp.CacheControl cacheControl) {
+  private CacheControl cacheControl(final com.squareup.okhttp.CacheControl cacheControl) {
     return new CacheControl.Builder()
         .maxAge(cacheControl.maxAgeSeconds() == -1 ? 0 : cacheControl.maxAgeSeconds(),
             TimeUnit.SECONDS)

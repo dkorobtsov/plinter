@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
+@SuppressWarnings("checkstyle:MultipleStringLiterals")
 public enum LoggingFormat {
 
   JUL_FULL(new SimpleFormatter() {

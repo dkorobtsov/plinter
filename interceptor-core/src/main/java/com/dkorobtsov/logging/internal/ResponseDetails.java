@@ -29,15 +29,15 @@ public class ResponseDetails {
 
   @Override
   public String toString() {
-    return "ResponseDetails{" +
-        "responseBody=" + responseBody +
-        ", headers=" + headers +
-        ", code=" + code +
-        ", isSuccessful=" + isSuccessful +
-        ", message='" + message + '\'' +
-        ", mediaType=" + mediaType +
-        ", protocol=" + protocol +
-        '}';
+    return "ResponseDetails{"
+        + "responseBody=" + responseBody
+        + ", headers=" + headers
+        + ", code=" + code
+        + ", isSuccessful=" + isSuccessful
+        + ", message='" + message + '\''
+        + ", mediaType=" + mediaType
+        + ", protocol=" + protocol
+        + '}';
   }
 
   public static class ResponseDetailsBuilder {
@@ -49,9 +49,6 @@ public class ResponseDetails {
     private String message;
     private InterceptedMediaType mediaType;
     private Protocol protocol;
-
-    ResponseDetailsBuilder() {
-    }
 
     public ResponseDetails.ResponseDetailsBuilder responseBody(
         InterceptedResponseBody responseBody) {
@@ -94,6 +91,7 @@ public class ResponseDetails {
           protocol);
     }
 
+    @Override
     public String toString() {
       return "ResponseDetails.ResponseDetailsBuilder(responseBody=" + this.responseBody
           + ", headers=" + this.headers

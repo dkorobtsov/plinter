@@ -46,7 +46,7 @@ public abstract class InterceptedRequestBody {
         contentType = InterceptedMediaType.parse(contentType + "; charset=utf-8");
       }
     }
-    byte[] bytes = content.getBytes(charset);
+    final byte[] bytes = content.getBytes(charset);
     return create(contentType, bytes);
   }
 

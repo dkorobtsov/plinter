@@ -182,13 +182,13 @@ public abstract class InterceptedResponseBody implements Closeable {
    * possibility for your response.
    */
   public final byte[] bytes() throws IOException {
-    long contentLength = contentLength();
+    final long contentLength = contentLength();
     if (contentLength > Integer.MAX_VALUE) {
       throw new IOException("Cannot buffer entire body for content length: " + contentLength);
     }
 
-    BufferedSource source = source();
-    byte[] bytes;
+    final BufferedSource source = source();
+    final byte[] bytes;
     try {
       bytes = source.readByteArray();
     } finally {
@@ -215,9 +215,9 @@ public abstract class InterceptedResponseBody implements Closeable {
    * possibility for your response.
    */
   public final String string() throws IOException {
-    BufferedSource source = source();
+    final BufferedSource source = source();
     try {
-      Charset charset = Util.bomAwareCharset(source, charset());
+      final Charset charset = Util.bomAwareCharset(source, charset());
       return source.readString(charset);
     } finally {
       Util.closeQuietly(source);
@@ -225,7 +225,7 @@ public abstract class InterceptedResponseBody implements Closeable {
   }
 
   private Charset charset() {
-    InterceptedMediaType contentType = contentType();
+    final InterceptedMediaType contentType = contentType();
     return contentType != null ? contentType.charset(UTF_8) : UTF_8;
   }
 
