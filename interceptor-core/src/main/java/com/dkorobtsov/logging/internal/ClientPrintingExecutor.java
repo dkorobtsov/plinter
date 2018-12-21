@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ClientPrintingExecutor {
+public final class ClientPrintingExecutor {
 
   private static final Logger logger = Logger.getLogger(ClientPrintingExecutor.class.getName());
 

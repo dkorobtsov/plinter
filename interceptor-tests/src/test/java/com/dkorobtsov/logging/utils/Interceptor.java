@@ -5,7 +5,7 @@ public enum Interceptor {
   OKHTTP3("okhttp3"),
   APACHE_HTTPCLIENT_REQUEST("apacheHttpclientRequest");
 
-  private String name;
+  public final String name;
 
   Interceptor(String name) {
     this.name = name;

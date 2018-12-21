@@ -57,7 +57,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
         final HttpEntity entity = ((HttpEntityEnclosingRequestBase) original).getEntity();
         if (nonNull(entity)) {
 
-          String requestBodyString;
+          final String requestBodyString;
           try {
             requestBodyString = readApacheHttpEntity(entity);
           } catch (IOException e) {

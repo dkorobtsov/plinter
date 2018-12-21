@@ -12,7 +12,7 @@ public final class TestUtil {
   public static final String PRINTING_THREAD_PREFIX = "Printer";
 
   public static void assertEntryStartsWithParsableDate(String rawEntry) {
-    String[] entryElements = TestUtil
+    final String[] entryElements = TestUtil
         .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
 
     try {
@@ -33,7 +33,7 @@ public final class TestUtil {
 
   public static void assertLogEntryElementsCount(String entrySeparatedByBrackets,
       int expectedCount) {
-    String[] entryElements = TestUtil
+    final String[] entryElements = TestUtil
         .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
 
     Assert.assertEquals(

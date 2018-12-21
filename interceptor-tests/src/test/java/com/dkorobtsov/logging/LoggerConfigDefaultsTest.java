@@ -64,7 +64,7 @@ public class LoggerConfigDefaultsTest {
   public void loggerConfigDefaultConfiguration_formatCanBeChanged() {
     final LoggerConfigBuilder builder = LoggerConfig.builder();
     final LoggingFormat format = LoggingFormat.JUL_DATE_LEVEL_MESSAGE;
-    LoggerConfig loggerConfig = builder.format(format).build();
+    final LoggerConfig loggerConfig = builder.format(format).build();
 
     assertEquals("Log Formatter", format, loggerConfig.format);
   }

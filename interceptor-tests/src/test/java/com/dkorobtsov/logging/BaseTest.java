@@ -124,7 +124,7 @@ public abstract class BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
 
     interceptWithConfig(interceptor, loggerConfig, body, mediaType);
 
@@ -156,7 +156,7 @@ public abstract class BaseTest {
         .setBody(body));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
 
     interceptWithConfig(interceptor, loggerConfig);
 
@@ -170,7 +170,7 @@ public abstract class BaseTest {
    * @param withExecutor If specified, intercepted traffic will be printed in separate thread.
    */
   LoggerConfig defaultLoggerConfig(TestLogger testLogger, boolean withExecutor) {
-    LoggerConfigBuilder builder = LoggerConfig.builder()
+    final LoggerConfigBuilder builder = LoggerConfig.builder()
         .withThreadInfo(true)
         .logger(testLogger);
 
@@ -252,8 +252,7 @@ public abstract class BaseTest {
     }
   }
 
-  Response executeOkHttp3Request(
-      OkHttpClient client, Request request) {
+  Response executeOkHttp3Request(OkHttpClient client, Request request) {
     try {
       return client.newCall(request).execute();
     } catch (IOException e) {
@@ -262,8 +261,7 @@ public abstract class BaseTest {
     return null;
   }
 
-  com.squareup.okhttp.Response executeOkHttpRequest(
-      com.squareup.okhttp.OkHttpClient client,
+  com.squareup.okhttp.Response executeOkHttpRequest(com.squareup.okhttp.OkHttpClient client,
       com.squareup.okhttp.Request request) {
     try {
       return client.newCall(request).execute();
@@ -273,8 +271,7 @@ public abstract class BaseTest {
     return null;
   }
 
-  HttpResponse executeApacheRequest(HttpClient client,
-      HttpUriRequest request) {
+  HttpResponse executeApacheRequest(HttpClient client, HttpUriRequest request) {
     try {
       return client.execute(request);
     } catch (IOException e) {
@@ -314,6 +311,7 @@ public abstract class BaseTest {
    */
   com.squareup.okhttp.OkHttpClient defaultOkHttpClient(
       com.squareup.okhttp.Interceptor interceptor) {
+
     final com.squareup.okhttp.OkHttpClient okHttpClient = new com.squareup.okhttp.OkHttpClient()
         .setConnectionPool(
             new com.squareup.okhttp.ConnectionPool(MAX_IDLE_CONNECTIONS,
@@ -333,7 +331,7 @@ public abstract class BaseTest {
    * be empty.
    */
   Request okHttp3Request(String content, String mediaType) {
-    Request.Builder requestBuilder = new Request.Builder()
+    final Request.Builder requestBuilder = new Request.Builder()
         .url(String.valueOf(server.url(MOCK_SERVER_PATH)));
 
     if (nonNull(content) && nonNull(mediaType)) {
@@ -355,10 +353,9 @@ public abstract class BaseTest {
    */
   private HttpUriRequest apacheHttpRequest(String content, String mediaType) {
     final HttpUriRequest request;
-
     if (nonNull(content) && nonNull(mediaType)) {
       request = new HttpPut(server.url(MOCK_SERVER_PATH).uri());
-      ContentType contentType = ContentType.create(mediaType);
+      final ContentType contentType = ContentType.create(mediaType);
 
       final HttpEntity entity = new StringEntity(content, contentType);
 
@@ -380,7 +377,7 @@ public abstract class BaseTest {
    * be empty.
    */
   private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType) {
-    com.squareup.okhttp.Request.Builder requestBuilder
+    final com.squareup.okhttp.Request.Builder requestBuilder
         = new com.squareup.okhttp.Request.Builder()
         .url(String.valueOf(server.url(MOCK_SERVER_PATH)));
 

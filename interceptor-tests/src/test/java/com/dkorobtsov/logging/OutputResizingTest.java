@@ -21,7 +21,7 @@ public class OutputResizingTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void printerOutputCanBeResized(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -51,7 +51,7 @@ public class OutputResizingTest extends BaseTest {
       "10", "500"
   })
   public void validOutputLengthHandling(String maxLineLength) {
-    OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
+    final OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
         LoggerConfig.builder()
             .maxLineLength(Integer.parseInt(maxLineLength))
             .build());

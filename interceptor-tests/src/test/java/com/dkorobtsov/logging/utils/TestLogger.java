@@ -39,7 +39,7 @@ public class TestLogger implements LogWriter {
     Arrays.stream(testLogger.getHandlers()).forEach(testLogger::removeHandler);
 
     // Configuring output to console
-    ConsoleHandler consoleHandler = new ConsoleHandler();
+    final ConsoleHandler consoleHandler = new ConsoleHandler();
     consoleHandler.setFormatter(logFormatter.formatter);
     testLogger.addHandler(consoleHandler);
 
@@ -99,7 +99,7 @@ public class TestLogger implements LogWriter {
       // tests with manually added executor will eventually fail.
       // So idea is simple - we won't flush buffer until there is at least one
       // active printing thread.
-      Optional<Thread> printerThread = Thread.getAllStackTraces().keySet()
+      final Optional<Thread> printerThread = Thread.getAllStackTraces().keySet()
           .stream()
           .filter(it -> it.getName().startsWith(PRINTING_THREAD_PREFIX))
           .filter(it -> it.getState().equals(RUNNABLE))

@@ -16,14 +16,14 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 
-class ApacheEntityUtil {
+final class ApacheEntityUtil {
 
   private ApacheEntityUtil() {
   }
 
   static String readApacheHttpEntity(HttpEntity entity) throws IOException {
     if (nonNull(entity)) {
-      StringBuilder textBuilder = new StringBuilder();
+      final StringBuilder textBuilder = new StringBuilder();
       try (Reader reader = new BufferedReader(
           new InputStreamReader(
               entity.getContent(),

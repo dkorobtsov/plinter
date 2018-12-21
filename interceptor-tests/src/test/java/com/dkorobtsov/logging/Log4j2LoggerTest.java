@@ -35,8 +35,8 @@ import org.junit.runner.RunWith;
 public class Log4j2LoggerTest extends BaseTest {
 
   private static final String ROOT_LOG_PATTERN = "%d{HH:mm:ss.SSS} [%t] %-5level %c{0}:%L - %msg%n";
-  private static final StringWriter logWriter = new StringWriter();
-  private final Logger log = LogManager.getLogger(Log4j2LoggerTest.class);
+  private static final StringWriter LOG_WRITER = new StringWriter();
+  private static final Logger log = LogManager.getLogger(Log4j2LoggerTest.class);
 
   @BeforeClass
   public static void configureLogger() throws IOException {
@@ -47,8 +47,8 @@ public class Log4j2LoggerTest extends BaseTest {
     ConfigurationBuilder<BuiltConfiguration> builder
         = ConfigurationBuilderFactory.newConfigurationBuilder();
 
-    AppenderComponentBuilder console = builder.newAppender("stdout", "Console");
-    LayoutComponentBuilder layout = builder.newLayout("PatternLayout");
+    final AppenderComponentBuilder console = builder.newAppender("stdout", "Console");
+    final LayoutComponentBuilder layout = builder.newLayout("PatternLayout");
     layout.addAttribute("pattern", ROOT_LOG_PATTERN);
     console.add(layout);
     builder.add(console);
@@ -65,7 +65,7 @@ public class Log4j2LoggerTest extends BaseTest {
     final LoggerContext context = LoggerContext.getContext(false);
     final Configuration config = context.getConfiguration();
 
-    PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
+    final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
 
     final Appender appender = WriterAppender
         .createAppender(layout, null, writer, writerName, false, true);
@@ -90,7 +90,7 @@ public class Log4j2LoggerTest extends BaseTest {
     final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
 
     log.debug("Configuring custom Log4j2 logger for intercepted OkHttp traffic.");
-    LogWriter log4j2Writer = new LogWriter() {
+    final LogWriter log4j2Writer = new LogWriter() {
 
       final Logger log = LogManager.getLogger("OkHttpLogger");
 
@@ -98,8 +98,8 @@ public class Log4j2LoggerTest extends BaseTest {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
 
-        LoggerConfig loggerConfig = new LoggerConfig("OkHttpLogger", Level.TRACE, false);
-        PatternLayout layout = PatternLayout
+        final LoggerConfig loggerConfig = new LoggerConfig("OkHttpLogger", Level.TRACE, false);
+        final PatternLayout layout = PatternLayout
             .newBuilder()
             .withPattern(OK_HTTP_LOG_PATTERN)
             .build();
@@ -124,7 +124,7 @@ public class Log4j2LoggerTest extends BaseTest {
     };
 
     log.debug("Adding test double appender for output validation.");
-    addAppender(logWriter, "TestWriter", OK_HTTP_LOG_PATTERN);
+    addAppender(LOG_WRITER, "TestWriter", OK_HTTP_LOG_PATTERN);
 
     interceptWithConfig(interceptor,
         com.dkorobtsov.logging.LoggerConfig.builder()
@@ -132,7 +132,7 @@ public class Log4j2LoggerTest extends BaseTest {
             .build());
 
     log.debug("Retrieving logger output for validation.");
-    final String logOutput = logWriter.toString();
+    final String logOutput = LOG_WRITER.toString();
 
     assertFalse("Severity tag should not be present in custom OkHTTP logger output.",
         logOutput.contains("DEBUG"));

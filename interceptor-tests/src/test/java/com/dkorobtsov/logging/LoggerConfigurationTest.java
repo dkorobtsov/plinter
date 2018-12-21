@@ -222,7 +222,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void threadInfoShouldNotBeLoggedByDefault(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)

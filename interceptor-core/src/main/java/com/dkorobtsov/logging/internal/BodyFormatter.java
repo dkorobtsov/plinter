@@ -11,7 +11,7 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
-class BodyFormatter {
+final class BodyFormatter {
 
   private static final int JSON_INDENT = 3;
 
@@ -19,7 +19,7 @@ class BodyFormatter {
   }
 
   static String formattedBody(final byte[] msg) {
-    String bodyAsString = new String(msg);
+    final String bodyAsString = new String(msg);
     String message;
     try {
       if (bodyAsString.trim().startsWith("{")) {
