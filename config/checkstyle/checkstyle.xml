@@ -22,6 +22,7 @@
 
     <module name="TreeWalker">
         <!-- http://checkstyle.sourceforge.net/config_filters.html#SuppressionCommentFilter -->
+        <module name="SuppressWarningsHolder" />
         <module name="SuppressionCommentFilter"/>
 
         <!-- Annotations (http://checkstyle.sourceforge.net/config_annotation.html) -->
@@ -33,7 +34,6 @@
         <module name="PackageAnnotation"/>
         <module name="SuppressWarningsHolder"/>
         <module name="SuppressWarnings"/>
-
 
 
         <!-- Block Checks (http://checkstyle.sourceforge.net/config_blocks.html) -->
@@ -207,7 +207,10 @@
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
-        <module name="MethodName"/>
+        <module name="MethodName">
+            <!-- /to allow underscored method names in tests -->
+            <property name="format" value="^[a-z](_?[a-zA-Z0-9]+)*$"/>
+        </module>
         <module name="MethodTypeParameterName">
             <property name="format" value="^[A-Z]*$"/>
         </module>
@@ -226,7 +229,7 @@
 
         <!-- Size Violations (http://checkstyle.sourceforge.net/config_sizes.html) -->
         <module name="AnonInnerLength">
-            <property name="max" value="30"/>
+            <property name="max" value="40"/>
         </module>
         <module name="ExecutableStatementCount">
             <property name="max" value="30"/>

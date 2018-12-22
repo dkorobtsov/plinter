@@ -5,6 +5,10 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Java Utility Logger implementation - this logger is used by default by all interceptors in case
+ * own implementation is not provided.
+ */
 public class DefaultLogger implements LogWriter {
 
   private final Logger logger = Logger.getLogger(DefaultLogger.class.getName());

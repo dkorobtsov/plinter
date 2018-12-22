@@ -4,7 +4,15 @@ import java.util.Date;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
-@SuppressWarnings("checkstyle:MultipleStringLiterals")
+/**
+ * Collection of Logger format configurations intended to be used with DefaultLogger.
+ *
+ * Default format: {@link LoggingFormat#JUL_MESSAGE_ONLY}
+ *
+ * NB. Note that formatting options provided in this class will not work in case interceptor is
+ * configured to use custom {@link LogWriter} implementation.
+ */
+@SuppressWarnings({"MultipleStringLiterals", "AvoidSynchronizedAtMethodLevel", "PMD"})
 public enum LoggingFormat {
 
   JUL_FULL(new SimpleFormatter() {
@@ -76,3 +84,5 @@ public enum LoggingFormat {
   }
 
 }
+
+

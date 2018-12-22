@@ -38,6 +38,11 @@ import java.util.List;
 import java.util.Objects;
 import okio.Buffer;
 
+
+/**
+ * Class responsible for formatting intercepted events and logging them using provided {@link
+ * com.dkorobtsov.logging.LogWriter} implementation.
+ */
 @SuppressWarnings("PMD")
 final class Printer {
 
@@ -219,7 +224,6 @@ final class Printer {
         + printHeaderIfLoggable(interceptedResponse.header, isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
   }
-
 
   private static String slashSegments(List<String> segments) {
     if (segments.isEmpty()) {

@@ -26,6 +26,7 @@ package com.dkorobtsov.logging.internal;
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
+@SuppressWarnings("PMD")
 final class HttpHeaders {
 
   private HttpHeaders() {
@@ -48,7 +49,7 @@ final class HttpHeaders {
    * Returns the next non-whitespace character in {@code input} that is white space. Result is
    * undefined if input contains newline characters.
    */
-  @SuppressWarnings("checkstyle:ParameterAssignment")
+  @SuppressWarnings("ParameterAssignment")
   static int skipWhitespace(String input, int pos) {
     for (; pos < input.length(); pos++) {
       final char c = input.charAt(pos);

@@ -28,8 +28,8 @@ import java.util.Map;
  * and {@code Response} for interpreted headers. This class maintains the order of the header fields
  * within the HTTP message.
  *
- * This class tracks header values line-by-line. A field with multiple comma- separated values
- * on the same line will be treated as a field with a single value by this class. It is the caller's
+ * This class tracks header values line-by-line. A field with multiple comma- separated values on
+ * the same line will be treated as a field with a single value by this class. It is the caller's
  * responsibility to detect and split on commas if their field permits multiple values. This
  * simplifies use of single-valued fields whose values routinely contain commas, such as cookies or
  * dates.
@@ -47,21 +47,20 @@ import java.util.Map;
  *
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
-@SuppressWarnings("checkstyle:OverloadMethodsDeclarationOrder")
+@SuppressWarnings({"OverloadMethodsDeclarationOrder", "PMD"})
 public final class InterceptedHeaders {
 
   private final String[] namesAndValues;
 
   InterceptedHeaders(Builder builder) {
-    this.namesAndValues = builder.namesAndValues
-        .toArray(new String[builder.namesAndValues.size()]);
+    this.namesAndValues = builder.namesAndValues.toArray(new String[0]);
   }
 
-  private InterceptedHeaders(String[] namesAndValues) {
+  private InterceptedHeaders(String... namesAndValues) {
     this.namesAndValues = namesAndValues;
   }
 
-  private static String get(String[] namesAndValues, String name) {
+  private static String get(String name, String... namesAndValues) {
     for (int i = namesAndValues.length - 2; i >= 0; i -= 2) {
       if (name.equalsIgnoreCase(namesAndValues[i])) {
         return namesAndValues[i + 1];
@@ -135,7 +134,7 @@ public final class InterceptedHeaders {
    * Returns the last value corresponding to the specified field, or null.
    */
   public String get(String name) {
-    return get(namesAndValues, name);
+    return get(name, namesAndValues);
   }
 
   /**
@@ -229,6 +228,7 @@ public final class InterceptedHeaders {
     return result.toString();
   }
 
+  @SuppressWarnings("JavadocType")
   public static final class Builder {
 
     final List<String> namesAndValues = new ArrayList<>(20);

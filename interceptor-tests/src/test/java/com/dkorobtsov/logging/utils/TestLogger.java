@@ -106,7 +106,7 @@ public class TestLogger implements LogWriter {
           .findFirst();
 
       // obviously we don't want to fall into to endless loop
-      int maxThreadSleep = 30;
+      final int maxThreadSleep = 30;
       int i = 0;
       while (printerThread.isPresent()
           && printerThread.get().getState().equals(RUNNABLE) && i < maxThreadSleep) {

@@ -104,6 +104,7 @@ import okio.BufferedSource;
  * {@link #bytes()} or {@link #string()}. Or stream the response with either {@link #source()},
  * {@link #byteStream()}, or charStream().
  */
+@SuppressWarnings("PMD")
 public abstract class InterceptedResponseBody implements Closeable {
 
   /**

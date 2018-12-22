@@ -34,71 +34,32 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class Log4j2LoggerTest extends BaseTest {
 
-  private static final String ROOT_LOG_PATTERN = "%d{HH:mm:ss.SSS} [%t] %-5level %c{0}:%L - %msg%n";
-  private static final StringWriter LOG_WRITER = new StringWriter();
   private static final Logger log = LogManager.getLogger(Log4j2LoggerTest.class);
+  private static final StringWriter LOG_WRITER = new StringWriter();
+  private static final String ROOT_LOG_PATTERN = "%d{HH:mm:ss.SSS} [%t] %-5level %c{0}:%L - %msg%n";
+  private static final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
+  private static final String HTTP_LOGGER = "OkHttpLogger";
 
   @BeforeClass
   public static void configureLogger() throws IOException {
     initializeBaseLog4j2Configuration();
   }
 
-  private static void initializeBaseLog4j2Configuration() throws IOException {
-    ConfigurationBuilder<BuiltConfiguration> builder
-        = ConfigurationBuilderFactory.newConfigurationBuilder();
-
-    final AppenderComponentBuilder console = builder.newAppender("stdout", "Console");
-    final LayoutComponentBuilder layout = builder.newLayout("PatternLayout");
-    layout.addAttribute("pattern", ROOT_LOG_PATTERN);
-    console.add(layout);
-    builder.add(console);
-
-    RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.DEBUG);
-    rootLogger.add(builder.newAppenderRef("stdout"));
-    builder.add(rootLogger);
-
-    builder.writeXmlConfiguration(System.out);
-    Configurator.initialize(builder.build());
-  }
-
-  private static void addAppender(final Writer writer, final String writerName, String pattern) {
-    final LoggerContext context = LoggerContext.getContext(false);
-    final Configuration config = context.getConfiguration();
-
-    final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
-
-    final Appender appender = WriterAppender
-        .createAppender(layout, null, writer, writerName, false, true);
-    appender.start();
-    config.addAppender(appender);
-    updateLoggers(appender, config);
-  }
-
-  private static void updateLoggers(final Appender appender, final Configuration config) {
-    final Level level = null;
-    final Filter filter = null;
-    for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
-      loggerConfig.addAppender(appender, level, filter);
-    }
-    config.getRootLogger().addAppender(appender, level, filter);
-  }
-
   @Test
   @Parameters(method = "interceptors")
   public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
 
     log.debug("Configuring custom Log4j2 logger for intercepted OkHttp traffic.");
     final LogWriter log4j2Writer = new LogWriter() {
 
-      final Logger log = LogManager.getLogger("OkHttpLogger");
+      final Logger log = LogManager.getLogger(HTTP_LOGGER);
 
       {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
 
-        final LoggerConfig loggerConfig = new LoggerConfig("OkHttpLogger", Level.TRACE, false);
+        final LoggerConfig loggerConfig = new LoggerConfig(HTTP_LOGGER, Level.TRACE, false);
         final PatternLayout layout = PatternLayout
             .newBuilder()
             .withPattern(OK_HTTP_LOG_PATTERN)
@@ -113,7 +74,7 @@ public class Log4j2LoggerTest extends BaseTest {
         appender.start();
 
         loggerConfig.addAppender(appender, Level.TRACE, null);
-        config.addLogger("OkHttpLogger", loggerConfig);
+        config.addLogger(HTTP_LOGGER, loggerConfig);
         ctx.updateLoggers();
       }
 
@@ -146,6 +107,46 @@ public class Log4j2LoggerTest extends BaseTest {
     assertTrue("Response section should be present in logger output.",
         logOutput.contains("Response"));
 
+  }
+
+  private static void initializeBaseLog4j2Configuration() throws IOException {
+    final ConfigurationBuilder<BuiltConfiguration> builder
+        = ConfigurationBuilderFactory.newConfigurationBuilder();
+
+    final AppenderComponentBuilder console = builder.newAppender("stdout", "Console");
+    final LayoutComponentBuilder layout = builder.newLayout("PatternLayout");
+    layout.addAttribute("pattern", ROOT_LOG_PATTERN);
+    console.add(layout);
+    builder.add(console);
+
+    final RootLoggerComponentBuilder rootLogger = builder.newRootLogger(Level.DEBUG);
+    rootLogger.add(builder.newAppenderRef("stdout"));
+    builder.add(rootLogger);
+
+    builder.writeXmlConfiguration(System.out);
+    Configurator.initialize(builder.build());
+  }
+
+  private static void addAppender(final Writer writer, final String writerName, String pattern) {
+    final LoggerContext context = LoggerContext.getContext(false);
+    final Configuration config = context.getConfiguration();
+
+    final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
+
+    final Appender appender = WriterAppender
+        .createAppender(layout, null, writer, writerName, false, true);
+    appender.start();
+    config.addAppender(appender);
+    updateLoggers(appender, config);
+  }
+
+  private static void updateLoggers(final Appender appender, final Configuration config) {
+    final Level level = null;
+    final Filter filter = null;
+    for (final LoggerConfig loggerConfig : config.getLoggers().values()) {
+      loggerConfig.addAppender(appender, level, filter);
+    }
+    config.getRootLogger().addAppender(appender, level, filter);
   }
 
 }

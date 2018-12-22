@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class BodyWithXmlPrintingTest extends BaseTest {
 
   private static final String XML_BODY =

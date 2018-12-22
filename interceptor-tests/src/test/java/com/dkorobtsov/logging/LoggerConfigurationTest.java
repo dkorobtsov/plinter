@@ -11,17 +11,22 @@ import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.util.concurrent.Executors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)
 public class LoggerConfigurationTest extends BaseTest {
 
+  private static final Logger logger = LogManager
+      .getLogger(LoggerConfigurationTest.class.getName());
+
   @Test
   @Parameters(method = "interceptors")
   public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -36,7 +41,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -53,7 +58,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -68,7 +73,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -83,13 +88,13 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void defaultLoggerFormatCanBeModified(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .build());
 
-    String logEntry = testLogger.lastFormattedEvent(true);
+    final String logEntry = testLogger.lastFormattedEvent(true);
 
     TestUtil.assertLogEntryElementsCount(logEntry, 3);
     TestUtil.assertEntryStartsWithParsableDate(logEntry);
@@ -99,7 +104,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -114,7 +119,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -129,7 +134,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -144,7 +149,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void allDetailsShouldBePrintedIfLevelSetToBasic(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -177,7 +182,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void userShouldBeAbleToSupplyExecutor(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -192,7 +197,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void threadInfoShouldNotBeLoggedIfDisabled(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -207,7 +212,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void threadInfoShouldBeLoggedIfEnabled(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -242,7 +247,7 @@ public class LoggerConfigurationTest extends BaseTest {
           .build());
     } catch (Exception e) {
       fail("User should be able to use default logger.");
-      e.printStackTrace();
+      logger.error(e);
     }
   }
 

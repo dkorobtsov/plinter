@@ -55,14 +55,12 @@ public final class InterceptedMediaType {
    * Returns a media type for {@code string}, or null if {@code string} is not a well-formed media
    * type.
    */
-  @SuppressWarnings("checkstyle:MultipleStringLiterals")
+  @SuppressWarnings({"MultipleStringLiterals","PMD.SimplifyStartsWith"})
   public static InterceptedMediaType parse(String string) {
     final Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
     if (!typeSubtype.lookingAt()) {
       return null;
     }
-
-    final String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
 
     String charset = null;
     final Matcher parameter = PARAMETER.matcher(string);
@@ -94,6 +92,7 @@ public final class InterceptedMediaType {
       charset = charsetParameter;
     }
 
+    final String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
     return new InterceptedMediaType(string, subtype, charset);
   }
 

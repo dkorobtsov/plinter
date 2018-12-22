@@ -11,6 +11,7 @@ import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import com.dkorobtsov.logging.utils.Interceptor;
+import com.dkorobtsov.logging.utils.SuppressFBWarnings;
 import com.dkorobtsov.logging.utils.TestLogger;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -47,6 +48,7 @@ import org.junit.Rule;
  * Starting point for all tests. Contains all general methods for use in child tests. Check specific
  * method javadocs for details.
  */
+@SuppressWarnings({"ClassDataAbstractionCoupling", "ClassFanOutComplexity", "PMD.ExcessiveImports"})
 public abstract class BaseTest {
 
   private static final org.apache.logging.log4j.Logger logger
@@ -62,9 +64,10 @@ public abstract class BaseTest {
   public MockWebServer server = new MockWebServer();
 
   @Before
+  @SuppressFBWarnings("LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE")
   public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
     LogManager.getLogManager().reset();
-    Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+    final Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     globalLogger.setLevel(Level.OFF);
   }
 
@@ -80,7 +83,7 @@ public abstract class BaseTest {
    */
   String[] interceptors() {
     return new String[]{
-        "okhttp", "okhttp3", "apacheHttpclientRequest"
+        "okhttp", "okhttp3", "apacheHttpclientRequest",
     };
   }
 
@@ -96,9 +99,12 @@ public abstract class BaseTest {
    */
   String[] interceptorsWithExecutors() {
     return new String[]{
-        "okhttp, true", "okhttp, false",
-        "okhttp3, true", "okhttp3, false",
-        "apacheHttpclientRequest, true", "apacheHttpclientRequest, false"
+        "okhttp, true",
+        "okhttp, false",
+        "okhttp3, true",
+        "okhttp3, false",
+        "apacheHttpclientRequest, true",
+        "apacheHttpclientRequest, false",
     };
   }
 

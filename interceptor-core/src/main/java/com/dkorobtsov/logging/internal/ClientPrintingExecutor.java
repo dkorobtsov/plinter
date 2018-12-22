@@ -7,6 +7,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Helper class for executing printing requests. Depending on provided {@link LoggerConfig} events
+ * are printed in current thread or by manually provided executor.
+ */
 public final class ClientPrintingExecutor {
 
   private static final Logger logger = Logger.getLogger(ClientPrintingExecutor.class.getName());

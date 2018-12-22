@@ -23,6 +23,7 @@ package com.dkorobtsov.logging.internal;
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
+@SuppressWarnings("PMD")
 public final class HttpMethod {
 
   //CHECKSTYLE:OFF

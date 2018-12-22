@@ -1,5 +1,7 @@
 package com.dkorobtsov.logging.internal;
 
+import static com.dkorobtsov.logging.internal.Util.UTF_8;
+
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.json.JSONArray;
@@ -11,6 +13,9 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 
+/**
+ * Helper class for formatting printable requests and responses bodies.
+ */
 final class BodyFormatter {
 
   private static final int JSON_INDENT = 3;
@@ -19,14 +24,14 @@ final class BodyFormatter {
   }
 
   static String formattedBody(final byte[] msg) {
-    final String bodyAsString = new String(msg);
+    final String bodyAsString = new String(msg, UTF_8);
     String message;
     try {
-      if (bodyAsString.trim().startsWith("{")) {
+      if (bodyAsString.trim().charAt(0) == '{') {
         message = formatAsJsonObject(bodyAsString);
-      } else if (bodyAsString.trim().startsWith("[")) {
+      } else if (bodyAsString.trim().charAt(0) == '[') {
         message = formatAsJsonArray(bodyAsString);
-      } else if (bodyAsString.trim().startsWith("<")) {
+      } else if (bodyAsString.trim().charAt(0) == '<') {
         message = formatAsXml(bodyAsString);
       } else {
         message = bodyAsString;

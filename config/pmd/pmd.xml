@@ -24,6 +24,7 @@ http://pmd.sourceforge.net/ruleset/2.0.0 ">
     <exclude name="JUnit4TestShouldUseBeforeAnnotation"/>
     <exclude name="JUnit4TestShouldUseAfterAnnotation"/>
     <exclude name="JUnit4TestShouldUseTestAnnotation"/>
+    <exclude name="JUnitTestContainsTooManyAsserts"/>
   </rule>
 
   <!-- Code style (https://pmd.github.io/pmd-6.0.1/pmd_rules_java_codestyle.html) -->
@@ -52,6 +53,7 @@ http://pmd.sourceforge.net/ruleset/2.0.0 ">
     <exclude name="ShortVariable"/>
     <exclude name="TooManyStaticImports"/>
     <exclude name="UselessParentheses"/>
+    <exclude name="MethodNamingConventions"/>
 
   </rule>
 
@@ -153,7 +155,9 @@ http://pmd.sourceforge.net/ruleset/2.0.0 ">
 
 
   <!-- Performance (https://pmd.github.io/pmd-6.0.1/pmd_rules_java_performance.html) -->
-  <rule ref="category/java/performance.xml"/>
+  <rule ref="category/java/performance.xml">
+    <exclude name="AddEmptyString"/>
+  </rule>
 
   <!-- Security (no rules) -->
   <rule ref="category/java/security.xml"/>

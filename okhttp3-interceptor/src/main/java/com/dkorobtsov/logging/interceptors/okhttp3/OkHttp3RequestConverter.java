@@ -16,6 +16,10 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okio.Buffer;
 
+/**
+ * Helper class implementing conversion logic from OkHttp3 client request to this library's
+ * internal {@link InterceptedRequest}.
+ */
 @SuppressWarnings("Duplicates")
 class OkHttp3RequestConverter implements RequestConverter<Request> {
 

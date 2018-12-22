@@ -1,5 +1,11 @@
 package com.dkorobtsov.logging.internal;
 
+
+/**
+ * Helper class for collecting all response details from external library's response and provide it
+ * to {@link ResponseHandler} for internal InterceptedResponse instance creation.
+ */
+@SuppressWarnings("PMD.LinguisticNaming")
 public class ResponseDetails {
 
   public final InterceptedResponseBody responseBody;
@@ -40,6 +46,7 @@ public class ResponseDetails {
         + '}';
   }
 
+  @SuppressWarnings("JavadocType")
   public static class ResponseDetailsBuilder {
 
     private InterceptedResponseBody responseBody;

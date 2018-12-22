@@ -14,6 +14,29 @@ import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.protocol.HttpContext;
 
+/**
+ * Interceptor for responses sent by Apache HttpClient. Intended to be used with request interceptor
+ * {@link ApacheHttpRequestInterceptor}.
+ *
+ * Interceptor's behavior can be configured using {@link LoggerConfig}
+ *
+ * Usage instructions:
+ *
+ * <pre>
+ *
+ *  ApacheRequestInterceptor requestInterceptor = new ApacheRequestInterceptor(LoggerConfig.builder().build());
+ *  ApacheResponseInterceptor responseInterceptor = new ApacheResponseInterceptor(LoggerConfig.builder().build());
+ *
+ *  CloseableHttpClient client = HttpClientBuilder
+ *      .create()
+ *      .addInterceptorFirst(requestInterceptor)
+ *      .addInterceptorFirst(responseInterceptor)
+ *      .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
+ *      .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+ *      .build();
+ *
+ * </pre>
+ */
 public class ApacheHttpResponseInterceptor extends AbstractInterceptor
     implements HttpResponseInterceptor {
 

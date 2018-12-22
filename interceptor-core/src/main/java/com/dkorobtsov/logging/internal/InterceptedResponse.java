@@ -2,6 +2,11 @@ package com.dkorobtsov.logging.internal;
 
 import java.util.List;
 
+/**
+ * Internal implementation of intercepted response. In order to break hard dependency on external
+ * clients and have more flexibility, interceptor-core is operating with custom request/response
+ * objects.
+ */
 public final class InterceptedResponse {
 
   public final List<String> segmentList;
@@ -15,6 +20,7 @@ public final class InterceptedResponse {
   public final boolean hasPrintableBody;
   public final long chainMs;
 
+  @SuppressWarnings("PMD.ExcessiveParameterList")
   InterceptedResponse(List<String> segmentList, String header, int code, boolean isSuccessful,
       String message, InterceptedMediaType contentType, String url,
       byte[] originalBody, boolean hasPrintableBody, long chainMs) {
@@ -30,11 +36,12 @@ public final class InterceptedResponse {
     this.chainMs = chainMs;
   }
 
+  @SuppressWarnings("JavadocType")
   public static ResponseDetailsBuilder builder() {
     return new ResponseDetailsBuilder();
   }
 
-  @SuppressWarnings("PMD")
+  @SuppressWarnings({"PMD", "JavadocType"})
   public static class ResponseDetailsBuilder {
 
     private List<String> segmentList;

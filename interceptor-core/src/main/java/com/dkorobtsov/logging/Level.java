@@ -1,6 +1,10 @@
 package com.dkorobtsov.logging;
 
-@SuppressWarnings("checkstyle:JavadocStyle")
+/**
+ * Logging levels regulating Printer output. Depending on chosen level will be printed full
+ * requests/responses, only headers, only body or nothing at all.
+ */
+@SuppressWarnings("JavadocStyle")
 public enum Level {
   /**
    * No logs.

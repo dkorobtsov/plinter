@@ -2,6 +2,9 @@ package com.dkorobtsov.logging.internal;
 
 import java.util.Arrays;
 
+/**
+ * Collection of Http status codes.
+ */
 public enum HttpStatus {
   CONTINUE(100, "CONTINUE"),
   SWITCHING_PROTOCOLS(101, "SWITCHING_PROTOCOLS"),

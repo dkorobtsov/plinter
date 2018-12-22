@@ -22,6 +22,10 @@ import java.util.logging.Logger;
 import okio.Buffer;
 import okio.BufferedSource;
 
+/**
+ * Helper class implementing conversion logic from OkHTTP client response to this library's internal
+ * {@link InterceptedResponse}.
+ */
 @SuppressWarnings("Duplicates")
 class OkHttpResponseConverter implements ResponseConverter<Response> {
 

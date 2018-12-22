@@ -2,18 +2,22 @@
 <!-- http://findbugs.sourceforge.net/manual/filter.html -->
 <FindBugsFilter>
 
-    <!-- Do not check groovy -->
-    <Match>
-        <Source name="~.*\.groovy"/>
-    </Match>
+  <!-- By Design -->
+  <Match>
+    <Class name="com.dkorobtsov.logging.AbstractInterceptor"/>
+    <Bug code="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
 
-    <!-- Disable check -->
-    <!--<Match>-->
-        <!--<Bug pattern="DM_CONVERT_CASE" />-->
-    <!--</Match>-->
+  <!-- By Design -->
+  <Match>
+    <Class name="com.dkorobtsov.logging.internal.BodyFormatter"/>
+    <Bug code="REC_CATCH_EXCEPTION"/>
+  </Match>
 
-    <!-- Do not check class -->
-    <!--<Match>-->
-        <!--<Class name="com.foobar.ClassNotToBeAnalyzed" />-->
-    <!--</Match>-->
+  <!-- False Positive -->
+  <Match>
+    <Class name="com.dkorobtsov.logging.interceptors.apache.ApacheEntityUtil"/>
+    <Bug code="DM_DEFAULT_ENCODING"/>
+  </Match>
+
 </FindBugsFilter>

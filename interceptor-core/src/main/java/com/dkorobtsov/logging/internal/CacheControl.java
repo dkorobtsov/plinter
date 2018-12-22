@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
  *
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
+@SuppressWarnings("PMD")
 public final class CacheControl {
 
   //CHECKSTYLE:OFF

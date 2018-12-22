@@ -1,5 +1,8 @@
 package com.dkorobtsov.logging;
 
+/**
+ * Parent class for all interceptors - to keep some common logic.
+ */
 public abstract class AbstractInterceptor {
 
   protected LoggerConfig loggerConfig;

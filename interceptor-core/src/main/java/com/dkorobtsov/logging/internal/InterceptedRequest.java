@@ -32,6 +32,7 @@ import java.util.List;
  *
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
+@SuppressWarnings("PMD")
 public final class InterceptedRequest {
 
   private static final String URL_IS_NULL_ERROR = "url == null";
@@ -88,6 +89,7 @@ public final class InterceptedRequest {
         + '}';
   }
 
+  @SuppressWarnings("JavadocType")
   public static class Builder {
 
     private URL url;
@@ -133,7 +135,7 @@ public final class InterceptedRequest {
       try {
         parsed = new URL(url);
       } catch (MalformedURLException e) {
-        throw new IllegalArgumentException("unexpected url: " + url);
+        throw new IllegalArgumentException("unexpected url: " + url, e);
       }
       return url(parsed);
     }

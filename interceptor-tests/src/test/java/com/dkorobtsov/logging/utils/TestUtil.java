@@ -5,18 +5,23 @@ import static org.junit.Assert.fail;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Locale;
 import org.junit.Assert;
 
 public final class TestUtil {
 
   public static final String PRINTING_THREAD_PREFIX = "Printer";
 
+  private TestUtil() {
+
+  }
+
   public static void assertEntryStartsWithParsableDate(String rawEntry) {
     final String[] entryElements = TestUtil
         .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
 
     try {
-      new SimpleDateFormat("yyyy-MM-ddd kk:mm:ss").parse(entryElements[0]);
+      new SimpleDateFormat("yyyy-MM-ddd kk:mm:ss", Locale.ENGLISH).parse(entryElements[0]);
     } catch (ParseException e) {
       fail("Log entry expected to start with parsable date stamp. But was: \n" + rawEntry);
     }

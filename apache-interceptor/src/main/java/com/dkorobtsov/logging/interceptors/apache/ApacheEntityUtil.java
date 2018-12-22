@@ -1,6 +1,7 @@
 package com.dkorobtsov.logging.interceptors.apache;
 
 import static com.dkorobtsov.logging.internal.Util.APPLICATION_JSON;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -10,12 +11,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.EntityBuilder;
 import org.apache.http.entity.ContentType;
 
+/**
+ * Helper class for Apache request/response converters intended for converting Apache HttpEntity to
+ * String and back.
+ */
 final class ApacheEntityUtil {
 
   private ApacheEntityUtil() {
@@ -28,7 +32,7 @@ final class ApacheEntityUtil {
       try (Reader reader = new BufferedReader(
           new InputStreamReader(
               entity.getContent(),
-              Charset.forName(StandardCharsets.UTF_8.name())))) {
+              Charset.forName(UTF_8.name())))) {
         int c;
         while ((c = reader.read()) != -1) {
           textBuilder.append((char) c);

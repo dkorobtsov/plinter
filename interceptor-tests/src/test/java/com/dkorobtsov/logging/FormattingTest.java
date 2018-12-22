@@ -7,7 +7,7 @@ import org.junit.Test;
 
 public class FormattingTest {
 
-  private final static String TEST_MESSAGE = "Test";
+  private static final String TEST_MESSAGE = "Test";
 
   @Test
   public void formatterTest_messageOnly_containsOneElement() {

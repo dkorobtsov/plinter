@@ -31,6 +31,7 @@ import okio.Source;
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
+@SuppressWarnings("PMD")
 public abstract class InterceptedRequestBody {
 
   /**

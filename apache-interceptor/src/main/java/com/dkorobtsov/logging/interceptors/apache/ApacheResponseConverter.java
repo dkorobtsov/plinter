@@ -22,6 +22,10 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 
+/**
+ * Helper class implementing conversion logic from Apache HTTP client response to this library's
+ * internal {@link InterceptedResponse}.
+ */
 public class ApacheResponseConverter implements ResponseConverter<HttpResponse> {
 
   private static final Logger logger = Logger.getLogger(ApacheResponseConverter.class.getName());

@@ -15,6 +15,22 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Interceptor for OkHttp client requests and responses. Interceptor's behavior can be configured
+ * using {@link LoggerConfig}
+ *
+ * Usage instructions:
+ *
+ * <pre>
+ *
+ * OkHttpLoggingInterceptor interceptor = new OkHttpLoggingInterceptor(LoggerConfig.builder().build());
+ *
+ * OkHttpClient okHttpClient = new OkHttpClient.Builder()
+ * .addInterceptor(interceptor)
+ * .build();
+ *
+ * </pre>
+ */
 public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Interceptor {
 
   private final RequestConverter<Request> requestConverter;

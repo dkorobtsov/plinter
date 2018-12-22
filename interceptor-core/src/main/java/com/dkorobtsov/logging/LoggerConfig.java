@@ -2,6 +2,10 @@ package com.dkorobtsov.logging;
 
 import java.util.concurrent.Executor;
 
+/**
+ * This class is used to customize Interceptor's behavior. Check {@link LoggerConfigBuilder} for
+ * default values.
+ */
 public class LoggerConfig {
 
   public final boolean isLoggable;
@@ -43,6 +47,11 @@ public class LoggerConfig {
         + line;
   }
 
+  /**
+   * Helper class for creating {@link LoggerConfig} instances.
+   *
+   * To use default configuration use: LoggerConfig.builder().build()
+   */
   public static class LoggerConfigBuilder {
 
     private boolean isLoggable = true;

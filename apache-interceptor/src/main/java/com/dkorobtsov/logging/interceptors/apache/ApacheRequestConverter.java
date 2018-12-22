@@ -25,6 +25,10 @@ import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.message.BasicHeader;
 
+/**
+ * Helper class implementing conversion logic from Apache HTTP client request to this library's
+ * internal {@link InterceptedRequest}.
+ */
 public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
 
   private static final Logger logger = Logger.getLogger(ApacheRequestConverter.class.getName());

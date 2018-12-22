@@ -15,6 +15,10 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import okio.Buffer;
 
+/**
+ * Helper class implementing conversion logic from OkHttp client request to this library's
+ * internal {@link InterceptedRequest}.
+ */
 @SuppressWarnings("Duplicates")
 class OkHttpRequestConverter implements RequestConverter<Request> {
 

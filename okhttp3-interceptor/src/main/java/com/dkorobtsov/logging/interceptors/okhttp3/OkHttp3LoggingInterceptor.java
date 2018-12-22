@@ -14,6 +14,22 @@ import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Interceptor for OkHttp3 client requests and responses. Interceptor's behavior can be configured
+ * using {@link LoggerConfig}
+ *
+ * Usage instructions:
+ *
+ * <pre>
+ *
+ * OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(LoggerConfig.builder().build());
+ *
+ * OkHttpClient okHttpClient = new OkHttpClient.Builder()
+ * .addInterceptor(interceptor)
+ * .build();
+ *
+ * </pre>
+ */
 public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements Interceptor {
 
   private final RequestConverter<Request> requestConverter;

@@ -21,6 +21,10 @@ import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+/**
+ * Helper class implementing conversion logic from OkHTTP3 client response to this library's
+ * internal {@link InterceptedResponse}.
+ */
 @SuppressWarnings("Duplicates")
 class OkHttp3ResponseConverter implements ResponseConverter<Response> {
 
