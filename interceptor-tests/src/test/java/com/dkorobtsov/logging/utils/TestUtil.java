@@ -2,6 +2,7 @@ package com.dkorobtsov.logging.utils;
 
 import static org.junit.Assert.fail;
 
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ import org.junit.Assert;
 
 public final class TestUtil {
 
+  private static final SecureRandom RANDOM = new SecureRandom();
   public static final String PRINTING_THREAD_PREFIX = "Printer";
 
   private TestUtil() {
@@ -44,6 +46,23 @@ public final class TestUtil {
     Assert.assertEquals(
         "Log event expected to contain " + expectedCount + " of elements. But was: \n"
             + entryElements.length, expectedCount, entryElements.length);
+  }
+
+  public static String randomText(int length) {
+    final StringBuilder text = new StringBuilder();
+
+    // determines whether vowel(even) or consonant(odd)
+    int which = RANDOM.nextInt(2);
+    for (int i = 0; i < length; i++) {
+      if (which++ % 2 == 0) {
+        final String vowels = "aeiou";
+        text.append(vowels.charAt(RANDOM.nextInt(vowels.length())));
+      } else {
+        final String consonants = "bcdfghjklmnpqrstvwxyz";
+        text.append(consonants.charAt(RANDOM.nextInt(consonants.length())));
+      }
+    }
+    return text.toString();
   }
 
 }

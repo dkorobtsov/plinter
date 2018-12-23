@@ -214,7 +214,7 @@ Add executor that allows to perform sequential concurrent print.
 ```
 
 ###Line Length
-If needed, max output length can be modified. Default value: 110. Valid values: 10-500.
+If needed, max output length can be modified. Default value: 110. Valid values: 80-180.
 ```java
         .maxLineLength(160) 
 ```
@@ -242,7 +242,7 @@ Enable or disable interceptor. If set to false, interceptor will ignore all traf
 ```
 
 ##Credits
-This library was initially forked from 
+This library was heavily inspired and initially forked from 
 [LoggingInterceptor for Android](https://github.com/ihsanbal/LoggingInterceptor) by [Ihsan Bal](https://github.com/ihsanbal) 
 and completely rewritten by [Dmitri Korobtsov](https://github.com/dkorobtsov) to 
 provide more flexibility and support for native Java loggers. Support for OkHttp2 and Apache clients introduced by [Andrew Zakordonets](https://github.com/azakordonets).

@@ -122,10 +122,10 @@ public class LoggerConfig {
     /**
      * @param length specifies max line length when printing request/response body
      *
-     * Min value: 10, Max value: 500, Default: 110
+     * Min value: 80, Max value: 180, Default: 110
      */
     public LoggerConfigBuilder maxLineLength(int length) {
-      if (length < 10 || length > 500) {
+      if (length < 80 || length > 180) {
         throw new IllegalArgumentException(
             "Invalid line length. Should be longer then 10 and shorter then 500.");
       } else {

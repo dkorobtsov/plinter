@@ -27,12 +27,14 @@ package com.dkorobtsov.logging.internal;
 
 import static com.dkorobtsov.logging.internal.BodyFormatter.formattedBody;
 import static com.dkorobtsov.logging.internal.Util.hasPrintableBody;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import com.dkorobtsov.logging.Level;
 import com.dkorobtsov.logging.LoggerConfig;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -53,19 +55,16 @@ final class Printer {
   private static final String N = "\n";
   private static final String T = "\t";
 
-  private static final String REQUEST_STARTING_LINE
-      = "┌────── Request ────────────────────────────────────────────────────────────────────────";
-  private static final String RESPONSE_STARTING_LINE
-      = "┌────── Response ───────────────────────────────────────────────────────────────────────";
-  private static final String ENDING_LINE
-      = "└───────────────────────────────────────────────────────────────────────────────────────";
+  private static final String REQUEST_STARTING_LINE = "┌────── Request ";
+  private static final String RESPONSE_STARTING_LINE = "┌────── Response ";
+  private static final String ENDING_LINE = "└";
   private static final String CORNER_UP = "┌ ";
   private static final String CORNER_BOTTOM = "└ ";
   private static final String CENTER_LINE = "├ ";
   private static final String SECTION_DEFAULT_LINE = "| ";
   private static final String DEFAULT_LINE = "  ";
-  private static final String SECTION_LINE
-      = "├───────────────────────────────────────────────────────────────────────────────────────";
+  private static final String SECTION_LINE = "├";
+  private static final char HORIZONTAL_LINE = '─';
 
   private static final String BODY_TAG = "Body:";
   private static final String URL_TAG = "URL: ";
@@ -75,10 +74,10 @@ final class Printer {
   private static final String EXECUTION_TIME_TAG = "Execution time: ";
   private static final String THREAD_TAG = "Thread: ";
   private static final String SENT_TAG = "Sent: ";
-  private static final String SENT_STRING_FORMAT = "%-5s %-46s %-5s %s";
   private static final String RECEIVED_TAG = "Received: ";
-  private static final String RECEIVED_STRING_FORMAT = "%-5s %-42s %-5s %s";
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS";
+  private static final String THREAD_STRING_FORMAT = "%-5s %-{indent}s %-5s %s";
+  private static final int BASE_THREAD_INDENT = 34;
 
   private static final String[] OMITTED_RESPONSE = {"", "Omitted response body"};
   private static final String[] OMITTED_REQUEST = {"", "Omitted request body"};
@@ -111,35 +110,51 @@ final class Printer {
   }
 
   private static void printRequestStartingLine() {
-    loggerConfig.logger.log(REQUEST_STARTING_LINE);
+    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
+    loggerConfig.logger.log(REQUEST_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printResponseStartingLine() {
-    loggerConfig.logger.log(RESPONSE_STARTING_LINE);
+    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
+    loggerConfig.logger.log(RESPONSE_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printEndingLine() {
-    loggerConfig.logger.log(ENDING_LINE);
+    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - ENDING_LINE.length();
+    loggerConfig.logger.log(ENDING_LINE + repeatChar(HORIZONTAL_LINE, i));
+  }
+
+  private static void printSectionLine() {
+    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - SECTION_LINE.length();
+    loggerConfig.logger.log(SECTION_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printDebugDetails(boolean isRequest) {
     if (loggerConfig.withThreadInfo) {
+      String format = threadInfoStringFormat(isRequest);
+
       final String debugDetails = LINE_SEPARATOR
-          + String.format(isRequest ? SENT_STRING_FORMAT : RECEIVED_STRING_FORMAT,
+          + String.format(format,
           THREAD_TAG, Thread.currentThread().getName(),
           isRequest ? SENT_TAG : RECEIVED_TAG,
           new SimpleDateFormat(TIMESTAMP_FORMAT)
               .format(Calendar.getInstance().getTime()));
 
       logLines(debugDetails.split(REGEX_LINE_SEPARATOR), SECTION_DEFAULT_LINE, true);
-      loggerConfig.logger.log(SECTION_LINE);
+      printSectionLine();
     }
   }
 
+  private static String threadInfoStringFormat(boolean isRequest) {
+    int requestIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - SENT_TAG.length();
+    int responseIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - RECEIVED_TAG.length();
+    int indent = isRequest ? requestIndent : responseIndent;
+    return THREAD_STRING_FORMAT.replace("{indent}", String.valueOf(indent));
+  }
+
   private static void printUrl(String url) {
-    // ApacheHTTPClient response does not contain URL
     if (!isEmpty(url)) {
-      logLines(new String[]{URL_TAG + url}, false);
+      logLines(new String[]{URL_TAG + url + LINE_SEPARATOR}, false);
     }
   }
 
@@ -214,19 +229,22 @@ final class Printer {
         ? ""
         : " - " + EXECUTION_TIME_TAG + interceptedResponse.chainMs + "ms";
 
+    final String statusMessage = nonNull(interceptedResponse.message)
+        ? interceptedResponse.message : "";
+
     final String log = (!isEmpty(segmentString)
         ? segmentString + " - "
         : "") + "is success : "
         + interceptedResponse.isSuccessful + receivedTags
         + DOUBLE_SEPARATOR
-        + STATUS_CODE_TAG + interceptedResponse.code + " / " + interceptedResponse.message
+        + STATUS_CODE_TAG + interceptedResponse.code + " / " + statusMessage
         + DOUBLE_SEPARATOR
         + printHeaderIfLoggable(interceptedResponse.header, isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
   private static String slashSegments(List<String> segments) {
-    if (segments.isEmpty()) {
+    if (isNull(segments) || segments.isEmpty()) {
       return "";
     }
     final StringBuilder segmentString = new StringBuilder();
@@ -264,14 +282,23 @@ final class Printer {
       if (isEmpty(line)) {
         loggerConfig.logger.log(startingWith);
       } else {
-        final int lineLength = line.length();
-        final int maxLongSize = withLineSize ? loggerConfig.maxLineLength : lineLength;
-        for (int i = 0; i <= lineLength / maxLongSize; i++) {
-          final int start = i * maxLongSize;
-          int end = (i + 1) * maxLongSize;
-          end = end > line.length() ? line.length() : end;
-          loggerConfig.logger.log(startingWith + line.substring(start, end));
-        }
+        logLine(startingWith, withLineSize, line);
+      }
+    }
+  }
+
+  private static void logLine(String startingWith, boolean withLineSize, String line) {
+    final int lineLength = line.length();
+    final int maxLongSize = withLineSize ? loggerConfig.maxLineLength : lineLength;
+    for (int i = 0; i <= lineLength / maxLongSize; i++) {
+      final int start = i * maxLongSize;
+      int end = (i + 1) * maxLongSize;
+      end = end > line.length() ? line.length() : end;
+
+      if (start != end) {
+        // This condition check handles very rare occasion when multiline string exactly matches
+        // max line length, in that case unnecessary empty line will be printed
+        loggerConfig.logger.log(startingWith + line.substring(start, end));
       }
     }
   }
@@ -287,7 +314,7 @@ final class Printer {
     final String[] headers = header.split(REGEX_LINE_SEPARATOR);
 
     final StringBuilder builder = new StringBuilder();
-    String tag = "─ ";
+    String tag = "";
     if (headers.length > 1) {
       for (int i = 0; i < headers.length; i++) {
         if (i == 0) {
@@ -305,6 +332,12 @@ final class Printer {
       }
     }
     return builder.toString();
+  }
+
+  private static String repeatChar(final char val, final int times) {
+    final char[] chars = new char[times < 0 ? 0 : times];
+    Arrays.fill(chars, val);
+    return new String(chars);
   }
 
 }

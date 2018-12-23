@@ -130,7 +130,7 @@ public abstract class BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
 
     interceptWithConfig(interceptor, loggerConfig, body, mediaType);
 
@@ -162,7 +162,7 @@ public abstract class BaseTest {
         .setBody(body));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
 
     interceptWithConfig(interceptor, loggerConfig);
 
@@ -172,13 +172,21 @@ public abstract class BaseTest {
   /**
    * Default Logger configuration for use in tests.
    *
-   * @param testLogger Test logger instance.
+   * @param logWriter LogWriter instance.
    * @param withExecutor If specified, intercepted traffic will be printed in separate thread.
+   * @param lineLength if specified, will line length will be modified. If null, default value will
+   * be used.
    */
-  LoggerConfig defaultLoggerConfig(TestLogger testLogger, boolean withExecutor) {
+  LoggerConfig defaultLoggerConfig(final LogWriter logWriter,
+      final boolean withExecutor, final Integer lineLength) {
+
     final LoggerConfigBuilder builder = LoggerConfig.builder()
         .withThreadInfo(true)
-        .logger(testLogger);
+        .logger(logWriter);
+
+    if (nonNull(lineLength)) {
+      builder.maxLineLength(lineLength);
+    }
 
     if (withExecutor) {
       builder.executor(Executors.newSingleThreadExecutor(new ThreadFactory() {
