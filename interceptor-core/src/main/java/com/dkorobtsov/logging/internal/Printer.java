@@ -110,28 +110,28 @@ final class Printer {
   }
 
   private static void printRequestStartingLine() {
-    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
+    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
     loggerConfig.logger.log(REQUEST_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printResponseStartingLine() {
-    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
+    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
     loggerConfig.logger.log(RESPONSE_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printEndingLine() {
-    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - ENDING_LINE.length();
+    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - ENDING_LINE.length();
     loggerConfig.logger.log(ENDING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printSectionLine() {
-    int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - SECTION_LINE.length();
+    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - SECTION_LINE.length();
     loggerConfig.logger.log(SECTION_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printDebugDetails(boolean isRequest) {
     if (loggerConfig.withThreadInfo) {
-      String format = threadInfoStringFormat(isRequest);
+      final String format = threadInfoStringFormat(isRequest);
 
       final String debugDetails = LINE_SEPARATOR
           + String.format(format,
@@ -146,9 +146,9 @@ final class Printer {
   }
 
   private static String threadInfoStringFormat(boolean isRequest) {
-    int requestIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - SENT_TAG.length();
-    int responseIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - RECEIVED_TAG.length();
-    int indent = isRequest ? requestIndent : responseIndent;
+    final int requestIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - SENT_TAG.length();
+    final int responseIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - RECEIVED_TAG.length();
+    final int indent = isRequest ? requestIndent : responseIndent;
     return THREAD_STRING_FORMAT.replace("{indent}", String.valueOf(indent));
   }
 

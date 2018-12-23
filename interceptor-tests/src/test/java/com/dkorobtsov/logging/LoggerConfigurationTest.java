@@ -16,6 +16,9 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Test validating logger behavior when different configuration options are used.
+ */
 @RunWith(JUnitParamsRunner.class)
 public class LoggerConfigurationTest extends BaseTest {
 

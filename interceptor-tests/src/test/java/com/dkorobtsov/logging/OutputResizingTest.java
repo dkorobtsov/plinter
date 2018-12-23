@@ -12,6 +12,12 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * General smoke test for output resizing validation.
+ *
+ * Dynamic content resizing is tested in scope of Printer related unit tests: {@link
+ * RequestsPrintingTest}.
+ */
 @RunWith(JUnitParamsRunner.class)
 public class OutputResizingTest extends BaseTest {
 
@@ -45,9 +51,7 @@ public class OutputResizingTest extends BaseTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  @Parameters({
-      "79", "181"
-  })
+  @Parameters(method = "invalidMaxLineSizes")
   public void invalidOutputLengthHandling(String maxLineLength) {
     new OkHttp3LoggingInterceptor(
         LoggerConfig.builder()
@@ -56,9 +60,7 @@ public class OutputResizingTest extends BaseTest {
   }
 
   @Test
-  @Parameters({
-      "80", "180"
-  })
+  @Parameters(method = "validMaxLineSizes")
   public void validOutputLengthHandling(String maxLineLength) {
     final OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
         LoggerConfig.builder()

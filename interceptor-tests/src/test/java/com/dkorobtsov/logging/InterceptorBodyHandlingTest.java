@@ -6,6 +6,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
+/**
+ * Regression tests intended to check that interceptor is handling event body carefully, without
+ * making any changes to it's structure.
+ */
 public class InterceptorBodyHandlingTest extends BaseTest {
 
   @Test

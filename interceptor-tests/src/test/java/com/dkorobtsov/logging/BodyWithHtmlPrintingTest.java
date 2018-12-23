@@ -9,6 +9,9 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests validating that event body containing HTML document is handled properly.
+ */
 @RunWith(JUnitParamsRunner.class)
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class BodyWithHtmlPrintingTest extends BaseTest {

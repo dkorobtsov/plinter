@@ -11,6 +11,9 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests validating that event body containing JSON document is handled properly.
+ */
 @RunWith(JUnitParamsRunner.class)
 public class BodyWithJsonPrintingTest extends BaseTest {
 

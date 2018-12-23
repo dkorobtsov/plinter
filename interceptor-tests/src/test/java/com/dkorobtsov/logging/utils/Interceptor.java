@@ -1,5 +1,8 @@
 package com.dkorobtsov.logging.utils;
 
+/**
+ * Supported interceptor types - intended to be used as parameter in data-driven jUnit tests.
+ */
 public enum Interceptor {
   OKHTTP("okhttp"),
   OKHTTP3("okhttp3"),

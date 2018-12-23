@@ -11,7 +11,6 @@ import com.dkorobtsov.logging.interceptors.apache.ApacheHttpResponseInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp.OkHttpLoggingInterceptor;
 import com.dkorobtsov.logging.interceptors.okhttp3.OkHttp3LoggingInterceptor;
 import com.dkorobtsov.logging.utils.Interceptor;
-import com.dkorobtsov.logging.utils.SuppressFBWarnings;
 import com.dkorobtsov.logging.utils.TestLogger;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -64,7 +63,6 @@ public abstract class BaseTest {
   public MockWebServer server = new MockWebServer();
 
   @Before
-  @SuppressFBWarnings("LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE")
   public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
     LogManager.getLogManager().reset();
     final Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
@@ -105,6 +103,30 @@ public abstract class BaseTest {
         "okhttp3, false",
         "apacheHttpclientRequest, true",
         "apacheHttpclientRequest, false",
+    };
+  }
+
+  /**
+   * Returns list of valid max line lengths. {@link LoggerConfig#maxLineLength}
+   *
+   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
+   * classes.
+   */
+  String[] validMaxLineSizes() {
+    return new String[]{
+        "80", "110", "180",
+    };
+  }
+
+  /**
+   * Returns list of invalid max line lengths. {@link LoggerConfig#maxLineLength}
+   *
+   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
+   * classes.
+   */
+  String[] invalidMaxLineSizes() {
+    return new String[]{
+        "79", "181", "-1",
     };
   }
 

@@ -5,6 +5,10 @@ import com.dkorobtsov.logging.utils.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Test for built-in formatters validation.
+ */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class FormattingTest {
 
   private static final String TEST_MESSAGE = "Test";

@@ -9,10 +9,13 @@ import java.util.Arrays;
 import java.util.Locale;
 import org.junit.Assert;
 
+/**
+ * Collection of utility methods for use in tests.
+ */
 public final class TestUtil {
 
-  private static final SecureRandom RANDOM = new SecureRandom();
   public static final String PRINTING_THREAD_PREFIX = "Printer";
+  private static final SecureRandom RANDOM = new SecureRandom();
 
   private TestUtil() {
 
@@ -48,6 +51,7 @@ public final class TestUtil {
             + entryElements.length, expectedCount, entryElements.length);
   }
 
+  @SuppressWarnings("PMD.AssignmentInOperand")
   public static String randomText(int length) {
     final StringBuilder text = new StringBuilder();
 

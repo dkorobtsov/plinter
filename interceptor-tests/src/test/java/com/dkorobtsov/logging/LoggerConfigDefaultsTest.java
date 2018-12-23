@@ -9,6 +9,9 @@ import static org.junit.Assert.assertTrue;
 import com.dkorobtsov.logging.LoggerConfig.LoggerConfigBuilder;
 import org.junit.Test;
 
+/**
+ * Tests validation default configuration values.
+ */
 public class LoggerConfigDefaultsTest {
 
   @Test

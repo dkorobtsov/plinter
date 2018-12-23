@@ -55,7 +55,7 @@ public final class InterceptedMediaType {
    * Returns a media type for {@code string}, or null if {@code string} is not a well-formed media
    * type.
    */
-  @SuppressWarnings({"MultipleStringLiterals","PMD.SimplifyStartsWith"})
+  @SuppressWarnings({"MultipleStringLiterals", "PMD.SimplifyStartsWith"})
   public static InterceptedMediaType parse(String string) {
     final Matcher typeSubtype = TYPE_SUBTYPE.matcher(string);
     if (!typeSubtype.lookingAt()) {

@@ -10,6 +10,9 @@ import com.dkorobtsov.logging.internal.InterceptedResponse;
 import java.util.concurrent.Executors;
 import org.junit.Test;
 
+/**
+ * Tests validating that printing thread interruption will not cause any unexpected exceptions.
+ */
 public class ClientPrintingExecutorNegativeTest {
 
   @Test
