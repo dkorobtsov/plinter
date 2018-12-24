@@ -17,6 +17,7 @@ plugins {
     id("project-report")
     id("org.sonarqube") version "2.6.2"
     id("ru.vyarus.quality") version "3.3.0"
+    id("com.github.spotbugs") version "1.6.8"
 }
 
 group = projectGroup
@@ -84,7 +85,6 @@ configure(subprojects) {
             ))
         }
     }
-
 
     tasks.withType(Javadoc::class) {
         isFailOnError = true
@@ -198,27 +198,17 @@ configure(subprojects) {
     }
 
     configure<QualityExtension> {
-
         checkstyleVersion = "8.12"
-        pmdVersion = "6.7.0"
-        spotbugsVersion = "3.1.9"
+        pmdVersion = "6.10.0"
+        spotbugsVersion = "3.1.10"
         codenarcVersion = "1.2.1"
         autoRegistration = true
         checkstyle = true
         pmd = true
-
-        // For some reason Spotbugs config failing with Kotlin DSL, disabled for a while
-        spotbugs = false
+        spotbugs = true
 
         // Disabled since there is no Groovy code in project
         codenarc = false
-
-        /**
-         * The analysis effort level. The value specified should be one of min, default,
-         * or max. Higher levels increase precision and find more bugs at the expense of
-         * running time and memory consumption. Default is "max".
-         */
-        spotbugsEffort = "max"
 
         /**
          * The priority threshold for reporting bugs. If set to low, all bugs are reported.
@@ -242,7 +232,7 @@ configure(subprojects) {
          * Strict quality leads to build fail on any violation found. If disabled,
          * all violation are just printed to console.
          */
-        strict = false
+        strict = true
 
         /**
          * When false, disables quality tasks execution. Allows disabling tasks without removing plugins.
@@ -263,7 +253,7 @@ configure(subprojects) {
         /**
          * When false, no html reports will be built. True by default.
          */
-        htmlReports = true
+        htmlReports = false
 
         /**
          * Source sets to apply checks on.
