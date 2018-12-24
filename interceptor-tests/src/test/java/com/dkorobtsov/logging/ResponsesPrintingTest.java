@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
  * Unit tests for requests printing validation.
  */
 @RunWith(JUnitParamsRunner.class)
-@SuppressWarnings("Indentation")
+@SuppressWarnings({"Indentation", "PMD.AvoidDuplicateLiterals"})
 public class ResponsesPrintingTest extends BaseTest {
 
   private static final String RESIZABLE_BODY = "{name: \"" + TestUtil.randomText(500) + "\"}";
@@ -227,8 +227,8 @@ public class ResponsesPrintingTest extends BaseTest {
     assertThat(testLogger.formattedOutput())
         .isEqualTo(""
             + "┌────── Response ───────────────────────────────────────────────────────────────── \n"
-            + "  URL: http://google.com/api/test/\n"
-            + " \n"
+            + "  URL: http://google.com/api/test/ \n"
+            + "   \n"
             + "  is success : true - Execution time: 10ms \n"
             + "   \n"
             + "  Status Code: 200 / OK \n"

@@ -310,8 +310,8 @@ public class RequestsPrintingTest extends BaseTest {
     assertThat(testLogger.formattedOutput())
         .isEqualTo(""
             + "┌────── Request ────────────────────────────────────────────────────────────────── \n"
-            + "  URL: http://google.com/api/test/\n"
-            + " \n"
+            + "  URL: http://google.com/api/test/ \n"
+            + "   \n"
             + "  Method: @GET \n"
             + "   \n"
             + "  Headers: \n"

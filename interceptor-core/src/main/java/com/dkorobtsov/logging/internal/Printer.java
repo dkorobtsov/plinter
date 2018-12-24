@@ -77,7 +77,7 @@ final class Printer {
   private static final String RECEIVED_TAG = "Received: ";
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS";
   private static final String THREAD_STRING_FORMAT = "%-5s %-{indent}s %-5s %s";
-  private static final int BASE_THREAD_INDENT = 34;
+  private static final int THREAD_INDENT = 34;
 
   private static final String[] OMITTED_RESPONSE = {"", "Omitted response body"};
   private static final String[] OMITTED_REQUEST = {"", "Omitted request body"};
@@ -110,12 +110,14 @@ final class Printer {
   }
 
   private static void printRequestStartingLine() {
-    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
+    final int i =
+        DEFAULT_LINE.length() + loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
     loggerConfig.logger.log(REQUEST_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printResponseStartingLine() {
-    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
+    final int i =
+        DEFAULT_LINE.length() + loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
     loggerConfig.logger.log(RESPONSE_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
@@ -146,15 +148,15 @@ final class Printer {
   }
 
   private static String threadInfoStringFormat(boolean isRequest) {
-    final int requestIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - SENT_TAG.length();
-    final int responseIndent = loggerConfig.maxLineLength - BASE_THREAD_INDENT - RECEIVED_TAG.length();
+    final int requestIndent = loggerConfig.maxLineLength - THREAD_INDENT - SENT_TAG.length();
+    final int responseIndent = loggerConfig.maxLineLength - THREAD_INDENT - RECEIVED_TAG.length();
     final int indent = isRequest ? requestIndent : responseIndent;
     return THREAD_STRING_FORMAT.replace("{indent}", String.valueOf(indent));
   }
 
   private static void printUrl(String url) {
     if (!isEmpty(url)) {
-      logLines(new String[]{URL_TAG + url + LINE_SEPARATOR}, false);
+      logLines(new String[]{URL_TAG + url, ""}, false);
     }
   }
 
