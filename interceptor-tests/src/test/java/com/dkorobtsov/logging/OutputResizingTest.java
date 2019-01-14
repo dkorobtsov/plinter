@@ -35,7 +35,7 @@ public class OutputResizingTest extends BaseTest {
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .maxLineLength(80)
-        .build(), TEST_JSON, APPLICATION_JSON);
+        .build(), TEST_JSON, APPLICATION_JSON, String.valueOf(server.url(MOCK_SERVER_PATH)));
 
     Assertions.assertThat(testLogger.formattedOutput())
         .contains(

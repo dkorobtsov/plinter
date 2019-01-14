@@ -112,6 +112,7 @@ public class ResponsesPrintingTest extends BaseTest {
         .originalBody(SIMPLE_JSON.getBytes())
         .hasPrintableBody(true)
         .build();
+
     ClientPrintingExecutor
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 

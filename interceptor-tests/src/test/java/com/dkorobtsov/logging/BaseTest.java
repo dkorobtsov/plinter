@@ -55,7 +55,7 @@ public abstract class BaseTest {
 
   private static final ConnectionPool CONNECTION_POOL = new ConnectionPool();
   private static final Dispatcher DISPATCHER = new Dispatcher();
-  private static final String MOCK_SERVER_PATH = "/";
+  static final String MOCK_SERVER_PATH = "/";
   private static final int MAX_IDLE_CONNECTIONS = 10;
   private static final int KEEP_ALIVE_DURATION_MS = 60 * 1000;
 
@@ -67,67 +67,6 @@ public abstract class BaseTest {
     LogManager.getLogManager().reset();
     final Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     globalLogger.setLevel(Level.OFF);
-  }
-
-  /**
-   * Returns list of parameters for data driven tests.
-   *
-   * Format: "Interceptor name 1", "Interceptor name 2" etc
-   *
-   * For valid interceptor names please check: {@link Interceptor}
-   *
-   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
-   * classes.
-   */
-  String[] interceptors() {
-    return new String[]{
-        "okhttp", "okhttp3", "apacheHttpclientRequest",
-    };
-  }
-
-  /**
-   * Returns list of parameters for data driven tests.
-   *
-   * Format: "Interceptor name, should use manually provided executor?"
-   *
-   * For valid interceptor names please check: {@link Interceptor}
-   *
-   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
-   * classes.
-   */
-  String[] interceptorsWithExecutors() {
-    return new String[]{
-        "okhttp, true",
-        "okhttp, false",
-        "okhttp3, true",
-        "okhttp3, false",
-        "apacheHttpclientRequest, true",
-        "apacheHttpclientRequest, false",
-    };
-  }
-
-  /**
-   * Returns list of valid max line lengths. {@link LoggerConfig#maxLineLength}
-   *
-   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
-   * classes.
-   */
-  String[] validMaxLineSizes() {
-    return new String[]{
-        "80", "110", "180",
-    };
-  }
-
-  /**
-   * Returns list of invalid max line lengths. {@link LoggerConfig#maxLineLength}
-   *
-   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
-   * classes.
-   */
-  String[] invalidMaxLineSizes() {
-    return new String[]{
-        "79", "181", "-1",
-    };
   }
 
   /**
@@ -154,7 +93,8 @@ public abstract class BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
 
-    interceptWithConfig(interceptor, loggerConfig, body, mediaType);
+    interceptWithConfig(interceptor, loggerConfig, body, mediaType,
+        String.valueOf(server.url(MOCK_SERVER_PATH)));
 
     return testLogger.loggerOutput(preserveTrailingSpaces);
   }
@@ -189,6 +129,11 @@ public abstract class BaseTest {
     interceptWithConfig(interceptor, loggerConfig);
 
     return testLogger.loggerOutput(preserveTrailingSpaces);
+  }
+
+
+  public LoggerConfig defaultLoggerConfig(final LogWriter logWriter) {
+    return defaultLoggerConfig(logWriter, false, null);
   }
 
   /**
@@ -230,8 +175,9 @@ public abstract class BaseTest {
    * provided to logger configuration, after this method execution we can validate test logger
    * output.
    */
-  void interceptWithConfig(String interceptor, LoggerConfig loggerConfig) {
-    interceptWithConfig(interceptor, loggerConfig, null, null);
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig) {
+    interceptWithConfig(interceptor, loggerConfig, null, null,
+        String.valueOf(server.url(MOCK_SERVER_PATH)));
   }
 
   /**
@@ -250,8 +196,8 @@ public abstract class BaseTest {
    *
    * NB. If content and media type params are not provided request won't have body.
    */
-  void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
-      String body, String mediaType) {
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
+      String body, String mediaType, String url) {
 
     switch (Interceptor.fromString(interceptor)) {
       case OKHTTP:
@@ -260,7 +206,7 @@ public abstract class BaseTest {
 
         executeOkHttpRequest(
             defaultOkHttpClient(new OkHttpLoggingInterceptor(loggerConfig)),
-            okHttpRequest(body, mediaType));
+            okHttpRequest(body, mediaType, url));
         break;
 
       case OKHTTP3:
@@ -269,7 +215,8 @@ public abstract class BaseTest {
 
         executeOkHttp3Request(
             defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
-            okHttp3Request(body, mediaType));
+            okHttp3Request(body, mediaType, url));
+
         break;
 
       case APACHE_HTTPCLIENT_REQUEST:
@@ -279,7 +226,7 @@ public abstract class BaseTest {
         executeApacheRequest(defaultApacheClient(
             new ApacheHttpRequestInterceptor(loggerConfig),
             new ApacheHttpResponseInterceptor(loggerConfig)),
-            apacheHttpRequest(body, mediaType));
+            apacheHttpRequest(body, mediaType, url));
         break;
 
       default:
@@ -366,9 +313,9 @@ public abstract class BaseTest {
    * To add body to request both content and media type should be non null, otherwise request will
    * be empty.
    */
-  Request okHttp3Request(String content, String mediaType) {
+  Request okHttp3Request(String content, String mediaType, String url) {
     final Request.Builder requestBuilder = new Request.Builder()
-        .url(String.valueOf(server.url(MOCK_SERVER_PATH)));
+        .url(url);
 
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(RequestBody.create(
@@ -387,10 +334,10 @@ public abstract class BaseTest {
    * To add body to request both content and media type should be non null, otherwise request will
    * be empty.
    */
-  private HttpUriRequest apacheHttpRequest(String content, String mediaType) {
+  private HttpUriRequest apacheHttpRequest(String content, String mediaType, String url) {
     final HttpUriRequest request;
     if (nonNull(content) && nonNull(mediaType)) {
-      request = new HttpPut(server.url(MOCK_SERVER_PATH).uri());
+      request = new HttpPut(url);
       final ContentType contentType = ContentType.create(mediaType);
 
       final HttpEntity entity = new StringEntity(content, contentType);
@@ -398,7 +345,7 @@ public abstract class BaseTest {
       ((HttpPut) request).setEntity(entity);
       request.setHeader(new BasicHeader(CONTENT_TYPE, mediaType));
     } else {
-      request = new HttpGet(server.url(MOCK_SERVER_PATH).uri());
+      request = new HttpGet(url);
     }
     return request;
   }
@@ -412,16 +359,77 @@ public abstract class BaseTest {
    * To add body to request both content and media type should be non null, otherwise request will
    * be empty.
    */
-  private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType) {
+  private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType, String url) {
     final com.squareup.okhttp.Request.Builder requestBuilder
         = new com.squareup.okhttp.Request.Builder()
-        .url(String.valueOf(server.url(MOCK_SERVER_PATH)));
+        .url(url);
 
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(com.squareup.okhttp.RequestBody.create(
           com.squareup.okhttp.MediaType.parse(mediaType), content));
     }
     return requestBuilder.build();
+  }
+
+  /**
+   * Returns list of parameters for data driven tests.
+   *
+   * Format: "Interceptor name 1", "Interceptor name 2" etc
+   *
+   * For valid interceptor names please check: {@link Interceptor}
+   *
+   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
+   * classes.
+   */
+  String[] interceptors() {
+    return new String[]{
+        "okhttp", "okhttp3", "apacheHttpclientRequest",
+    };
+  }
+
+  /**
+   * Returns list of parameters for data driven tests.
+   *
+   * Format: "Interceptor name, should use manually provided executor?"
+   *
+   * For valid interceptor names please check: {@link Interceptor}
+   *
+   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
+   * classes.
+   */
+  String[] interceptorsWithExecutors() {
+    return new String[]{
+        "okhttp, true",
+        "okhttp, false",
+        "okhttp3, true",
+        "okhttp3, false",
+        "apacheHttpclientRequest, true",
+        "apacheHttpclientRequest, false",
+    };
+  }
+
+  /**
+   * Returns list of valid max line lengths. {@link LoggerConfig#maxLineLength}
+   *
+   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
+   * classes.
+   */
+  String[] validMaxLineSizes() {
+    return new String[]{
+        "80", "110", "180",
+    };
+  }
+
+  /**
+   * Returns list of invalid max line lengths. {@link LoggerConfig#maxLineLength}
+   *
+   * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
+   * classes.
+   */
+  String[] invalidMaxLineSizes() {
+    return new String[]{
+        "79", "181", "-1",
+    };
   }
 
 }
