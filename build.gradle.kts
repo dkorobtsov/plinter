@@ -18,6 +18,7 @@ plugins {
     id("org.sonarqube") version "2.6.2"
     id("ru.vyarus.quality") version "3.3.0"
     id("com.github.spotbugs") version "1.6.8"
+    id("net.ltgt.errorprone") version "0.6"
 }
 
 group = projectGroup
@@ -239,7 +240,7 @@ configure(subprojects) {
          * Quality tasks are still registered, but skip execution, except when task called directly or through
          * checkQualityMain (or other source set) grouping task.
          */
-        enabled = true
+        enabled = false
 
         /**
          * When false, disables reporting quality issues to console. Only gradle general error messages will

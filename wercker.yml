@@ -20,7 +20,7 @@ build:
     - script:
         name: quality check
         code: |
-          ./gradlew sonarqube --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR -Dsonar.organization=dkorobtsov-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONARCUBE_TOKEN
+          ./gradlew check sonarqube --full-stacktrace --project-cache-dir=$WERCKER_CACHE_DIR -Dsonar.organization=dkorobtsov-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONARCUBE_TOKEN
 
 deploy:
   steps:
