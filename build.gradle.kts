@@ -120,29 +120,6 @@ configure(subprojects) {
         into("runtime/")
     }
 
-    tasks.named<Test>("test") {
-        useJUnit()
-
-        jacoco {
-            toolVersion = "0.8.2"
-
-            enabled = true
-
-            reports {
-                html.setEnabled(true)
-            }
-        }
-
-        outputs.upToDateWhen {
-            false
-        }
-
-        testLogging {
-            showStandardStreams = false
-            events("passed", "skipped", "failed")
-        }
-    }
-
     tasks {
         getByName<Upload>("uploadArchives") {
 
