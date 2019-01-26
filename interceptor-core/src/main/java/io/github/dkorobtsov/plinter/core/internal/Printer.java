@@ -23,16 +23,16 @@
  * SOFTWARE.
  */
 
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
-import static io.github.dkorobtsov.plinter.internal.BodyFormatter.formattedBody;
-import static io.github.dkorobtsov.plinter.internal.Util.hasPrintableBody;
+import static io.github.dkorobtsov.plinter.core.internal.BodyFormatter.formattedBody;
+import static io.github.dkorobtsov.plinter.core.internal.Util.hasPrintableBody;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import io.github.dkorobtsov.plinter.Level;
-import io.github.dkorobtsov.plinter.LogWriter;
-import io.github.dkorobtsov.plinter.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.Level;
+import io.github.dkorobtsov.plinter.core.LogWriter;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -79,10 +79,12 @@ final class Printer {
   private static final String RECEIVED_TAG = "Received: ";
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss:SSS";
   private static final String THREAD_STRING_FORMAT = "%-5s %-{indent}s %-5s %s";
-  private static final int THREAD_INDENT = 34;
+  private static final int THREAD_INDENT = 36;
 
   private static final String[] OMITTED_RESPONSE = {"", "Omitted response body"};
   private static final String[] OMITTED_REQUEST = {"", "Omitted request body"};
+  private static final String[] EMPTY_REQUEST_BODY = {"", "Empty request body"};
+  private static final String[] EMPTY_RESPONSE_BODY = {"", "Empty response body"};
 
   private static LoggerConfig loggerConfig;
 
@@ -112,24 +114,22 @@ final class Printer {
   }
 
   private static void printRequestStartingLine() {
-    final int i =
-        DEFAULT_LINE.length() + loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
+    final int i = loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
     loggerConfig.logger.log(REQUEST_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printResponseStartingLine() {
-    final int i =
-        DEFAULT_LINE.length() + loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
+    final int i = loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
     loggerConfig.logger.log(RESPONSE_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printEndingLine() {
-    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - ENDING_LINE.length();
+    final int i = loggerConfig.maxLineLength - ENDING_LINE.length();
     loggerConfig.logger.log(ENDING_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
   private static void printSectionLine() {
-    final int i = DEFAULT_LINE.length() + loggerConfig.maxLineLength - SECTION_LINE.length();
+    final int i = loggerConfig.maxLineLength - SECTION_LINE.length();
     loggerConfig.logger.log(SECTION_LINE + repeatChar(HORIZONTAL_LINE, i));
   }
 
@@ -173,11 +173,21 @@ final class Printer {
   private static void printRequestBody(InterceptedRequest request) {
     if (bodyShouldBePrinted()) {
       if (hasPrintableBody(mediaType(request))) {
-        final String requestBody = LINE_SEPARATOR
-            + BODY_TAG
-            + LINE_SEPARATOR
-            + bodyToString(request);
-        logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
+        String printableBody = bodyToString(request);
+
+        // To handle situations, when we expect printable body based on
+        // media type but nothing is returned.
+        if (printableBody.isEmpty()) {
+          logLines(EMPTY_REQUEST_BODY, true);
+        } else {
+          final String requestBody = LINE_SEPARATOR
+              + BODY_TAG
+              + LINE_SEPARATOR
+              + printableBody;
+
+          logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
+        }
+
       } else {
         logLines(OMITTED_REQUEST, true);
       }
@@ -197,12 +207,18 @@ final class Printer {
   private static void printResponseBody(InterceptedResponse interceptedResponse) {
     if (bodyShouldBePrinted()) {
       if (interceptedResponse.hasPrintableBody) {
-        final String responseBody = LINE_SEPARATOR
-            + BODY_TAG
-            + LINE_SEPARATOR
-            + formattedBody(interceptedResponse.originalBody);
+        String printableBody = formattedBody(interceptedResponse.originalBody);
 
-        logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
+        if (printableBody.isEmpty()) {
+          logLines(EMPTY_RESPONSE_BODY, true);
+        } else {
+          final String responseBody = LINE_SEPARATOR
+              + BODY_TAG
+              + LINE_SEPARATOR
+              + printableBody;
+
+          logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
+        }
       } else {
         logLines(OMITTED_RESPONSE, true);
       }
@@ -293,7 +309,9 @@ final class Printer {
 
   private static void logLine(String startingWith, boolean withLineSize, String line) {
     final int lineLength = line.length();
-    final int maxLongSize = withLineSize ? loggerConfig.maxLineLength : lineLength;
+    final int maxLongSize = withLineSize
+        ? loggerConfig.maxLineLength - startingWith.length()
+        : lineLength;
     for (int i = 0; i <= lineLength / maxLongSize; i++) {
       final int start = i * maxLongSize;
       int end = (i + 1) * maxLongSize;

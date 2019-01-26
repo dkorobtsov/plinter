@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
-import static io.github.dkorobtsov.plinter.internal.Util.UTF_8;
+import static io.github.dkorobtsov.plinter.core.internal.Util.UTF_8;
 
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -38,6 +38,8 @@ final class BodyFormatter {
       }
     } catch (JSONException e) {
       message = bodyAsString;
+    } catch (StringIndexOutOfBoundsException e) {
+      message = "";
     }
     return message;
   }

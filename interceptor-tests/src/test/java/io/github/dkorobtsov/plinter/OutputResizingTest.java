@@ -1,8 +1,10 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import junitparams.JUnitParamsRunner;
@@ -39,22 +41,22 @@ public class OutputResizingTest extends BaseTest {
 
     Assertions.assertThat(testLogger.formattedOutput())
         .contains(
-            "{\"name\": \"elolejipaqimacelogegejovonugiqomikakulekarixenirugudezebipuxuqohefuyep");
+            "{\"name\": \"elolejipaqimacelogegejovonugiqomikakulekarixenirugudezebipuxuqohefuy");
 
     Assertions.assertThat(testLogger.formattedOutput())
         .contains(
-            "uxadopagakipilepaciliyejomanicalihebabebirosefuvegecuvufunikiyekalukuziharaqocog");
+            "epuxadopagakipilepaciliyejomanicalihebabebirosefuvegecuvufunikiyekalukuziharaq");
 
     Assertions.assertThat(testLogger.formattedOutput())
         .contains(
-            "ovukuperibanikohijovatenutopelobokuxajasatahudagid\"}");
+            "ocogovukuperibanikohijovatenutopelobokuxajasatahudagid\"}");
   }
 
   @Test(expected = IllegalArgumentException.class)
   @Parameters(method = "invalidMaxLineSizes")
   public void invalidOutputLengthHandling(String maxLineLength) {
     new OkHttp3LoggingInterceptor(
-        io.github.dkorobtsov.plinter.LoggerConfig.builder()
+        LoggerConfig.builder()
             .maxLineLength(Integer.parseInt(maxLineLength))
             .build());
   }
@@ -63,7 +65,7 @@ public class OutputResizingTest extends BaseTest {
   @Parameters(method = "validMaxLineSizes")
   public void validOutputLengthHandling(String maxLineLength) {
     final OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
-        io.github.dkorobtsov.plinter.LoggerConfig.builder()
+        LoggerConfig.builder()
             .maxLineLength(Integer.parseInt(maxLineLength))
             .build());
 

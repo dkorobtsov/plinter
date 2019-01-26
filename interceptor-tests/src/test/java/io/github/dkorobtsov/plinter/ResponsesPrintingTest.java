@@ -1,12 +1,14 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 
-import io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor;
-import io.github.dkorobtsov.plinter.internal.HttpStatus;
-import io.github.dkorobtsov.plinter.internal.InterceptedMediaType;
-import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
-import io.github.dkorobtsov.plinter.internal.Util;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
+import io.github.dkorobtsov.plinter.core.internal.HttpStatus;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.internal.Util;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
 import java.net.MalformedURLException;
@@ -28,12 +30,12 @@ public class ResponsesPrintingTest extends BaseTest {
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
   private static final String TEST_URL = "http://google.com/api/test/";
   private static final int LINE_LENGTH = 120;
-  private static final int TRAILING_SPACES = 3;
+  private static final int TRAILING_SPACE = 1;
 
   @Test
   public void printResponse_elapsedTime() {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -50,7 +52,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @Test
   public void printResponse_isSuccess() {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -69,7 +71,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @Test
   public void printResponse_isFail() {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(504)
@@ -89,7 +91,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @Test
   public void printResponse_hasNoPrintableBody() {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
         .message(HttpStatus.OK.getMessage())
@@ -107,7 +109,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @Test
   public void printResponse_hasPrintableBody() {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -136,7 +138,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @Test
   public void printResponse_segmentsPrinting() throws MalformedURLException {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
         .message(HttpStatus.OK.getMessage())
@@ -155,7 +157,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @Test
   public void printResponse_urlShouldBePrintedInSingleLine() throws MalformedURLException {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final String randomSeed = TestUtil.randomText(110);
+    final String randomSeed = TestUtil.randomText(108);
 
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
@@ -169,7 +171,6 @@ public class ResponsesPrintingTest extends BaseTest {
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
     Assertions.assertThat(testLogger.loggerOutput(false)).contains("URL: " + TEST_URL + randomSeed);
-    Assertions.assertThat(testLogger.loggerOutput(true)).contains("   - is success : true ");
   }
 
   @Test
@@ -178,7 +179,7 @@ public class ResponsesPrintingTest extends BaseTest {
   public void printResponse_outputResizing(String maxLineLength) throws MalformedURLException {
     final int maxLength = Integer.parseInt(maxLineLength);
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -209,13 +210,13 @@ public class ResponsesPrintingTest extends BaseTest {
                 || it.charAt(0) == '└')
         .forEach(
             it -> Assertions.assertThat(it.length())
-                .isEqualTo(maxLength + TRAILING_SPACES));
+                .isEqualTo(maxLength + TRAILING_SPACE));
   }
 
   @Test
   public void printResponse_generalFormatting() {
     final TestLogger testLogger = new TestLogger(
-        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+        LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -236,7 +237,7 @@ public class ResponsesPrintingTest extends BaseTest {
 
     Assertions.assertThat(testLogger.formattedOutput())
         .isEqualTo(""
-            + "┌────── Response ───────────────────────────────────────────────────────────────── \n"
+            + "┌────── Response ─────────────────────────────────────────────────────────────── \n"
             + "  URL: http://google.com/api/test/ \n"
             + "   \n"
             + "  is success : true - Execution time: 10ms \n"
@@ -253,7 +254,7 @@ public class ResponsesPrintingTest extends BaseTest {
             + "     \"name\": \"John\", \n"
             + "     \"age\": 31 \n"
             + "  } \n"
-            + "└───────────────────────────────────────────────────────────────────────────────── \n");
+            + "└─────────────────────────────────────────────────────────────────────────────── \n");
   }
 
 }

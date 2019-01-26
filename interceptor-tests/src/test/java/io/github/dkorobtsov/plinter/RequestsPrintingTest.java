@@ -1,18 +1,20 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.ACCEPT;
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
-import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.core.internal.Util.ACCEPT;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor;
-import io.github.dkorobtsov.plinter.internal.InterceptedMediaType;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequestBody;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequestBody;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,11 +29,11 @@ public class RequestsPrintingTest extends BaseTest {
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
   private static final String TEST_URL = "http://google.com/api/test/";
   private static final int MAX_LINE_LENGTH = 120;
-  private static final int TRAILING_SPACES = 3;
+  private static final int TRAILING_SPACE = 1;
 
   @Test
   public void printRequest_hasNoPrintableBody() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .url(TEST_URL)
         .build();
@@ -39,13 +41,13 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false))
+    assertThat(testLogger.loggerOutput(false))
         .contains("Omitted request body");
   }
 
   @Test
   public void printRequest_hasPrintableBody() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("PUT", InterceptedRequestBody
             .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
@@ -55,7 +57,7 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.formattedOutput())
+    assertThat(testLogger.formattedOutput())
         .contains(""
             + "  Body: \n"
             + "  { \n"
@@ -71,7 +73,7 @@ public class RequestsPrintingTest extends BaseTest {
   @SuppressWarnings("BooleanExpressionComplexity")
   public void printRequest_outputResizing(String maxLineLength) {
     final int maxLength = Integer.parseInt(maxLineLength);
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("PUT", InterceptedRequestBody
             .create(InterceptedMediaType.parse(APPLICATION_JSON), RESIZABLE_BODY))
@@ -95,13 +97,13 @@ public class RequestsPrintingTest extends BaseTest {
                 || it.charAt(0) == '├'
                 || it.charAt(0) == '└')
         .forEach(
-            it -> Assertions.assertThat(it.length())
-                .isEqualTo(maxLength + TRAILING_SPACES));
+            it -> assertThat(it.length())
+                .isEqualTo(maxLength + TRAILING_SPACE));
   }
 
   @Test
   public void printRequest_putMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("PUT", InterceptedRequestBody
             .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
@@ -111,12 +113,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @PUT");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @PUT");
   }
 
   @Test
   public void printRequest_postMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("POST", InterceptedRequestBody
             .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
@@ -126,12 +128,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @POST");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @POST");
   }
 
   @Test
   public void printRequest_deleteMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("DELETE", InterceptedRequestBody
             .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
@@ -141,7 +143,7 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @DELETE");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @DELETE");
   }
 
   @Test
@@ -156,12 +158,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @PATCH");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @PATCH");
   }
 
   @Test
   public void printRequest_traceMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("TRACE", null)
         .url(TEST_URL)
@@ -170,12 +172,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @TRACE");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @TRACE");
   }
 
   @Test
   public void printRequest_optionsMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("OPTIONS", null)
         .url(TEST_URL)
@@ -184,12 +186,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @OPTIONS");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @OPTIONS");
   }
 
   @Test
   public void printRequest_headMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("HEAD", null)
         .url(TEST_URL)
@@ -198,12 +200,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @HEAD");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @HEAD");
   }
 
   @Test
   public void printRequest_connectMethod() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .method("CONNECT", null)
         .url(TEST_URL)
@@ -212,12 +214,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Method: @CONNECT");
+    assertThat(testLogger.loggerOutput(false)).contains("Method: @CONNECT");
   }
 
   @Test
   public void printRequest_urlShouldBePrintedInSingleLine() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final String randomSeed = TestUtil.randomText(100);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .url(TEST_URL + randomSeed)
@@ -226,12 +228,12 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("URL: " + TEST_URL + randomSeed);
+    assertThat(testLogger.loggerOutput(false)).contains("URL: " + TEST_URL + randomSeed);
   }
 
   @Test
   public void printRequest_oneHeader() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .get()
         .addHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -241,13 +243,14 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Headers:");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Content-Type: application/json");
+    assertThat(testLogger.loggerOutput(false)).contains("Headers:");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Content-Type: application/json");
   }
 
   @Test
   public void printRequest_twoHeaders() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .get()
         .addHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -258,14 +261,15 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Headers:");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("┌ Content-Type: application/json");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("└ Accept: application/json");
+    assertThat(testLogger.loggerOutput(false)).contains("Headers:");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("┌ Content-Type: application/json");
+    assertThat(testLogger.loggerOutput(false)).contains("└ Accept: application/json");
   }
 
   @Test
   public void printRequest_threeHeadersWithMultiline() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .get()
         .addHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -280,20 +284,29 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("Headers:");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("┌ Content-Type: application/json");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains(
-        "├ LongHeader: unogetabukuloqidijibiqodenofigubabuxunetarobukisi"
-            + "keyeguburehuquyogoquxosevutonasedigutiwavepihawiquhidanir");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains(
-        "otiguwuwacomenubafacufufuhujajajehanacirepexigewuwiwucifayumoka"
-            + "wikoyipofazejixekalunuguxumucaraputoceqaxeyasegipulicikev");
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("└ Accept: application/json");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Headers:");
+
+    assertThat(testLogger.loggerOutput(false))
+        .contains("┌ Content-Type: application/json");
+
+    assertThat(testLogger.loggerOutput(false))
+        .contains(
+            "├ LongHeader: unogetabukuloqidijibiqodenofigubabuxunetarobukisi"
+                + "keyeguburehuquyogoquxosevutonasedigutiwavepihawiquhidan");
+
+    assertThat(testLogger.loggerOutput(false))
+        .contains(
+            "irotiguwuwacomenubafacufufuhujajajehanacirepexigewuwiwucifayumo"
+                + "kawikoyipofazejixekalunuguxumucaraputoceqaxeyasegipulic");
+
+    assertThat(testLogger.loggerOutput(false))
+        .contains("└ Accept: application/json");
   }
 
   @Test
   public void printRequest_generalFormatting() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .get()
         .addHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -307,9 +320,9 @@ public class RequestsPrintingTest extends BaseTest {
             .maxLineLength(80)
             .build(), request);
 
-    Assertions.assertThat(testLogger.formattedOutput())
+    assertThat(testLogger.formattedOutput())
         .isEqualTo(""
-            + "┌────── Request ────────────────────────────────────────────────────────────────── \n"
+            + "┌────── Request ──────────────────────────────────────────────────────────────── \n"
             + "  URL: http://google.com/api/test/ \n"
             + "   \n"
             + "  Method: @GET \n"
@@ -319,7 +332,7 @@ public class RequestsPrintingTest extends BaseTest {
             + "  └ Accept: application/json \n"
             + "   \n"
             + "  Omitted request body \n"
-            + "└───────────────────────────────────────────────────────────────────────────────── \n");
+            + "└─────────────────────────────────────────────────────────────────────────────── \n");
   }
 
 }
