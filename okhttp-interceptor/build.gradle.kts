@@ -1,7 +1,6 @@
 val archivesBaseName: String by extra { "okhttp-interceptor" }
 val artefactName: String by extra { "OkHttp Logging Interceptor" }
 val artefactDescription: String by extra { "Logging Interceptor for OkHttp Client" }
-rootProject.extra["projectGroup"]
 
 dependencies {
     implementation(project(":interceptor-core"))
@@ -16,7 +15,7 @@ tasks.named<Jar>("jar") {
         attributes(mapOf(
                 "Implementation-Title" to artefactName,
                 "Implementation-Description" to artefactDescription,
-                "Automatic-Module-Name" to "${rootProject.extra["projectGroup"]}$archivesBaseName"
+                "Automatic-Module-Name" to "${rootProject.extra["projectGroup"]}.$archivesBaseName"
         ))
     }
 }
