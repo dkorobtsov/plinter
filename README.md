@@ -1,4 +1,4 @@
-#Logging Interceptor
+#Plinter (Pretty Logging Interceptor)
 
 This library makes working with API's easy and convenient. 
 Just attach interceptor to your favorite HTTP client and forward all requests and responses to any Java logger (or use default one).
@@ -43,11 +43,19 @@ By default JUL logger will be used with INFO level and minimal format displaying
 To start using interceptor with OkHttp client add following dependency to classpath:
 ```xml
 <dependency>
-   <groupId>io.github.dkorobtsov.logging</groupId>
+   <groupId>io.github.dkorobtsov.plinter</groupId>
    <artifactId>okhttp-interceptor</artifactId>
 </dependency>
 ```
-Check [releases](https://github.com/dkorobtsov/LoggingInterceptor/releases) for latest interceptor version.
+
+####Gradle:
+```xml
+dependencies {
+    implementation("io.github.dkorobtsov.plinter:okhttp-interceptor:$LATEST_VERSION")
+}
+```
+
+Check [releases](https://github.com/dkorobtsov/plinter/releases) for latest interceptor version.
 
 Basic usage example:
 ```java
@@ -62,14 +70,23 @@ Basic usage example:
 
 ###OkHttp3
 To start using interceptor with OkHttp3 client add following dependency to classpath:
+
+####Maven:
 ```xml
 <dependency>
-   <groupId>io.github.dkorobtsov.logging</groupId>
+   <groupId>io.github.dkorobtsov.plinter</groupId>
    <artifactId>okhttp3-interceptor</artifactId>
    <version>$LATEST_VERSION</version>
 </dependency>
 ```
-Check [releases](https://github.com/dkorobtsov/LoggingInterceptor/releases) for latest interceptor version.
+
+####Gradle:
+```xml
+dependencies {
+    implementation("io.github.dkorobtsov.plinter:okhttp3-interceptor:$LATEST_VERSION")
+}
+```
+Check [releases](https://github.com/dkorobtsov/plinter/releases) for latest interceptor version.
 
 Basic usage example:
 ```java
@@ -84,12 +101,19 @@ Basic usage example:
 To start using interceptor with Apache Http client add following dependency to classpath:
 ```xml
 <dependency>
-   <groupId>io.github.dkorobtsov.logging</groupId>
+   <groupId>io.github.dkorobtsov.plinter</groupId>
    <artifactId>apache-interceptor</artifactId>
    <version>$LATEST_VERSION</version>
 </dependency>
 ```
-Check [releases](https://github.com/dkorobtsov/LoggingInterceptor/releases) for latest interceptor version.
+
+####Gradle:
+```xml
+dependencies {
+    implementation("io.github.dkorobtsov.plinter:apache-interceptor:$LATEST_VERSION")
+}
+```
+Check [releases](https://github.com/dkorobtsov/plinter/releases) for latest interceptor version.
 
 Basic usage example:
 ```java
@@ -183,7 +207,7 @@ Or more sophisticated approach with custom logging pattern.
 ```
 Example:
 <p align="left">
-    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot2.png"/>
+    <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/screenshot2.png"/>
 </p>
 
 #Logger Configuration
@@ -256,6 +280,6 @@ Part of internal requests/responses handling logic based on [OkHttp3](https://gi
 **Find this library helpful? Show some support:**
 
 [![GitHub followers](https://img.shields.io/github/followers/dkorobtsov.svg?style=social&label=Follow)](https://github.com/dkorobtsov)
-[![GitHub forks](https://img.shields.io/github/forks/dkorobtsov/LoggingInterceptor.svg?style=social&label=Fork)](https://github.com/dkorobtsov/LoggingInterceptor/fork)
-[![GitHub stars](https://img.shields.io/github/stars/dkorobtsov/LoggingInterceptor.svg?style=social&label=Star)](https://github.com/dkorobtsov/LoggingInterceptor)
+[![GitHub forks](https://img.shields.io/github/forks/dkorobtsov/LoggingInterceptor.svg?style=social&label=Fork)](https://github.com/dkorobtsov/plinter/fork)
+[![GitHub stars](https://img.shields.io/github/stars/dkorobtsov/LoggingInterceptor.svg?style=social&label=Star)](https://github.com/dkorobtsov/plinter)
 [![Twitter Follow](https://img.shields.io/twitter/follow/dkorobtsov.svg?style=social&label=Follow)](https://twitter.com/dkorobtsov)
