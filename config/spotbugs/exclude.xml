@@ -4,7 +4,7 @@
 
   <!-- By Design -->
   <Match>
-    <Class name="com.dkorobtsov.logging.AbstractInterceptor"/>
+    <Class name="io.github.dkorobtsov.plinter.AbstractInterceptor"/>
     <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
 
@@ -33,13 +33,13 @@
 
   <!-- False Positive -->
   <Match>
-    <Class name="com.dkorobtsov.logging.ResponsesPrintingTest"/>
+    <Class name="io.github.dkorobtsov.plinter.ResponsesPrintingTest"/>
     <Bug pattern="DM_DEFAULT_ENCODING"/>
   </Match>
 
   <!-- By Design -->
   <Match>
-    <Class name="com.dkorobtsov.logging.BaseTest"/>
+    <Class name="io.github.dkorobtsov.plinter.BaseTest"/>
     <Bug pattern="LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE"/>
   </Match>
 
