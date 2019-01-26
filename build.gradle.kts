@@ -1,4 +1,3 @@
-import groovy.xml.dom.DOMCategory.attributes
 import java.nio.charset.StandardCharsets
 
 val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
