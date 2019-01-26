@@ -3,11 +3,11 @@ package io.github.dkorobtsov.plinter.okhttp3;
 
 import static okhttp3.internal.http.HttpMethod.permitsRequestBody;
 
-import io.github.dkorobtsov.plinter.RequestConverter;
-import io.github.dkorobtsov.plinter.internal.CacheControl;
-import io.github.dkorobtsov.plinter.internal.InterceptedMediaType;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequestBody;
+import io.github.dkorobtsov.plinter.core.RequestConverter;
+import io.github.dkorobtsov.plinter.core.internal.CacheControl;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequestBody;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;

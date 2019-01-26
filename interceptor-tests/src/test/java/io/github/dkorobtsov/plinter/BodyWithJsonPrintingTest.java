@@ -1,7 +1,7 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_ZIP;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 

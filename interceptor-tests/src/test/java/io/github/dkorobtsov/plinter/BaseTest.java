@@ -1,14 +1,17 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
-import io.github.dkorobtsov.plinter.LoggerConfig.LoggerConfigBuilder;
+import io.github.dkorobtsov.plinter.core.LogWriter;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggerConfig.LoggerConfigBuilder;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpResponseInterceptor;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
@@ -124,7 +127,7 @@ public abstract class BaseTest {
         .setHeader(CONTENT_TYPE, mediaType)
         .setBody(body));
 
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
 
     interceptWithConfig(interceptor, loggerConfig);

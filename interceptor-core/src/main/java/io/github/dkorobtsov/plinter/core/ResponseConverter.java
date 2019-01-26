@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.plinter.core;
 
-import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import java.net.URL;
 
 

@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
 
 /**

@@ -4,7 +4,7 @@
 
   <!-- By Design -->
   <Match>
-    <Class name="io.github.dkorobtsov.plinter.AbstractInterceptor"/>
+    <Class name="io.github.dkorobtsov.plinter.core.AbstractInterceptor"/>
     <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
   </Match>
 

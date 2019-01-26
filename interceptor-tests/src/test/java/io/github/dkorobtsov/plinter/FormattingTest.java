@@ -1,5 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
 import org.junit.Assert;
@@ -15,7 +16,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_messageOnly_containsOneElement() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -25,7 +26,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_messageOnly_containsOnlyMessage() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -35,7 +36,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_full_containsFourElements() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_FULL);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_FULL);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -45,7 +46,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_full_includesThreadName() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_FULL);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_FULL);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -56,7 +57,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_full_includesMessage() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_FULL);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_FULL);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -67,7 +68,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_full_includesLevel() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_FULL);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_FULL);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -78,7 +79,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_full_startsWithDate() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_FULL);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_FULL);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -88,7 +89,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateMessage_containsTwoElements() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -98,7 +99,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateMessage_includesMessage() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -109,7 +110,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateMessage_startsWithDate() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -119,7 +120,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateLevelMessage_containsThreeElements() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -129,7 +130,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateLevelMessage_includesMessage() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -140,7 +141,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateLevelMessage_includesLevel() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -151,7 +152,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_dateLevelMessage_startsWithDate() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -161,7 +162,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_levelMessage_containsTwoElements() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -171,7 +172,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_levelMessage_includesMessage() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -182,7 +183,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_levelMessage_containsLevel() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -193,7 +194,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_threadMessage_containsTwoElements() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_LEVEL_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 
@@ -203,7 +204,7 @@ public class FormattingTest {
 
   @Test
   public void formatterTest_threadMessage_includesMessage() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     testLogger.log(TEST_MESSAGE);
 

@@ -1,14 +1,14 @@
 package io.github.dkorobtsov.plinter.okhttp3;
 
-import static io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor.printRequest;
-import static io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor.printResponse;
+import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printRequest;
+import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printResponse;
 
-import io.github.dkorobtsov.plinter.AbstractInterceptor;
-import io.github.dkorobtsov.plinter.LoggerConfig;
-import io.github.dkorobtsov.plinter.RequestConverter;
-import io.github.dkorobtsov.plinter.ResponseConverter;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
-import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.AbstractInterceptor;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.RequestConverter;
+import io.github.dkorobtsov.plinter.core.ResponseConverter;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;

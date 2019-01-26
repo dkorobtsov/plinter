@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;

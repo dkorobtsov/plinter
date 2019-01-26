@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.plinter.core;
 
 /**
  * Logging levels regulating Printer output. Depending on chosen level will be printed full

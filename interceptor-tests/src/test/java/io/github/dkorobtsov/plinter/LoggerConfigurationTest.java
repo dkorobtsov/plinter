@@ -5,6 +5,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
+import io.github.dkorobtsov.plinter.core.Level;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
 import java.util.concurrent.Executors;
@@ -29,9 +32,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldWorkWithoutAnyAdditionalConfiguration(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .build());
 
@@ -44,9 +47,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerWithDefaultFormatterShouldPrintMessageOnly(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .build());
 
@@ -61,9 +64,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldBeDisabledWhenDebugModeSetToFalse(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .loggable(false)
         .build());
@@ -76,7 +79,7 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldBeEnabledWhenDebugModeSetToTrue(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
@@ -91,9 +94,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void defaultLoggerFormatCanBeModified(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .build());
 
@@ -107,11 +110,11 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void loggerShouldBeDisabledWhenLevelSetToNone(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
-        .level(io.github.dkorobtsov.plinter.Level.NONE)
+        .level(Level.NONE)
         .build());
 
     assertTrue("Logger output should be empty if level set to None.",
@@ -122,11 +125,11 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void headersShouldNotBeLoggedWhenLevelSetToBody(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
-        .level(io.github.dkorobtsov.plinter.Level.BODY)
+        .level(Level.BODY)
         .build());
 
     assertFalse("Headers should not be logged when level set to Body.",
@@ -137,11 +140,11 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void bodyShouldNotBeLoggedWhenLevelSetToHeaders(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
-        .level(io.github.dkorobtsov.plinter.Level.HEADERS)
+        .level(Level.HEADERS)
         .build());
 
     assertFalse("Body should not be logged when level set to Headers.",
@@ -154,7 +157,7 @@ public class LoggerConfigurationTest extends BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .level(Level.BASIC)
         .build());
@@ -185,9 +188,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void userShouldBeAbleToSupplyExecutor(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_THREAD_MESSAGE);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .executor(Executors.newSingleThreadExecutor())
         .build());
@@ -200,9 +203,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void threadInfoShouldNotBeLoggedIfDisabled(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .withThreadInfo(false)
         .build());
@@ -215,9 +218,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void threadInfoShouldBeLoggedIfEnabled(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .withThreadInfo(true)
         .build());
@@ -230,9 +233,9 @@ public class LoggerConfigurationTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void threadInfoShouldNotBeLoggedByDefault(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
-    interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    interceptWithConfig(interceptor, LoggerConfig.builder()
         .logger(testLogger)
         .build());
 
@@ -246,7 +249,7 @@ public class LoggerConfigurationTest extends BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
 
     try {
-      interceptWithConfig(interceptor, io.github.dkorobtsov.plinter.LoggerConfig.builder()
+      interceptWithConfig(interceptor, LoggerConfig.builder()
           .build());
     } catch (Exception e) {
       fail("User should be able to use default logger.");

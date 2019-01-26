@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
 /**
  * Protocols that OkHttp implements for <a href="http://tools.ietf.org/html/draft-ietf-tls-applayerprotoneg">ALPN</a>

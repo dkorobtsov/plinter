@@ -4,6 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
+import io.github.dkorobtsov.plinter.core.LogWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -92,7 +93,7 @@ public class Log4j2LoggerTest extends BaseTest {
     addAppender(LOG_WRITER, "TestWriter", OK_HTTP_LOG_PATTERN);
 
     interceptWithConfig(interceptor,
-        io.github.dkorobtsov.plinter.LoggerConfig.builder()
+        io.github.dkorobtsov.plinter.core.LoggerConfig.builder()
             .logger(log4j2Writer)
             .build());
 

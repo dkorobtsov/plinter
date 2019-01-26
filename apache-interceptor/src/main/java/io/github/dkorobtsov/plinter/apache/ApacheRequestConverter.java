@@ -1,15 +1,15 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
-import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
-import static io.github.dkorobtsov.plinter.internal.Util.TEXT_PLAIN;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_PLAIN;
 import static java.util.Objects.nonNull;
 
-import io.github.dkorobtsov.plinter.RequestConverter;
-import io.github.dkorobtsov.plinter.internal.HttpMethod;
-import io.github.dkorobtsov.plinter.internal.InterceptedMediaType;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequestBody;
+import io.github.dkorobtsov.plinter.core.RequestConverter;
+import io.github.dkorobtsov.plinter.core.internal.HttpMethod;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequestBody;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;

@@ -1,6 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_XML;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_XML;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;

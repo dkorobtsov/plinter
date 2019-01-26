@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.plinter.core;
 
-import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 
 /**
  * Base interface for helper classes converting client specific HTTP requests to internal {@link

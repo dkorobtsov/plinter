@@ -1,12 +1,13 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_ZIP;
-import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
 
-import io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor;
-import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
-import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import java.util.concurrent.Executors;
 import org.junit.Test;
 

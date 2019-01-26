@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
-import io.github.dkorobtsov.plinter.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;

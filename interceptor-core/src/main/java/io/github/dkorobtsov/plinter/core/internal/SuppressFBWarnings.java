@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

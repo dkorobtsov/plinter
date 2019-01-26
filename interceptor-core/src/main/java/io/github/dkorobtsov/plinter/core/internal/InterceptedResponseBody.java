@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
-import static io.github.dkorobtsov.plinter.internal.Util.UTF_8;
+import static io.github.dkorobtsov.plinter.core.internal.Util.UTF_8;
 
 import java.io.Closeable;
 import java.io.IOException;

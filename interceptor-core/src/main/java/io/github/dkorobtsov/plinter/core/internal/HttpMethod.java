@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
 /**
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies

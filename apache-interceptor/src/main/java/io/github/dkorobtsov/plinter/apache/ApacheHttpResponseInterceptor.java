@@ -1,11 +1,11 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor.printResponse;
+import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printResponse;
 
-import io.github.dkorobtsov.plinter.AbstractInterceptor;
-import io.github.dkorobtsov.plinter.LoggerConfig;
-import io.github.dkorobtsov.plinter.ResponseConverter;
-import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.AbstractInterceptor;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.ResponseConverter;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;

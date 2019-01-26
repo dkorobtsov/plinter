@@ -1,11 +1,11 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-import io.github.dkorobtsov.plinter.internal.SuppressFBWarnings;
+import io.github.dkorobtsov.plinter.core.internal.SuppressFBWarnings;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

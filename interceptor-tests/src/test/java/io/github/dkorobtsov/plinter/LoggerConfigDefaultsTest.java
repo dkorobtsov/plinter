@@ -6,7 +6,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import io.github.dkorobtsov.plinter.LoggerConfig.LoggerConfigBuilder;
+import io.github.dkorobtsov.plinter.core.Level;
+import io.github.dkorobtsov.plinter.core.LoggerConfig;
+import io.github.dkorobtsov.plinter.core.LoggerConfig.LoggerConfigBuilder;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import org.junit.Test;
 
 /**

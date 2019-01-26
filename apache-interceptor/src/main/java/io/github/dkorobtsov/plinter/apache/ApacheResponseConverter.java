@@ -2,17 +2,17 @@ package io.github.dkorobtsov.plinter.apache;
 
 import static io.github.dkorobtsov.plinter.apache.ApacheEntityUtil.readApacheHttpEntity;
 import static io.github.dkorobtsov.plinter.apache.ApacheEntityUtil.recreateHttpEntityFromString;
-import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 import static java.util.Objects.isNull;
 
-import io.github.dkorobtsov.plinter.ResponseConverter;
-import io.github.dkorobtsov.plinter.internal.HttpStatus;
-import io.github.dkorobtsov.plinter.internal.InterceptedHeaders;
-import io.github.dkorobtsov.plinter.internal.InterceptedMediaType;
-import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
-import io.github.dkorobtsov.plinter.internal.InterceptedResponseBody;
-import io.github.dkorobtsov.plinter.internal.ResponseDetails;
-import io.github.dkorobtsov.plinter.internal.ResponseHandler;
+import io.github.dkorobtsov.plinter.core.ResponseConverter;
+import io.github.dkorobtsov.plinter.core.internal.HttpStatus;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedHeaders;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
+import io.github.dkorobtsov.plinter.core.internal.ResponseDetails;
+import io.github.dkorobtsov.plinter.core.internal.ResponseHandler;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;

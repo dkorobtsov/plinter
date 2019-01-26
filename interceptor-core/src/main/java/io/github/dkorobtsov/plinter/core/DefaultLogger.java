@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.plinter.core;
 
 import java.util.Arrays;
 import java.util.logging.ConsoleHandler;

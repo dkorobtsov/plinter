@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.plinter.core;
 
 /**
  * Parent class for all interceptors - to keep some common logic.

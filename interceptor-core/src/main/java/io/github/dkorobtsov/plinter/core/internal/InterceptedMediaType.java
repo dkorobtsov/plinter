@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.github.dkorobtsov.plinter.internal;
+package io.github.dkorobtsov.plinter.core.internal;
 
 import java.nio.charset.Charset;
 import java.util.Locale;

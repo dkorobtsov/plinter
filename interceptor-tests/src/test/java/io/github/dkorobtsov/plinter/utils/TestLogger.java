@@ -3,8 +3,8 @@ package io.github.dkorobtsov.plinter.utils;
 import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
 import static java.lang.Thread.State.RUNNABLE;
 
-import io.github.dkorobtsov.plinter.LogWriter;
-import io.github.dkorobtsov.plinter.LoggingFormat;
+import io.github.dkorobtsov.plinter.core.LogWriter;
+import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
