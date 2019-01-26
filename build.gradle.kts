@@ -1,6 +1,5 @@
 import java.nio.charset.StandardCharsets
 
-
 val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
 val projectDescription: String by extra { "HTTP traffic Pretty Logging Interceptor" }
 val projectName: String by extra { "Pretty Logging Interceptor" }
@@ -9,19 +8,15 @@ val projectVersion: String by extra { "5.0-SNAPSHOT" }
 val projectGroup: String by extra { "io.github.dkorobtsov.plinter" }
 val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
 
+val okioVersion: String by extra { "2.1.0" }
+
 rootProject.extra.set("projectGroup", projectGroup)
 
 plugins {
-    maven
-    jacoco
     id("java-library")
     id("project-report")
     id("org.sonarqube") version "2.6.2"
-    id("net.ltgt.errorprone") version "0.6"
 }
-
-group = projectGroup
-version = projectVersion
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -47,14 +42,30 @@ configure(listOf(rootProject)) {
     description = projectDescription
 }
 
-configure(subprojects) {
-    val project = this
+allprojects {
     group = projectGroup
     version = projectVersion
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+        gradlePluginPortal()
+        maven { setUrl("http://repo1.maven.org/maven2/") }
+    }
 
     apply(plugin = "java")
     apply(plugin = "maven")
     apply(plugin = "jacoco")
+
+    dependencies {
+        implementation("com.squareup.okio:okio:$okioVersion")
+    }
+}
+
+configure(subprojects) {
+    val project = this
+
     apply(from = "$gradleScriptDir/quality.gradle.kts")
 
     tasks.withType(JavaCompile::class) {
@@ -63,17 +74,6 @@ configure(subprojects) {
         options.isDeprecation = false
         options.compilerArgs.add("-nowarn")
         options.compilerArgs.add("-Xlint:none")
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven { setUrl("http://repo1.maven.org/maven2/") }
-    }
-
-    dependencies {
-        implementation("com.squareup.okio:okio:2.1.0")
     }
 
     tasks.named<Jar>("jar") {
