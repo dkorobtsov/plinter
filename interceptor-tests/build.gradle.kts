@@ -22,9 +22,6 @@ dependencies {
     testImplementation(project(":apache-interceptor"))
     testImplementation(project(":okhttp-interceptor"))
     testImplementation(project(":okhttp3-interceptor"))
-    testImplementation("com.dkorobtsov.logging:interceptor-core:5.0-SNAPSHOT") {
-        setChanging(true)
-    }
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")

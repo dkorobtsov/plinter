@@ -27,7 +27,7 @@ sonarqube {
     properties {
         property("sonar.dynamicAnalysis", "reuseReports")
         property("sonar.language", "java")
-        property("sonar.projectKey", "LoggingInterceptor")
+        property("sonar.projectKey", "Plinter")
         property("sonar.organization", "dkorobtsov-github")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.login", project.property("sonar.login"))
@@ -66,6 +66,7 @@ allprojects {
 configure(subprojects) {
     val project = this
 
+    apply(plugin = "java-library")
     apply(from = "$gradleScriptDir/quality.gradle.kts")
 
     tasks.withType(JavaCompile::class) {
@@ -205,8 +206,8 @@ fun sonarExclusions(): String {
 
 fun duplicationExclusions(): String {
     return arrayOf(
-            "**/interceptors/okhttp/**",
-            "**/interceptors/okhttp3/**"
+            "**/okhttp/**",
+            "**/okhttp3/**"
     ).joinToString(separator = ", ")
 }
 
