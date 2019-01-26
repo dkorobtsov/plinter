@@ -1,4 +1,4 @@
-rootProject.name = "LoggingInterceptor"
+rootProject.name = "plinter"
 include "interceptor-core"
 include "apache-interceptor"
 include "okhttp-interceptor"

@@ -65,7 +65,7 @@ tasks.named<Jar>("jar") {
     manifest {
         attributes(mapOf(
                 "Implementation-Title" to artefactName,
-                "Automatic-Module-Name" to "com.dkorobtsov.logging$archivesBaseName"
+                "Automatic-Module-Name" to "${rootProject.extra["projectGroup"]}$archivesBaseName"
         ))
     }
 }

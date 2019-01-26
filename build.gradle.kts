@@ -1,12 +1,15 @@
 import java.nio.charset.StandardCharsets
 
+
 val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
 val projectDescription: String by extra { "HTTP traffic Pretty Logging Interceptor" }
 val projectName: String by extra { "Pretty Logging Interceptor" }
-val projectGroup: String by extra { "io.github.dkorobtsov.logging" }
-val archivesBaseName: String by extra { "LoggingInterceptor" }
+val archivesBaseName: String by extra { "plinter" }
 val projectVersion: String by extra { "5.0-SNAPSHOT" }
+val projectGroup: String by extra { "io.github.dkorobtsov.plinter" }
 val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
+
+rootProject.extra.set("projectGroup", projectGroup)
 
 plugins {
     maven
