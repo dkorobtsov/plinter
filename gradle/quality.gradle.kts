@@ -1,4 +1,3 @@
-import com.github.spotbugs.SpotBugsExtension
 import com.github.spotbugs.SpotBugsPlugin
 import ru.vyarus.gradle.plugin.quality.QualityExtension
 import ru.vyarus.gradle.plugin.quality.QualityPlugin

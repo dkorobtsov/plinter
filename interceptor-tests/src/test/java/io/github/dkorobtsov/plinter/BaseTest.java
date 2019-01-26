@@ -4,6 +4,8 @@ import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 
+import com.squareup.okhttp.mockwebserver.MockResponse;
+import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.github.dkorobtsov.plinter.LoggerConfig.LoggerConfigBuilder;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpResponseInterceptor;
@@ -11,8 +13,7 @@ import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
+import io.github.dkorobtsov.plinter.utils.TestUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -49,10 +50,11 @@ import org.junit.Rule;
 @SuppressWarnings({"ClassDataAbstractionCoupling", "ClassFanOutComplexity", "PMD.ExcessiveImports"})
 public abstract class BaseTest {
 
+  static final String MOCK_SERVER_PATH = "/";
+
   private static final org.apache.logging.log4j.Logger logger
       = org.apache.logging.log4j.LogManager.getLogger(BaseTest.class.getName());
 
-  static final String MOCK_SERVER_PATH = "/";
   private static final ConnectionPool CONNECTION_POOL = new ConnectionPool();
   private static final Dispatcher DISPATCHER = new Dispatcher();
   private static final int KEEP_ALIVE_DURATION_MS = 60 * 1000;
@@ -90,7 +92,7 @@ public abstract class BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
 
     interceptWithConfig(interceptor, loggerConfig, body, mediaType,
         String.valueOf(server.url(MOCK_SERVER_PATH)));
@@ -123,7 +125,7 @@ public abstract class BaseTest {
         .setBody(body));
 
     final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
 
     interceptWithConfig(interceptor, loggerConfig);
 
@@ -131,7 +133,7 @@ public abstract class BaseTest {
   }
 
 
-  public io.github.dkorobtsov.plinter.LoggerConfig defaultLoggerConfig(final LogWriter logWriter) {
+  public LoggerConfig defaultLoggerConfig(final LogWriter logWriter) {
     return defaultLoggerConfig(logWriter, false, null);
   }
 
@@ -143,10 +145,10 @@ public abstract class BaseTest {
    * @param lineLength if specified, will line length will be modified. If null, default value will
    * be used.
    */
-  LoggerConfig defaultLoggerConfig(final io.github.dkorobtsov.plinter.LogWriter logWriter,
+  LoggerConfig defaultLoggerConfig(final LogWriter logWriter,
       final boolean withExecutor, final Integer lineLength) {
 
-    final LoggerConfigBuilder builder = io.github.dkorobtsov.plinter.LoggerConfig.builder()
+    final LoggerConfigBuilder builder = LoggerConfig.builder()
         .withThreadInfo(true)
         .logger(logWriter);
 
@@ -174,7 +176,7 @@ public abstract class BaseTest {
    * provided to logger configuration, after this method execution we can validate test logger
    * output.
    */
-  public void interceptWithConfig(String interceptor, io.github.dkorobtsov.plinter.LoggerConfig loggerConfig) {
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig) {
     interceptWithConfig(interceptor, loggerConfig, null, null,
         String.valueOf(server.url(MOCK_SERVER_PATH)));
   }
@@ -196,11 +198,11 @@ public abstract class BaseTest {
    * NB. If content and media type params are not provided request won't have body.
    */
   @SuppressWarnings("PMD.UseObjectForClearerAPI")
-  public void interceptWithConfig(String interceptor, io.github.dkorobtsov.plinter.LoggerConfig loggerConfig,
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
       String body, String mediaType, String url) {
 
     switch (Interceptor.fromString(interceptor)) {
-      case Interceptor.OKHTTP:
+      case OKHTTP:
         logger.info("OkHttp Interceptor: {}",
             loggerConfig.toString());
 
@@ -209,7 +211,7 @@ public abstract class BaseTest {
             okHttpRequest(body, mediaType, url));
         break;
 
-      case Interceptor.OKHTTP3:
+      case OKHTTP3:
         logger.info("OkHttp Interceptor: {}",
             loggerConfig.toString());
 
@@ -219,7 +221,7 @@ public abstract class BaseTest {
 
         break;
 
-      case Interceptor.APACHE_HTTPCLIENT_REQUEST:
+      case APACHE_HTTPCLIENT_REQUEST:
         logger.info("Apache Interceptors: {}",
             loggerConfig.toString());
 
@@ -409,7 +411,7 @@ public abstract class BaseTest {
   }
 
   /**
-   * Returns list of valid max line lengths. {@link io.github.dkorobtsov.plinter.LoggerConfig#maxLineLength}
+   * Returns list of valid max line lengths. {@link LoggerConfig#maxLineLength}
    *
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
@@ -421,7 +423,7 @@ public abstract class BaseTest {
   }
 
   /**
-   * Returns list of invalid max line lengths. {@link io.github.dkorobtsov.plinter.LoggerConfig#maxLineLength}
+   * Returns list of invalid max line lengths. {@link LoggerConfig#maxLineLength}
    *
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.

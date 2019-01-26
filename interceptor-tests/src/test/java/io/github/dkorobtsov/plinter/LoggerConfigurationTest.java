@@ -1,13 +1,12 @@
 package io.github.dkorobtsov.plinter;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import com.squareup.okhttp.mockwebserver.MockResponse;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
-import com.squareup.okhttp.mockwebserver.MockResponse;
 import java.util.concurrent.Executors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;

@@ -16,22 +16,22 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_shouldPrintMessageOnly() {
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder().build();
 
-    assertEquals("Default format", io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY, loggerConfig.format);
+    assertEquals("Default format", LoggingFormat.JUL_MESSAGE_ONLY, loggerConfig.format);
   }
 
   @Test
   public void loggerConfigDefaultConfiguration_maxLineLengthIs110() {
-    final LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig.builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertEquals("Max line length", 110, loggerConfig.maxLineLength);
   }
 
   @Test
   public void loggerConfigDefaultConfiguration_isLoggable() {
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder().build();
 
     assertTrue("Is loggable", loggerConfig.isLoggable);
@@ -39,7 +39,7 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_levelSetToBasic() {
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder().build();
 
     assertEquals("Logging level", Level.BASIC, loggerConfig.level);
@@ -47,7 +47,7 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_executorIsNotDefined() {
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder().build();
 
     assertNull("Executor", loggerConfig.executor);
@@ -55,7 +55,7 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_threadInfoIsDisabled() {
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder().build();
 
     assertFalse("Thread info", loggerConfig.withThreadInfo);
@@ -63,7 +63,7 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_loggerIsSet() {
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder().build();
 
     assertNotNull("Default Logger", loggerConfig.logger);
@@ -71,9 +71,9 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_formatCanBeChanged() {
-    final LoggerConfigBuilder builder = io.github.dkorobtsov.plinter.LoggerConfig.builder();
-    final io.github.dkorobtsov.plinter.LoggingFormat format = LoggingFormat.JUL_DATE_LEVEL_MESSAGE;
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = builder.format(format).build();
+    final LoggerConfigBuilder builder = LoggerConfig.builder();
+    final LoggingFormat format = LoggingFormat.JUL_DATE_LEVEL_MESSAGE;
+    final LoggerConfig loggerConfig = builder.format(format).build();
 
     assertEquals("Log Formatter", format, loggerConfig.format);
   }

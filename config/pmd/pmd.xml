@@ -18,6 +18,7 @@ http://pmd.sourceforge.net/ruleset/2.0.0 ">
     <exclude name="AccessorMethodGeneration"/>
     <exclude name="ArrayIsStoredDirectly"/>
     <exclude name="GuardLogStatement"/>
+    <exclude name="UnusedImports"/>
     <exclude name="JUnitAssertionsShouldIncludeMessage"/>
     <exclude name="JUnit4SuitesShouldUseSuiteAnnotation"/>
     <exclude name="JUnitTestsShouldIncludeAssert"/>

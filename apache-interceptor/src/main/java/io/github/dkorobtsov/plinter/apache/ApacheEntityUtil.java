@@ -5,6 +5,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import io.github.dkorobtsov.plinter.internal.SuppressFBWarnings;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -44,6 +45,7 @@ final class ApacheEntityUtil {
     }
   }
 
+  @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "False positive.")
   static HttpEntity recreateHttpEntityFromString(final String httpEntityContent,
       final HttpEntity entity) {
     final Header contentType = entity.getContentType();

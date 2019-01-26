@@ -3,7 +3,6 @@ package io.github.dkorobtsov.plinter;
 import static io.github.dkorobtsov.plinter.internal.Util.ACCEPT;
 import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
 import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.internal.InterceptedMediaType;

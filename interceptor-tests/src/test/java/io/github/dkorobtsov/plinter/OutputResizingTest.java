@@ -2,9 +2,9 @@ package io.github.dkorobtsov.plinter;
 
 import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
 
+import com.squareup.okhttp.mockwebserver.MockResponse;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import com.squareup.okhttp.mockwebserver.MockResponse;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.Assertions;

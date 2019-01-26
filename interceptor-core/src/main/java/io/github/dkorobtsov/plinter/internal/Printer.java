@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import okio.Buffer;
 
@@ -46,7 +47,7 @@ import okio.Buffer;
  * Class responsible for formatting intercepted events and logging them using provided {@link
  * LogWriter} implementation.
  */
-@SuppressWarnings("PMD")
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class Printer {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -140,7 +141,7 @@ final class Printer {
           + String.format(format,
           THREAD_TAG, Thread.currentThread().getName(),
           isRequest ? SENT_TAG : RECEIVED_TAG,
-          new SimpleDateFormat(TIMESTAMP_FORMAT)
+          new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.getDefault())
               .format(Calendar.getInstance().getTime()));
 
       logLines(debugDetails.split(REGEX_LINE_SEPARATOR), SECTION_DEFAULT_LINE, true);
@@ -266,7 +267,7 @@ final class Printer {
   private static String bodyToString(final InterceptedRequest request) {
     final InterceptedRequest copy = request.newBuilder().build();
     try (Buffer buffer = new Buffer()) {
-      if (Objects.isNull(copy.body())) {
+      if (isNull(copy.body())) {
         return "";
       }
       copy.body().writeTo(buffer);

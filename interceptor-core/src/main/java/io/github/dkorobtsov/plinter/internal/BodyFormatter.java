@@ -50,6 +50,7 @@ final class BodyFormatter {
     return new JSONArray(msg).toString(JSON_INDENT);
   }
 
+  @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "By design.")
   private static String formatAsXml(String msg) {
     try {
       final InputSource src = new InputSource(new StringReader(msg));

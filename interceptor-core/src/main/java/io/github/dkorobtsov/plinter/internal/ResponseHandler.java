@@ -56,6 +56,7 @@ public final class ResponseHandler {
         .build();
   }
 
+  @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "By Design.")
   private static byte[] originalBodyFrom(InterceptedResponseBody responseBody) {
     byte[] originalBody;
     try {

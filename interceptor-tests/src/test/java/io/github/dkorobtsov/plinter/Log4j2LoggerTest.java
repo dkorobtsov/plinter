@@ -55,7 +55,7 @@ public class Log4j2LoggerTest extends BaseTest {
     server.enqueue(new MockResponse().setResponseCode(200));
 
     log.debug("Configuring custom Log4j2 logger for intercepted OkHttp traffic.");
-    final LogWriter log4j2Writer = new io.github.dkorobtsov.plinter.LogWriter() {
+    final LogWriter log4j2Writer = new LogWriter() {
 
       final Logger log = LogManager.getLogger(HTTP_LOGGER);
 

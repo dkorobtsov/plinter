@@ -1,7 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
 import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.internal.HttpStatus;
@@ -33,7 +32,8 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_elapsedTime() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -49,7 +49,8 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_isSuccess() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -67,7 +68,8 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_isFail() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(504)
@@ -80,12 +82,14 @@ public class ResponsesPrintingTest extends BaseTest {
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
     Assertions.assertThat(testLogger.formattedOutput()).contains("is success : false");
-    Assertions.assertThat(testLogger.formattedOutput()).contains("Status Code: 504 / GATEWAY_TIMEOUT");
+    Assertions.assertThat(testLogger.formattedOutput())
+        .contains("Status Code: 504 / GATEWAY_TIMEOUT");
   }
 
   @Test
   public void printResponse_hasNoPrintableBody() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
         .message(HttpStatus.OK.getMessage())
@@ -102,7 +106,8 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_hasPrintableBody() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -130,7 +135,8 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_segmentsPrinting() throws MalformedURLException {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
         .message(HttpStatus.OK.getMessage())
@@ -171,7 +177,8 @@ public class ResponsesPrintingTest extends BaseTest {
   @SuppressWarnings("BooleanExpressionComplexity")
   public void printResponse_outputResizing(String maxLineLength) throws MalformedURLException {
     final int maxLength = Integer.parseInt(maxLineLength);
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -207,7 +214,8 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_generalFormatting() {
-    final TestLogger testLogger = new TestLogger(io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(
+        io.github.dkorobtsov.plinter.LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)

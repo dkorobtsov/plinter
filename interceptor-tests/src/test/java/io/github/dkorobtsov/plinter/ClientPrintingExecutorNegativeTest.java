@@ -4,7 +4,6 @@ import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_JSON;
 import static io.github.dkorobtsov.plinter.internal.Util.APPLICATION_ZIP;
 import static io.github.dkorobtsov.plinter.internal.Util.CONTENT_TYPE;
 
-import io.github.dkorobtsov.plinter.LoggerConfig;
 import io.github.dkorobtsov.plinter.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.internal.InterceptedResponse;
@@ -24,7 +23,7 @@ public class ClientPrintingExecutorNegativeTest {
         .url("http://google.com")
         .build();
 
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder()
         .executor(Executors.newCachedThreadPool()).build();
 
@@ -40,7 +39,7 @@ public class ClientPrintingExecutorNegativeTest {
         .url("http://google.com")
         .build();
 
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = LoggerConfig.builder()
+    final LoggerConfig loggerConfig = LoggerConfig.builder()
         .executor(Executors.newCachedThreadPool()).build();
 
     Thread.currentThread().interrupt();
@@ -50,7 +49,7 @@ public class ClientPrintingExecutorNegativeTest {
   @Test
   public void testInterruptingPrintingResponseDoesntCrashProcess() {
     final InterceptedResponse responseDetails = InterceptedResponse.builder().build();
-    final io.github.dkorobtsov.plinter.LoggerConfig loggerConfig = io.github.dkorobtsov.plinter.LoggerConfig
+    final LoggerConfig loggerConfig = LoggerConfig
         .builder()
         .executor(Executors.newCachedThreadPool()).build();
 
