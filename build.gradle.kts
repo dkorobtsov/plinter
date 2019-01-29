@@ -1,6 +1,6 @@
 import java.nio.charset.StandardCharsets
 
-val projectUrl: String by extra { "https://github.com/dkorobtsov/LoggingInterceptor" }
+val projectUrl: String by extra { "https://github.com/dkorobtsov/plinter" }
 val projectDescription: String by extra { "HTTP traffic Pretty Logging Interceptor" }
 val projectName: String by extra { "Pretty Logging Interceptor" }
 val archivesBaseName: String by extra { "plinter" }
@@ -67,6 +67,9 @@ configure(subprojects) {
     val project = this
 
     apply(plugin = "java-library")
+
+    // passing through current project SourceSets to quality.gradle.kts
+    rootProject.extra.set("sourceSets", listOf(project.sourceSets["main"], project.sourceSets["test"]))
     apply(from = "$gradleScriptDir/quality.gradle.kts")
 
     tasks.withType(JavaCompile::class) {
@@ -106,14 +109,6 @@ configure(subprojects) {
 
     artifacts.add("archives", sourceJar)
     artifacts.add("archives", javadocJar)
-
-    fun mavenUrl(): String {
-        return when {
-            //this.hasProperty("remote") -> "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            this.hasProperty("maven.repo.local") -> this.property("maven.repo.local").toString()
-            else -> "./build/repo"
-        }
-    }
 
     tasks.register<Copy>("getDependencies") {
         from(project.sourceSets["main"].runtimeClasspath)
@@ -191,6 +186,14 @@ tasks.register<Delete>("cleanAll") {
             "interceptor-core/out",
             "interceptor-tests/out")
     isFollowSymlinks = true
+}
+
+fun mavenUrl(): String {
+    return when {
+        //this.hasProperty("remote") -> "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        this.hasProperty("maven.repo.local") -> this.property("maven.repo.local").toString()
+        else -> "./build/repo"
+    }
 }
 
 fun sonarExclusions(): String {

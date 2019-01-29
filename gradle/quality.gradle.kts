@@ -16,7 +16,7 @@ buildscript {
     }
 }
 
-apply<JavaBasePlugin>()
+apply<JavaPlugin>()
 apply<QualityPlugin>()
 apply<SpotBugsPlugin>()
 apply<CheckstylePlugin>()
@@ -93,7 +93,7 @@ configure<QualityExtension> {
      * Source sets to apply checks on.
      * Default is [sourceSets.main] to apply only for project sources, excluding tests.
      */
-    //sourceSets = listOf(project.sourceSets["main"], project.sourceSets["test"])
+    sourceSets = rootProject.extra.get("sourceSets") as MutableCollection<SourceSet>?
 
     /**
      * Source patterns (relative to source dir) to exclude from checks. Simply sets exclusions to quality tasks.
