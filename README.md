@@ -1,118 +1,168 @@
-LoggingInterceptor - Interceptor for [OkHttp3](https://github.com/square/okhttp) with pretty logger
-(version for use with Java logging frameworks - jul, log4j, slf4j, logback, log4j2 etc)
+#Plinter (Pretty Logging Interceptor)
+
+This library makes working with API's easy and convenient. 
+Just attach interceptor to your favorite HTTP client and forward all requests and responses to any Java logger (or use default one).
+Simple as that.
+
 --------
+![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)
+![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)
+![maintainability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=sqale_rating)
+![security](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=security_rating)
+![coverage](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=coverage)
+
+
 [![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
-![quality gate](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=alert_status)
-![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor%3Alib&metric=reliability_rating)
-![security](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=security_rating)
-![coverage](https://sonarcloud.io/api/project_badges/measure?project=source%3Alib&metric=coverage)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_shield)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
+###Features
+- No configuration needed, works as is
+- Easy to customize if needed
+- Several output formats supported out of the box
+- Supports most popular HTTP clients
+- Supports all Java/Kotlin loggers
+- Can be used with Feign or Retrofit
+- Works with clients created by Swagger-codegen
+- Pretty prints all HTTP request and response details
+- Pretty prints JSON, XML and HTML bodies
 
-Description
------------
-What is the difference from [original](https://github.com/ihsanbal/LoggingInterceptor) repository?
-Personally I find this interceptor very useful for API testing purposes but original implementation
-works well only with Android. Had to significantly rewrite original library to use it in pure Java
-project with log4j2 based logging. So, comparing to original repository, changes are following:
+###Clients supported
+- [OkHttp](#okhttp)
+- [OkHttp 3](#okhttp3)
+- [Apache HttpClient](#apache-httpCLient)
 
-- removed all Android specific stuff (tags, references to BuildConfig etc)
-- removed included Android app (along with existing tests)
-- removed option to add custom headers / queries
-- updated to Java level 8
-- refactored Interceptor to make it work without any additional configuration (just plug and play) :)
-- fixed some bugs (mostly output related)
-- added option to customize logger output (when default JUL logger is used)
-- removed some useless params (like option to select between JUL info or warning severity, request/response tags etc)
-- added new tests package (can be helpful to figure out how Interceptor should work)
-- added new DefaultLogger implementation (basically just manually configured JUL logger)
-- reworked builder (to support those above mentioned changes)
-- interceptor now pretty prints XML/HTML body
-- max output length can be modified (can be useful for body pretty printing)
+###Loggers supported
+Any Java or Kotlin logger - jul, log4j, slf4j, logback, log4j2 etc
 
-Basic Usage
------------
-Interceptor should work as is - without any additional parameters.
-By default JUL logger will be used with INFO level and minimal format
-displaying message only.
-`okhttp3` version:
+#Quickstart
+Interceptor should work as is - without any additional configuration, just need to add appropriate dependency.
+By default JUL logger will be used with INFO level and minimal format displaying message only.
+
+###OkHttp
+To start using interceptor with OkHttp client add following dependency to classpath:
+```xml
+<dependency>
+   <groupId>io.github.dkorobtsov.plinter</groupId>
+   <artifactId>okhttp-interceptor</artifactId>
+</dependency>
+```
+
+####Gradle:
+```xml
+dependencies {
+    implementation("io.github.dkorobtsov.plinter:okhttp-interceptor:$LATEST_VERSION")
+}
+```
+
+Check [releases](https://github.com/dkorobtsov/plinter/releases) for latest interceptor version.
+
+Basic usage example:
 ```java
-    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()                    
-                    .buildForOkhttp3();
+    OkHttpLoggingInterceptor interceptor = new OkHttpLoggingInterceptor(LoggerConfig.builder().build());
+    
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .build();
+```
+
+**Tip:** Can be used with REST client created by swagger-codegen using `okhttp-gson` template.
+
+###OkHttp3
+To start using interceptor with OkHttp3 client add following dependency to classpath:
+
+####Maven:
+```xml
+<dependency>
+   <groupId>io.github.dkorobtsov.plinter</groupId>
+   <artifactId>okhttp3-interceptor</artifactId>
+   <version>$LATEST_VERSION</version>
+</dependency>
+```
+
+####Gradle:
+```xml
+dependencies {
+    implementation("io.github.dkorobtsov.plinter:okhttp3-interceptor:$LATEST_VERSION")
+}
+```
+Check [releases](https://github.com/dkorobtsov/plinter/releases) for latest interceptor version.
+
+Basic usage example:
+```java
+    OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(LoggerConfig.builder().build());
+
+    OkHttpClient okHttpClient = new OkHttpClient.Builder()
+        .addInterceptor(interceptor)
+        .build();
+```
+
+###Apache HttpClient
+To start using interceptor with Apache Http client add following dependency to classpath:
+```xml
+<dependency>
+   <groupId>io.github.dkorobtsov.plinter</groupId>
+   <artifactId>apache-interceptor</artifactId>
+   <version>$LATEST_VERSION</version>
+</dependency>
+```
+
+####Gradle:
+```xml
+dependencies {
+    implementation("io.github.dkorobtsov.plinter:apache-interceptor:$LATEST_VERSION")
+}
+```
+Check [releases](https://github.com/dkorobtsov/plinter/releases) for latest interceptor version.
+
+Basic usage example:
+```java
+    ApacheRequestInterceptor requestInterceptor = new ApacheRequestInterceptor(LoggerConfig.builder().build());
+    ApacheResponseInterceptor responseInterceptor = new ApacheResponseInterceptor(LoggerConfig.builder().build());
+    
+    CloseableHttpClient client = HttpClientBuilder
+        .create()
+        .addInterceptorFirst(requestInterceptor)
+        .addInterceptorFirst(responseInterceptor)
+        .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
+        .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+        .build();   
+```
+
+#Advanced Configuration
+
+Interceptor can be used with any existing Java logger -
+just need to provide your own LogWriter implementation.
+
+Simple configuration for Log4j2 with printing in separate thread:
+```java
+    OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
+        LoggerConfig.builder()
+            .logger(new LogWriter() {
+              final Logger logger = LogManager.getLogger("HttpLogger");
+
+              @Override
+              public void log(String msg) {
+                logger.debug(msg);
+              }
+            })
+            .withThreadInfo(true)
+            .loggable(true)
+            .maxLineLength(180)
+            .level(Level.BASIC)
+            .executor(Executors.newSingleThreadExecutor(r -> new Thread(r, "HttpPrinter")))
+            .build());
+
     OkHttpClient okHttpClient = new OkHttpClient.Builder()
         .addInterceptor(interceptor)
         .build();
 
-    // Interceptor can be used with retrofit
+    // Can be used with Retrofit or Feign
     Retrofit retrofitAdapter = new Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
         .baseUrl("https://.../")
         .client(okHttpClient)
         .build();
-```
-
-`okhttp` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
-```java
-    final OkhttpLoggingInterceptor interceptor = new LoggingInterceptor.Builder()                    
-                    .buildForOkhttp();
-    OkHttpClient okHttpClient = new OkHttpClient.Builder()
-        .addInterceptor(interceptor)
-        .build();
-```
-
-`apache httpclient` version: (can be used for clients generated from swagger-codegen using `okhttp-gson` client)
-```java
-    final ApacheHttpRequestInterceptor requestInterceptor = new LoggingInterceptor.Builder()                    
-                    .buildForApacheHttpClientRequest();
-    final ApacheHttpResponseInterceptor responseInterceptor = new LoggingInterceptor.Builder()        
-        .builFordApacheHttpClientResponse();
-
-    return HttpClientBuilder
-            .create()
-            .addInterceptorFirst(requestInterceptor)
-            .addInterceptorFirst(responseInterceptor)
-            .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
-            .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
-            .build();    
-```
-Example:
-
-<p align="left">
-    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot3.png"/>
-</p>
-
-Format can be changed to one of the defined templates, for example:
-```java
-    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .loggable(isDebug())
-        .level(Level.BASIC)
-        .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
-        .maxLineLength(160)
-        .executor(Executors.newSingleThreadExecutor())
-        .buildForOkhttp3();
-```
-
-**Tip:** when logger is in "message only" mode, json response can be copied
-from console and converted to POJO with [this](http://www.jsonschema2pojo.org/) service in a matter of seconds.
-
-Advanced Usage
---------------
-Interceptor can be configured to be used with any existing Java logger -
-just need to provide own LogWriter implementation.
-
-Simple configuration for Log4j2:
-```java
-    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
-        .logger(new LogWriter() {
-          final Logger log = LogManager.getLogger("OkHttpLogger");
-
-          @Override
-          public void log(String msg) {
-            log.debug(msg);
-          }
-        })
-        .buildForOkhttp3();
 ```
 
 Or more sophisticated approach with custom logging pattern.
@@ -150,76 +200,55 @@ Or more sophisticated approach with custom logging pattern.
       }
     };
 
-    Okhttp3LoggingInterceptor interceptor = new LoggingInterceptor.Builder()
+    OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(LoggerConfig.builder()
         .logger(log4j2Writer)
-        .buildForOkhttp3();
+        .build());
 ```
 Example:
 <p align="left">
-    <img src="https://raw.githubusercontent.com/dkorobtsov/LoggingInterceptor/master/images/screenshot2.png"/>
+    <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/screenshot2.png"/>
 </p>
 
-Download
---------
+#Logger Configuration
+Interceptor can be configured by providing your own LoggerConfig. 
 
-Gradle:
-```groovy
-allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
-}
+Check supported options descriptions below:
 
-dependencies {
-	compile('com.github.dkorobtsov:LoggingInterceptor:4.5') {
-        	exclude group: 'org.json', module: 'json'
-    	}
-}
-```
-
-Maven:
-```xml
-<repository>
-   <id>jitpack.io</id>
-   <url>https://jitpack.io</url>
-</repository>
-
-<dependency>
-	    <groupId>com.github.dkorobtsov</groupId>
-	    <artifactId>LoggingInterceptor</artifactId>
-	    <version>4.5</version>
-</dependency>
-```
-
-
-Executor
---------
-Add executor that allows to perform sequential concurrent print.
-
-Format
-------
-Predefined JUL logging patterns:
+###Format
+Default logger's format can be easily changed using predefined JUL logging patterns:
 ```java
 .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
-           .JUL_FULL                // [Date][Thread][Level] Message
-           .JUL_DATE_LEVEL_MESSAGE  // [Date][Level] Message
-           .JUL_THREAD_MESSAGE      // [Thread] Message
-           .JUL_LEVEL_MESSAGE       // [Level] Message
-           .JUL_DATE_MESSAGE        // [Date] Message
-           .JUL_MESSAGE_ONLY        // Message
+        .JUL_FULL                // [Date][Thread][Level] Message
+        .JUL_DATE_LEVEL_MESSAGE  // [Date][Level] Message
+        .JUL_THREAD_MESSAGE      // [Thread] Message
+        .JUL_LEVEL_MESSAGE       // [Level] Message
+        .JUL_DATE_MESSAGE        // [Date] Message
+        .JUL_MESSAGE_ONLY        // Message
 ```
-Note that given setting works only with default JUL logger.
+Note that given setting works only with default JUL logger, if logger is provided manually, built-in formatters will be ignored.
 
-Line Length
------------
+**Tip:** when logger is in "message only" mode, json response can be copied
+from console and converted to POJO with [this](http://www.jsonschema2pojo.org/) service in a matter of seconds.
+
+###Executor
+Add executor that allows to perform sequential concurrent print.
 ```java
- .maxLineLength(160) // If needed, max output length can be modified. Default value: 110. Valid values: 10-500.
+        .executor(Executors.newSingleThreadExecutor(r -> new Thread(r, "HttpPrinter")))
 ```
 
+###Line Length
+If needed, max output length can be modified. Default value: 110. Valid values: 80-180.
+```java
+        .maxLineLength(160) 
+```
 
-Level
---------
+###Thread Info
+If enabled, current thread name will be present in intercepted event's header.
+```java
+        .withThreadInfo(true/false) 
+```
+
+###Level
 
 ```java
 .setLevel(Level.BASIC)
@@ -227,15 +256,26 @@ Level
 	      .BASIC      // Logging url, method, headers and body.
 	      .HEADERS    // Logging url, method and headers
 	      .BODY       // Logging url, method and body
-```	
-
-Loggable
---------
-
-```java
-.loggable(true/false) // enable/disable sending logs output.
 ```
 
+###Loggable
+Enable or disable interceptor. If set to false, interceptor will ignore all traffic.
+```java
+        .loggable(true/false) 
+```
 
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_large)
+##Credits
+This library was heavily inspired and initially forked from 
+[LoggingInterceptor for Android](https://github.com/ihsanbal/LoggingInterceptor) by [Ihsan Bal](https://github.com/ihsanbal) 
+and completely rewritten by [Dmitri Korobtsov](https://github.com/dkorobtsov) to 
+provide more flexibility and support for native Java loggers. Support for OkHttp2 and Apache clients introduced by [Andrew Zakordonets](https://github.com/azakordonets).
+Part of internal requests/responses handling logic based on [OkHttp3](https://github.com/square/okhttp) client's code with slight modifications to remove external dependencies.
+
+-----
+
+**Find this library helpful? Show some support:**
+
+[![GitHub followers](https://img.shields.io/github/followers/dkorobtsov.svg?style=social&label=Follow)](https://github.com/dkorobtsov)
+[![GitHub forks](https://img.shields.io/github/forks/dkorobtsov/LoggingInterceptor.svg?style=social&label=Fork)](https://github.com/dkorobtsov/plinter/fork)
+[![GitHub stars](https://img.shields.io/github/stars/dkorobtsov/LoggingInterceptor.svg?style=social&label=Star)](https://github.com/dkorobtsov/plinter)
+[![Twitter Follow](https://img.shields.io/twitter/follow/dkorobtsov.svg?style=social&label=Follow)](https://twitter.com/dkorobtsov)

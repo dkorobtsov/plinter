@@ -1,1 +1,6 @@
-include ':lib'
+rootProject.name = "plinter"
+include "interceptor-core"
+include "apache-interceptor"
+include "okhttp-interceptor"
+include "okhttp3-interceptor"
+include "interceptor-tests"
