@@ -173,7 +173,7 @@ final class Printer {
   private static void printRequestBody(InterceptedRequest request) {
     if (bodyShouldBePrinted()) {
       if (hasPrintableBody(mediaType(request))) {
-        String printableBody = bodyToString(request);
+        final String printableBody = bodyToString(request);
 
         // To handle situations, when we expect printable body based on
         // media type but nothing is returned.
@@ -207,7 +207,7 @@ final class Printer {
   private static void printResponseBody(InterceptedResponse interceptedResponse) {
     if (bodyShouldBePrinted()) {
       if (interceptedResponse.hasPrintableBody) {
-        String printableBody = formattedBody(interceptedResponse.originalBody);
+        final String printableBody = formattedBody(interceptedResponse.originalBody);
 
         if (printableBody.isEmpty()) {
           logLines(EMPTY_RESPONSE_BODY, true);

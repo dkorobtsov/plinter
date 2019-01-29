@@ -17,7 +17,6 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -186,17 +185,23 @@ public final class Util {
     //CHECKSTYLE:ON
   }
 
+  @SuppressWarnings("BooleanExpressionComplexity")
   public static boolean hasPrintableBody(final String mediaType) {
-    return nonNull(mediaType)
-        && (mediaType.contains("json")
-        || mediaType.contains("xml")
+    if (isNull(mediaType)) {
+      return false;
+    }
+
+    return mediaType.contains("xml")
+        || mediaType.contains("raml")
+        || mediaType.contains("yaml")
+        || mediaType.contains("json")
+        || mediaType.contains("html")
         || mediaType.contains("plain")
-        || mediaType.contains("html"));
+        || mediaType.contains("javascript");
   }
 
   static boolean isEmpty(CharSequence str) {
     return str == null || str.length() == 0;
   }
-
 
 }
