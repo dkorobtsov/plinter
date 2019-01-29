@@ -5,11 +5,11 @@ Just attach interceptor to your favorite HTTP client and forward all requests an
 Simple as that.
 
 --------
-![quality gate](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=alert_status)
-![reliability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=reliability_rating)
-![maintainability](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=sqale_rating)
-![security](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=security_rating)
-![coverage](https://sonarcloud.io/api/project_badges/measure?project=LoggingInterceptor&metric=coverage)
+![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)
+![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)
+![maintainability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=sqale_rating)
+![security](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=security_rating)
+![coverage](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=coverage)
 
 
 [![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
