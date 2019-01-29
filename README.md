@@ -13,7 +13,6 @@ Simple as that.
 
 
 [![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_shield)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ###Features
@@ -271,9 +270,6 @@ This library was heavily inspired and initially forked from
 and completely rewritten by [Dmitri Korobtsov](https://github.com/dkorobtsov) to 
 provide more flexibility and support for native Java loggers. Support for OkHttp2 and Apache clients introduced by [Andrew Zakordonets](https://github.com/azakordonets).
 Part of internal requests/responses handling logic based on [OkHttp3](https://github.com/square/okhttp) client's code with slight modifications to remove external dependencies.
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fdkorobtsov%2FLoggingInterceptor?ref=badge_large)
 
 -----
 
