@@ -12,7 +12,7 @@ Simple as that.
 ![coverage](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=coverage)
 
 
-[![wercker status](https://app.wercker.com/status/a5684f9e7c75dbf62072dcdd2a96cd90/s/ "wercker status")](https://app.wercker.com/project/byKey/a5684f9e7c75dbf62072dcdd2a96cd90)
+[![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/s/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ###Features
@@ -276,6 +276,6 @@ Part of internal requests/responses handling logic based on [OkHttp3](https://gi
 **Find this library helpful? Show some support:**
 
 [![GitHub followers](https://img.shields.io/github/followers/dkorobtsov.svg?style=social&label=Follow)](https://github.com/dkorobtsov)
-[![GitHub forks](https://img.shields.io/github/forks/dkorobtsov/LoggingInterceptor.svg?style=social&label=Fork)](https://github.com/dkorobtsov/plinter/fork)
-[![GitHub stars](https://img.shields.io/github/stars/dkorobtsov/LoggingInterceptor.svg?style=social&label=Star)](https://github.com/dkorobtsov/plinter)
+[![GitHub forks](https://img.shields.io/github/forks/dkorobtsov/Plinter.svg?style=social&label=Fork)](https://github.com/dkorobtsov/plinter/fork)
+[![GitHub stars](https://img.shields.io/github/stars/dkorobtsov/Plinter.svg?style=social&label=Star)](https://github.com/dkorobtsov/plinter)
 [![Twitter Follow](https://img.shields.io/twitter/follow/dkorobtsov.svg?style=social&label=Follow)](https://twitter.com/dkorobtsov)
