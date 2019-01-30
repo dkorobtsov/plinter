@@ -39,7 +39,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import okio.Buffer;
 
 
@@ -199,7 +198,7 @@ final class Printer {
 
     String requestSubtype = null;
     if (nonNull(requestBody) && nonNull(requestBody.contentType())) {
-      requestSubtype = Objects.requireNonNull(requestBody.contentType()).subtype();
+      requestSubtype = requestBody.contentType().subtype();
     }
     return requestSubtype;
   }
