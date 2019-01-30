@@ -5,15 +5,17 @@ Just attach interceptor to your favorite HTTP client and forward all requests an
 Simple as that.
 
 --------
+[![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/s/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)](https://sonarcloud.io/dashboard?id=Plinter)
 [![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Plinter)
 [![maintainability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Plinter)
 [![security](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=security_rating)](https://sonarcloud.io/dashboard?id=Plinter)
 [![coverage](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=coverage)](https://sonarcloud.io/dashboard?id=Plinter)
 
-
-[![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/s/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+<p align="left">
+    <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/image1.png"/>
+</p>
 
 ### Features
 - No configuration needed, works as is
@@ -156,7 +158,6 @@ Basic usage example:
         .create()
         .addInterceptorFirst(requestInterceptor)
         .addInterceptorFirst(responseInterceptor)
-        .setMaxConnTotal(MAX_IDLE_CONNECTIONS)
         .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
         .build();   
 ```
