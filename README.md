@@ -1,21 +1,21 @@
-#Plinter (Pretty Logging Interceptor)
+# Plinter (Pretty Logging Interceptor)
 
 This library makes working with API's easy and convenient. 
 Just attach interceptor to your favorite HTTP client and forward all requests and responses to any Java logger (or use default one).
 Simple as that.
 
 --------
-![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)
-![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)
-![maintainability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=sqale_rating)
-![security](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=security_rating)
-![coverage](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=coverage)
+[![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)](https://sonarcloud.io/dashboard?id=Plinter)
+[![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Plinter)
+[![maintainability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Plinter)
+[![security](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=security_rating)](https://sonarcloud.io/dashboard?id=Plinter)
+[![coverage](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=coverage)](https://sonarcloud.io/dashboard?id=Plinter)
 
 
 [![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/s/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-###Features
+### Features
 - No configuration needed, works as is
 - Easy to customize if needed
 - Several output formats supported out of the box
@@ -26,19 +26,19 @@ Simple as that.
 - Pretty prints all HTTP request and response details
 - Pretty prints JSON, XML and HTML bodies
 
-###Clients supported
+### Clients supported
 - [OkHttp](#okhttp)
 - [OkHttp 3](#okhttp3)
 - [Apache HttpClient](#apache-httpCLient)
 
-###Loggers supported
+### Loggers supported
 Any Java or Kotlin logger - jul, log4j, slf4j, logback, log4j2 etc
 
-#Quickstart
+# Quickstart
 Interceptor should work as is - without any additional configuration, just need to add appropriate dependency.
 By default JUL logger will be used with INFO level and minimal format displaying message only.
 
-###OkHttp
+## OkHttp
 To start using interceptor with OkHttp client add following dependency to classpath:
 ```xml
 <dependency>
@@ -47,7 +47,7 @@ To start using interceptor with OkHttp client add following dependency to classp
 </dependency>
 ```
 
-####Gradle:
+### Gradle:
 ```xml
 dependencies {
     implementation("io.github.dkorobtsov.plinter:okhttp-interceptor:$LATEST_VERSION")
@@ -67,10 +67,10 @@ Basic usage example:
 
 **Tip:** Can be used with REST client created by swagger-codegen using `okhttp-gson` template.
 
-###OkHttp3
+## OkHttp3
 To start using interceptor with OkHttp3 client add following dependency to classpath:
 
-####Maven:
+### Maven:
 ```xml
 <dependency>
    <groupId>io.github.dkorobtsov.plinter</groupId>
@@ -79,7 +79,7 @@ To start using interceptor with OkHttp3 client add following dependency to class
 </dependency>
 ```
 
-####Gradle:
+### Gradle:
 ```xml
 dependencies {
     implementation("io.github.dkorobtsov.plinter:okhttp3-interceptor:$LATEST_VERSION")
@@ -96,8 +96,10 @@ Basic usage example:
         .build();
 ```
 
-###Apache HttpClient
+## Apache HttpClient
 To start using interceptor with Apache Http client add following dependency to classpath:
+
+### Maven:
 ```xml
 <dependency>
    <groupId>io.github.dkorobtsov.plinter</groupId>
@@ -106,7 +108,7 @@ To start using interceptor with Apache Http client add following dependency to c
 </dependency>
 ```
 
-####Gradle:
+### Gradle:
 ```xml
 dependencies {
     implementation("io.github.dkorobtsov.plinter:apache-interceptor:$LATEST_VERSION")
@@ -128,7 +130,7 @@ Basic usage example:
         .build();   
 ```
 
-#Advanced Configuration
+# Advanced Configuration
 
 Interceptor can be used with any existing Java logger -
 just need to provide your own LogWriter implementation.
@@ -204,17 +206,13 @@ Or more sophisticated approach with custom logging pattern.
         .logger(log4j2Writer)
         .build());
 ```
-Example:
-<p align="left">
-    <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/screenshot2.png"/>
-</p>
 
-#Logger Configuration
+# Logger Configuration
 Interceptor can be configured by providing your own LoggerConfig. 
 
 Check supported options descriptions below:
 
-###Format
+### Format
 Default logger's format can be easily changed using predefined JUL logging patterns:
 ```java
 .format(LogFormatter.JUL_DATE_LEVEL_MESSAGE)
@@ -230,25 +228,25 @@ Note that given setting works only with default JUL logger, if logger is provide
 **Tip:** when logger is in "message only" mode, json response can be copied
 from console and converted to POJO with [this](http://www.jsonschema2pojo.org/) service in a matter of seconds.
 
-###Executor
+### Executor
 Add executor that allows to perform sequential concurrent print.
 ```java
         .executor(Executors.newSingleThreadExecutor(r -> new Thread(r, "HttpPrinter")))
 ```
 
-###Line Length
+### Line Length
 If needed, max output length can be modified. Default value: 110. Valid values: 80-180.
 ```java
         .maxLineLength(160) 
 ```
 
-###Thread Info
+### Thread Info
 If enabled, current thread name will be present in intercepted event's header.
 ```java
         .withThreadInfo(true/false) 
 ```
 
-###Level
+### Level
 
 ```java
 .setLevel(Level.BASIC)
@@ -258,13 +256,14 @@ If enabled, current thread name will be present in intercepted event's header.
 	      .BODY       // Logging url, method and body
 ```
 
-###Loggable
+### Loggable
 Enable or disable interceptor. If set to false, interceptor will ignore all traffic.
 ```java
         .loggable(true/false) 
 ```
+-----
 
-##Credits
+## Credits
 This library was heavily inspired and initially forked from 
 [LoggingInterceptor for Android](https://github.com/ihsanbal/LoggingInterceptor) by [Ihsan Bal](https://github.com/ihsanbal) 
 and completely rewritten by [Dmitri Korobtsov](https://github.com/dkorobtsov) to 
