@@ -4,6 +4,8 @@ This library makes working with API's easy and convenient.
 Just attach interceptor to your favorite HTTP client and forward all requests and responses to any Java logger (or use default one).
 Simple as that.
 
+<span style="color:red">**Warning. This library is under heavy reconstruction. Not recommended to use until this notice disappears. Until then please use [LoggingInterceptor](https://github.com/dkorobtsov/LoggingInterceptor).**</span>
+
 --------
 [![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)](https://sonarcloud.io/dashboard?id=Plinter)
 [![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Plinter)
@@ -29,7 +31,7 @@ Simple as that.
 ### Clients supported
 - [OkHttp](#okhttp)
 - [OkHttp 3](#okhttp3)
-- [Apache HttpClient](#apache-httpCLient)
+- [Apache HttpClient](#apache-httpclient)
 
 ### Loggers supported
 Any Java or Kotlin logger - jul, log4j, slf4j, logback, log4j2 etc
@@ -40,6 +42,8 @@ By default JUL logger will be used with INFO level and minimal format displaying
 
 ## OkHttp
 To start using interceptor with OkHttp client add following dependency to classpath:
+
+### Maven:
 ```xml
 <dependency>
    <groupId>io.github.dkorobtsov.plinter</groupId>
@@ -261,7 +265,7 @@ Enable or disable interceptor. If set to false, interceptor will ignore all traf
 ```java
         .loggable(true/false) 
 ```
------
+
 
 ## Credits
 This library was heavily inspired and initially forked from 
