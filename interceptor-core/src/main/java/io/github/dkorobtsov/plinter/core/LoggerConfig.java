@@ -8,23 +8,23 @@ import java.util.concurrent.Executor;
  */
 public class LoggerConfig {
 
-  public final boolean isLoggable;
   public final Level level;
   public final LogWriter logger;
-  public final LoggingFormat format;
   public final Executor executor;
   public final int maxLineLength;
+  public final boolean isLoggable;
   public final boolean withThreadInfo;
+  public final LoggingFormat format;
 
   LoggerConfig(boolean isLoggable, Level level, LogWriter logger, LoggingFormat format,
       Executor executor, int maxLineLength, boolean withThreadInfo) {
-    this.isLoggable = isLoggable;
-    this.level = level;
-    this.logger = logger;
-    this.format = format;
-    this.executor = executor;
-    this.maxLineLength = maxLineLength;
     this.withThreadInfo = withThreadInfo;
+    this.maxLineLength = maxLineLength;
+    this.isLoggable = isLoggable;
+    this.executor = executor;
+    this.format = format;
+    this.logger = logger;
+    this.level = level;
   }
 
   public static LoggerConfigBuilder builder() {
@@ -54,13 +54,13 @@ public class LoggerConfig {
    */
   public static class LoggerConfigBuilder {
 
-    private boolean isLoggable = true;
-    private Level level = Level.BASIC;
     private LoggingFormat format = LoggingFormat.JUL_MESSAGE_ONLY;
     private LogWriter logger = new DefaultLogger(this.format);
-    private Executor executor;
+    private boolean isLoggable = true;
+    private Level level = Level.BASIC;
     private int maxLineLength = 110;
     private boolean withThreadInfo;
+    private Executor executor;
 
     /**
      * @param isLoggable specifies if logger is enabled

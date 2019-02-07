@@ -50,8 +50,8 @@ import okio.Buffer;
 final class Printer {
 
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
-  private static final String REGEX_LINE_SEPARATOR = "\r?\n";
   private static final String DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR;
+  private static final String REGEX_LINE_SEPARATOR = "\r?\n";
 
   private static final String N = "\n";
   private static final String T = "\t";

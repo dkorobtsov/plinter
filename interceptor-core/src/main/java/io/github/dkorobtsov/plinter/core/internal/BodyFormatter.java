@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 /**
  * Helper class for formatting printable requests and responses bodies.
  */
+@SuppressWarnings("LineLength")
 final class BodyFormatter {
 
   private static final int JSON_INDENT = 3;
@@ -70,7 +71,7 @@ final class BodyFormatter {
     String feature;
     try {
       final InputSource src = new InputSource(new StringReader(msg));
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
       feature = "http://apache.org/xml/features/disallow-doctype-decl";
       dbf.setFeature(feature, true);
@@ -87,7 +88,7 @@ final class BodyFormatter {
       dbf.setXIncludeAware(false);
       dbf.setExpandEntityReferences(false);
 
-      DocumentBuilder safeBuilder = dbf.newDocumentBuilder();
+      final DocumentBuilder safeBuilder = dbf.newDocumentBuilder();
 
       final Node document = safeBuilder.parse(src).getDocumentElement();
 
