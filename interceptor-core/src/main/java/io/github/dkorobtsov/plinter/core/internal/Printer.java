@@ -205,7 +205,7 @@ final class Printer {
 
   private static void printResponseBody(InterceptedResponse interceptedResponse) {
     if (bodyShouldBePrinted()) {
-      if (interceptedResponse.hasPrintableBody) {
+      if (interceptedResponse.hasPrintableBody && nonNull(interceptedResponse.originalBody)) {
         final String printableBody = formattedBody(interceptedResponse.originalBody);
 
         if (printableBody.isEmpty()) {
