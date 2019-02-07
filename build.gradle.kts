@@ -4,7 +4,7 @@ val projectUrl: String by extra { "https://github.com/dkorobtsov/plinter" }
 val projectDescription: String by extra { "HTTP traffic Pretty Logging Interceptor" }
 val projectName: String by extra { "Pretty Logging Interceptor" }
 val archivesBaseName: String by extra { "plinter" }
-val projectVersion: String by extra { "5.1-SNAPSHOT" }
+val projectVersion: String by extra { "5.1.1-SNAPSHOT" }
 val projectGroup: String by extra { "io.github.dkorobtsov.plinter" }
 val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
 
