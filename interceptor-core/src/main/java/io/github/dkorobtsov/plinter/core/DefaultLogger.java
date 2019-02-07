@@ -16,13 +16,9 @@ public class DefaultLogger implements LogWriter {
   DefaultLogger(LoggingFormat logFormatter) {
     logger.setUseParentHandlers(false);
 
-    // Sometimes handlers are duplicated, here we are making sure,
-    // that only cone console handler will exist
-    Arrays.stream(logger.getHandlers()).forEach(logger::removeHandler);
-
-    final ConsoleHandler handler = new ConsoleHandler();
-    handler.setFormatter(logFormatter.formatter);
-    logger.addHandler(handler);
+    Arrays.stream(logger.getHandlers())
+        .filter(it -> it instanceof ConsoleHandler)
+        .forEach(it -> it.setFormatter(logFormatter.formatter));
   }
 
   @Override

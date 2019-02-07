@@ -310,3 +310,6 @@ Part of internal requests/responses handling logic based on [OkHttp3](https://gi
 [![GitHub forks](https://img.shields.io/github/forks/dkorobtsov/Plinter.svg?style=social&label=Fork)](https://github.com/dkorobtsov/plinter/fork)
 [![GitHub stars](https://img.shields.io/github/stars/dkorobtsov/Plinter.svg?style=social&label=Star)](https://github.com/dkorobtsov/plinter)
 [![Twitter Follow](https://img.shields.io/twitter/follow/dkorobtsov.svg?style=social&label=Follow)](https://twitter.com/dkorobtsov)
+
+-----
+[![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/m/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)

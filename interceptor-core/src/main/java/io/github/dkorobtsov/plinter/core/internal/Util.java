@@ -43,13 +43,14 @@ import okio.ByteString;
  */
 public final class Util {
 
-  public static final String CONTENT_TYPE = "Content-Type";
   public static final String ACCEPT = "Accept";
   public static final String TEXT_HTML = "text/html";
   public static final String TEXT_PLAIN = "text/plain";
-  public static final String APPLICATION_JSON = "application/json";
+  public static final String CONTENT_TYPE = "Content-Type";
   public static final String APPLICATION_ZIP = "application/zip";
   public static final String APPLICATION_XML = "application/xml";
+  public static final String APPLICATION_JSON = "application/json";
+
   static final Charset UTF_8 = StandardCharsets.UTF_8;
   private static final Charset UTF_16_BE = StandardCharsets.UTF_16BE;
   private static final Charset UTF_16_LE = StandardCharsets.UTF_16LE;

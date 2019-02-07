@@ -9,31 +9,32 @@ import java.util.List;
  */
 public final class InterceptedResponse {
 
-  public final List<String> segmentList;
-  public final String header;
-  public final int code;
-  public final boolean isSuccessful;
-  public final String message;
   public final InterceptedMediaType contentType;
-  public final String url;
-  public final byte[] originalBody;
   public final boolean hasPrintableBody;
+  public final List<String> segmentList;
+  public final boolean isSuccessful;
+  public final byte[] originalBody;
+  public final String message;
+  public final String header;
   public final long chainMs;
+  public final String url;
+  public final int code;
 
   @SuppressWarnings("PMD.ExcessiveParameterList")
   InterceptedResponse(List<String> segmentList, String header, int code, boolean isSuccessful,
       String message, InterceptedMediaType contentType, String url,
       byte[] originalBody, boolean hasPrintableBody, long chainMs) {
+
+    this.hasPrintableBody = hasPrintableBody;
+    this.isSuccessful = isSuccessful;
+    this.originalBody = originalBody;
     this.segmentList = segmentList;
+    this.contentType = contentType;
+    this.chainMs = chainMs;
+    this.message = message;
     this.header = header;
     this.code = code;
-    this.isSuccessful = isSuccessful;
-    this.message = message;
-    this.contentType = contentType;
     this.url = url;
-    this.originalBody = originalBody;
-    this.hasPrintableBody = hasPrintableBody;
-    this.chainMs = chainMs;
   }
 
   @SuppressWarnings("JavadocType")
@@ -44,29 +45,29 @@ public final class InterceptedResponse {
   @SuppressWarnings({"PMD", "JavadocType"})
   public static class ResponseDetailsBuilder {
 
-    private List<String> segmentList;
-    private String header;
-    private int code;
-    private boolean isSuccessful;
-    private String message;
     private InterceptedMediaType contentType;
-    private String url;
-    private byte[] originalBody;
     private boolean hasPrintableBody;
+    private List<String> segmentList;
+    private boolean isSuccessful;
+    private byte[] originalBody;
+    private String message;
+    private String header;
     private long chainMs;
+    private String url;
+    private int code;
+
+    public ResponseDetailsBuilder contentType(InterceptedMediaType contentType) {
+      this.contentType = contentType;
+      return this;
+    }
+
+    public ResponseDetailsBuilder hasPrintableBody(boolean hasPrintableBody) {
+      this.hasPrintableBody = hasPrintableBody;
+      return this;
+    }
 
     public ResponseDetailsBuilder segmentList(List<String> segmentList) {
       this.segmentList = segmentList;
-      return this;
-    }
-
-    public ResponseDetailsBuilder header(String header) {
-      this.header = header;
-      return this;
-    }
-
-    public ResponseDetailsBuilder code(int code) {
-      this.code = code;
       return this;
     }
 
@@ -75,18 +76,18 @@ public final class InterceptedResponse {
       return this;
     }
 
+    public ResponseDetailsBuilder originalBody(byte[] originalBody) {
+      this.originalBody = originalBody;
+      return this;
+    }
+
     public ResponseDetailsBuilder message(String message) {
       this.message = message;
       return this;
     }
 
-    public ResponseDetailsBuilder contentType(InterceptedMediaType contentType) {
-      this.contentType = contentType;
-      return this;
-    }
-
-    public ResponseDetailsBuilder url(String url) {
-      this.url = url;
+    public ResponseDetailsBuilder header(String header) {
+      this.header = header;
       return this;
     }
 
@@ -95,13 +96,13 @@ public final class InterceptedResponse {
       return this;
     }
 
-    public ResponseDetailsBuilder originalBody(byte[] originalBody) {
-      this.originalBody = originalBody;
+    public ResponseDetailsBuilder code(int code) {
+      this.code = code;
       return this;
     }
 
-    public ResponseDetailsBuilder hasPrintableBody(boolean hasPrintableBody) {
-      this.hasPrintableBody = hasPrintableBody;
+    public ResponseDetailsBuilder url(String url) {
+      this.url = url;
       return this;
     }
 

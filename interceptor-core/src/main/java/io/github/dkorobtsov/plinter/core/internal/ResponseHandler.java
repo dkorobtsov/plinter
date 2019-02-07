@@ -23,12 +23,10 @@ public final class ResponseHandler {
   public static InterceptedResponse interceptedResponse(ResponseDetails response,
       URL requestUrl, Long chainMs) {
 
-    // Trying to determine if body should be pretty printed or omitted as file request
+    // Trying to determine if body should be pretty printed or omitted as file content
     String mediaType = null;
-    if (nonNull(response.responseBody)) {
-      if (nonNull(response.responseBody.contentType())) {
-        mediaType = response.responseBody.contentType().subtype();
-      }
+    if (nonNull(response.responseBody) && nonNull(response.responseBody.contentType())) {
+      mediaType = response.responseBody.contentType().subtype();
     }
 
     final boolean hasPrintableBody = Util.hasPrintableBody(mediaType);
@@ -36,10 +34,10 @@ public final class ResponseHandler {
     final List<String> segmentList = isNull(requestUrl)
         ? Collections.emptyList() : Util.encodedPathSegments(requestUrl);
 
-    final String header = response.headers.toString();
     final int code = response.code;
-    final boolean isSuccessful = response.isSuccessful;
     final String message = response.message;
+    final String header = response.headers.toString();
+    final boolean isSuccessful = response.isSuccessful;
     final InterceptedResponseBody responseBody = response.responseBody;
     final InterceptedMediaType contentType = responseBody.contentType();
     final String url = isNull(requestUrl) ? "" : requestUrl.toString();
@@ -48,15 +46,15 @@ public final class ResponseHandler {
 
     return InterceptedResponse
         .builder()
-        .segmentList(segmentList)
-        .header(header)
-        .code(code)
-        .isSuccessful(isSuccessful)
-        .message(message)
-        .originalBody(originalBody)
-        .contentType(contentType)
-        .hasPrintableBody(hasPrintableBody)
         .url(url)
+        .code(code)
+        .header(header)
+        .message(message)
+        .segmentList(segmentList)
+        .contentType(contentType)
+        .originalBody(originalBody)
+        .isSuccessful(isSuccessful)
+        .hasPrintableBody(hasPrintableBody)
         .chainMs(isNull(chainMs) ? 0 : chainMs)
         .build();
   }

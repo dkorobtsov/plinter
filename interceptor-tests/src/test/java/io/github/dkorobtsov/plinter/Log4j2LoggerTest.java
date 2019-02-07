@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
  * Test added as a proof that interceptors can be easily integrated with external logging
  * libraries.
  */
+@SuppressWarnings("PMD.ExcessiveImports")
 @RunWith(JUnitParamsRunner.class)
 public class Log4j2LoggerTest extends BaseTest {
 

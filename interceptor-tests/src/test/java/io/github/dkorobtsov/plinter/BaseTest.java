@@ -1,22 +1,22 @@
 package io.github.dkorobtsov.plinter;
 
 import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
+import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
+import io.github.dkorobtsov.plinter.apache.ApacheHttpResponseInterceptor;
 import io.github.dkorobtsov.plinter.core.LogWriter;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggerConfig.LoggerConfigBuilder;
-import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
-import io.github.dkorobtsov.plinter.apache.ApacheHttpResponseInterceptor;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import io.github.dkorobtsov.plinter.utils.TestUtil;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -165,7 +165,7 @@ public abstract class BaseTest {
 
         @Override
         public Thread newThread(Runnable r) {
-          return new Thread(r, TestUtil.PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
+          return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
         }
 
       }));
@@ -215,13 +215,12 @@ public abstract class BaseTest {
         break;
 
       case OKHTTP3:
-        logger.info("OkHttp Interceptor: {}",
+        logger.info("OkHttp3 Interceptor: {}",
             loggerConfig.toString());
 
         executeOkHttp3Request(
             defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
             okHttp3Request(body, mediaType, url));
-
         break;
 
       case APACHE_HTTPCLIENT_REQUEST:
@@ -325,6 +324,9 @@ public abstract class BaseTest {
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(RequestBody.create(
           MediaType.parse(mediaType), content));
+    } else {
+      // If not specified, OkHttp3 will automatically add: Accept-encoding: gzip
+      requestBuilder.addHeader("Accept-Encoding", "identity");
     }
     return requestBuilder.build();
   }
@@ -351,6 +353,8 @@ public abstract class BaseTest {
       request.setHeader(new BasicHeader(CONTENT_TYPE, mediaType));
     } else {
       request = new HttpGet(url);
+      // If not specified, Apache Client will automatically add: Accept-encoding: gzip
+      request.addHeader("Accept-Encoding", "identity");
     }
     return request;
   }

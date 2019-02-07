@@ -9,24 +9,23 @@ package io.github.dkorobtsov.plinter.core.internal;
 public class ResponseDetails {
 
   public final InterceptedResponseBody responseBody;
-  public final InterceptedHeaders headers;
-  public final int code;
-  public final boolean isSuccessful;
-  public final String message;
   public final InterceptedMediaType mediaType;
+  public final InterceptedHeaders headers;
+  public final boolean isSuccessful;
   public final Protocol protocol;
+  public final String message;
+  public final int code;
 
   ResponseDetails(InterceptedResponseBody responseBody, InterceptedHeaders headers, int code,
-      boolean isSuccessful,
-      String message, InterceptedMediaType mediaType,
-      Protocol protocol) {
+      boolean isSuccessful, String message, InterceptedMediaType mediaType, Protocol protocol) {
+
     this.responseBody = responseBody;
-    this.headers = headers;
-    this.code = code;
     this.isSuccessful = isSuccessful;
-    this.message = message;
     this.mediaType = mediaType;
     this.protocol = protocol;
+    this.message = message;
+    this.headers = headers;
+    this.code = code;
   }
 
   public static ResponseDetailsBuilder builder() {
@@ -50,36 +49,16 @@ public class ResponseDetails {
   public static class ResponseDetailsBuilder {
 
     private InterceptedResponseBody responseBody;
-    private InterceptedHeaders headers;
-    private int code;
-    private boolean isSuccessful;
-    private String message;
     private InterceptedMediaType mediaType;
+    private InterceptedHeaders headers;
+    private boolean isSuccessful;
     private Protocol protocol;
+    private String message;
+    private int code;
 
     public ResponseDetails.ResponseDetailsBuilder responseBody(
         InterceptedResponseBody responseBody) {
       this.responseBody = responseBody;
-      return this;
-    }
-
-    public ResponseDetails.ResponseDetailsBuilder headers(InterceptedHeaders headers) {
-      this.headers = headers;
-      return this;
-    }
-
-    public ResponseDetails.ResponseDetailsBuilder code(int code) {
-      this.code = code;
-      return this;
-    }
-
-    public ResponseDetails.ResponseDetailsBuilder isSuccessful(boolean isSuccessful) {
-      this.isSuccessful = isSuccessful;
-      return this;
-    }
-
-    public ResponseDetails.ResponseDetailsBuilder message(String message) {
-      this.message = message;
       return this;
     }
 
@@ -88,8 +67,28 @@ public class ResponseDetails {
       return this;
     }
 
-    public ResponseDetailsBuilder protocol(Protocol protocol) {
+    public ResponseDetails.ResponseDetailsBuilder headers(InterceptedHeaders headers) {
+      this.headers = headers;
+      return this;
+    }
+
+    public ResponseDetails.ResponseDetailsBuilder isSuccessful(boolean isSuccessful) {
+      this.isSuccessful = isSuccessful;
+      return this;
+    }
+
+    public ResponseDetails.ResponseDetailsBuilder protocol(Protocol protocol) {
       this.protocol = protocol;
+      return this;
+    }
+
+    public ResponseDetails.ResponseDetailsBuilder message(String message) {
+      this.message = message;
+      return this;
+    }
+
+    public ResponseDetails.ResponseDetailsBuilder code(int code) {
+      this.code = code;
       return this;
     }
 
