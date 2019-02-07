@@ -22,6 +22,7 @@ dependencies {
     testImplementation(project(":apache-interceptor"))
     testImplementation(project(":okhttp-interceptor"))
     testImplementation(project(":okhttp3-interceptor"))
+    testImplementation("io.github.dkorobtsov:retrotest:1.0-SNAPSHOT")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
