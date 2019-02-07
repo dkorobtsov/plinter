@@ -39,8 +39,14 @@ public final class ResponseHandler {
     final String header = response.headers.toString();
     final boolean isSuccessful = response.isSuccessful;
     final InterceptedResponseBody responseBody = response.responseBody;
-    final InterceptedMediaType contentType = responseBody.contentType();
-    final String url = isNull(requestUrl) ? "" : requestUrl.toString();
+
+    final String url = isNull(requestUrl)
+        ? ""
+        : requestUrl.toString();
+
+    final InterceptedMediaType contentType = isNull(responseBody)
+        ? null
+        : responseBody.contentType();
 
     final byte[] originalBody = originalBodyFrom(responseBody);
 
