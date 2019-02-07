@@ -33,6 +33,25 @@ public class ResponsesPrintingTest extends BaseTest {
   private static final int TRAILING_SPACE = 1;
 
   @Test
+  public void printResponse_bodyIsNull() {
+    final TestLogger testLogger = new TestLogger(
+        LoggingFormat.JUL_MESSAGE_ONLY);
+    final InterceptedResponse response = InterceptedResponse.builder()
+        .originalBody(null)
+        .hasPrintableBody(true)
+        .chainMs(10)
+        .code(200)
+        .isSuccessful(true)
+        .url(TEST_URL)
+        .build();
+
+    ClientPrintingExecutor
+        .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
+
+    Assertions.assertThat(testLogger.formattedOutput()).contains("Omitted response body");
+  }
+
+  @Test
   public void printResponse_elapsedTime() {
     final TestLogger testLogger = new TestLogger(
         LoggingFormat.JUL_MESSAGE_ONLY);

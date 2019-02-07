@@ -48,7 +48,9 @@ public final class ResponseHandler {
         ? null
         : responseBody.contentType();
 
-    final byte[] originalBody = originalBodyFrom(responseBody);
+    final byte[] originalBody = isNull(responseBody)
+        ? null
+        : originalBodyFrom(responseBody);
 
     return InterceptedResponse
         .builder()
