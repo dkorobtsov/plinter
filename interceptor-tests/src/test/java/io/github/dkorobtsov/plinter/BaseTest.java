@@ -4,6 +4,10 @@ import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
 import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.exception;
+import static spark.Spark.get;
+import static spark.Spark.staticFiles;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
@@ -18,6 +22,8 @@ import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -45,6 +51,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.junit.Before;
 import org.junit.Rule;
+import spark.Spark;
 
 /**
  * Starting point for all tests. Contains all general methods for use in child tests. Check specific
@@ -53,7 +60,8 @@ import org.junit.Rule;
 @SuppressWarnings({"ClassDataAbstractionCoupling", "ClassFanOutComplexity", "PMD.ExcessiveImports"})
 public abstract class BaseTest {
 
-  static final String MOCK_SERVER_PATH = "/";
+  protected static final String WEBSERVER_URL = "http://localhost:4567/";
+  protected static final String MOCK_SERVER_PATH = "/";
 
   private static final org.apache.logging.log4j.Logger logger
       = org.apache.logging.log4j.LogManager.getLogger(BaseTest.class.getName());
@@ -62,6 +70,8 @@ public abstract class BaseTest {
   private static final Dispatcher DISPATCHER = new Dispatcher();
   private static final int KEEP_ALIVE_DURATION_MS = 60 * 1000;
   private static final int MAX_IDLE_CONNECTIONS = 10;
+
+  private static final String RESOURCE_NOT_FOUND = "Resource Not Found";
 
   @Rule
   public MockWebServer server = new MockWebServer();
@@ -180,8 +190,16 @@ public abstract class BaseTest {
    * output.
    */
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig) {
-    interceptWithConfig(interceptor, loggerConfig, null, null,
-        String.valueOf(server.url(MOCK_SERVER_PATH)));
+    interceptWithConfig(interceptor, loggerConfig, String.valueOf(server.url(MOCK_SERVER_PATH)),
+        null, null, null
+    );
+  }
+
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
+      String body, String mediaType, String url) {
+
+    interceptWithConfig(interceptor, loggerConfig, url, null, mediaType, body
+    );
   }
 
   /**
@@ -192,17 +210,15 @@ public abstract class BaseTest {
    * @param interceptor Interceptor version (like OkHttp3, Apache etc.) Check {@link Interceptor}
    * for valid values.
    * @param loggerConfig LoggerConfiguration that will be used to print intercepted traffic
-   * @param body body content as String, can be null
    * @param mediaType body media type, can be null
    *
    * NB. Note that if this method executed directly, server response should be mocked otherwise
    * connection will time out.
-   *
-   * NB. If content and media type params are not provided request won't have body.
+   * @param body body content as String, can be null
    */
   @SuppressWarnings("PMD.UseObjectForClearerAPI")
-  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
-      String body, String mediaType, String url) {
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig, String url,
+      List<SimpleEntry<String, String>> headers, String mediaType, String body) {
 
     switch (Interceptor.fromString(interceptor)) {
       case OKHTTP:
@@ -211,7 +227,7 @@ public abstract class BaseTest {
 
         executeOkHttpRequest(
             defaultOkHttpClient(new OkHttpLoggingInterceptor(loggerConfig)),
-            okHttpRequest(body, mediaType, url));
+            okHttpRequest(body, mediaType, url, headers));
         break;
 
       case OKHTTP3:
@@ -220,7 +236,7 @@ public abstract class BaseTest {
 
         executeOkHttp3Request(
             defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
-            okHttp3Request(body, mediaType, url));
+            okHttp3Request(body, mediaType, url, headers));
         break;
 
       case APACHE_HTTPCLIENT_REQUEST:
@@ -230,7 +246,7 @@ public abstract class BaseTest {
         executeApacheRequest(defaultApacheClient(
             new ApacheHttpRequestInterceptor(loggerConfig),
             new ApacheHttpResponseInterceptor(loggerConfig)),
-            apacheHttpRequest(body, mediaType, url));
+            apacheHttpRequest(body, mediaType, url, headers));
         break;
 
       default:
@@ -313,13 +329,15 @@ public abstract class BaseTest {
    *
    * @param content Request body content as String. Can be null.
    * @param mediaType Request body media type. Can be null.
-   *
-   * To add body to request both content and media type should be non null, otherwise request will
-   * be empty.
    */
-  Request okHttp3Request(String content, String mediaType, String url) {
+  Request okHttp3Request(String content, String mediaType, String url,
+      List<SimpleEntry<String, String>> headers) {
     final Request.Builder requestBuilder = new Request.Builder()
         .url(url);
+
+    if (nonNull(headers) && !headers.isEmpty()) {
+      headers.forEach(it -> requestBuilder.addHeader(it.getKey(), it.getValue()));
+    }
 
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(RequestBody.create(
@@ -339,9 +357,10 @@ public abstract class BaseTest {
    * @param mediaType Request body media type. Can be null.
    *
    * To add body to request both content and media type should be non null, otherwise request will
-   * be empty.
    */
-  private HttpUriRequest apacheHttpRequest(String content, String mediaType, String url) {
+  private HttpUriRequest apacheHttpRequest(String content, String mediaType, String url,
+      List<SimpleEntry<String, String>> headers) {
+
     final HttpUriRequest request;
     if (nonNull(content) && nonNull(mediaType)) {
       request = new HttpPut(url);
@@ -356,6 +375,11 @@ public abstract class BaseTest {
       // If not specified, Apache Client will automatically add: Accept-encoding: gzip
       request.addHeader("Accept-Encoding", "identity");
     }
+
+    if (nonNull(headers) && !headers.isEmpty()) {
+      headers.forEach(it -> request.addHeader(it.getKey(), it.getValue()));
+    }
+
     return request;
   }
 
@@ -364,20 +388,67 @@ public abstract class BaseTest {
    *
    * @param content Request body content as String. Can be null.
    * @param mediaType Request body media type. Can be null.
-   *
-   * To add body to request both content and media type should be non null, otherwise request will
-   * be empty.
    */
-  private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType, String url) {
+  private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType, String url,
+      List<SimpleEntry<String, String>> headers) {
     final com.squareup.okhttp.Request.Builder requestBuilder
         = new com.squareup.okhttp.Request.Builder()
         .url(url);
+
+    if (nonNull(headers) && !headers.isEmpty()) {
+      headers.forEach(it -> requestBuilder.addHeader(it.getKey(), it.getValue()));
+    }
 
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(com.squareup.okhttp.RequestBody.create(
           com.squareup.okhttp.MediaType.parse(mediaType), content));
     }
     return requestBuilder.build();
+  }
+
+  /**
+   * Method starts local web server for integration tests.
+   *
+   * All resources from resources/files will be made available for get requests
+   */
+  protected static void startSparkServer() {
+    staticFiles.location("/files");
+    staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
+    staticFiles.registerMimeType("raml", "application/raml+yaml");
+    staticFiles.registerMimeType("yaml", "application/raml+yaml");
+
+    Spark.get("/mirror", (request, response) -> {
+      response.status(200);
+      request.headers()
+          .forEach(it -> response.header(it, request.headers(it)));
+
+      response.type("text/plain");
+      response.body("Mirrored response");
+      return response.body();
+    });
+
+    Spark.post("/mirror", (request, response) -> {
+      response.status(200);
+      response.type(request.contentType());
+      response.body(request.body());
+
+      // NB: multiple headers with same name won't be properly handled
+      request.headers()
+          .forEach(it -> response.header(it, request.headers(it)));
+      return response;
+    });
+
+    get("/*", (q, a) -> {
+      throw new NoSuchFileException("Not found");
+    });
+
+    exception(NoSuchFileException.class, (e, request, response) -> {
+      response.status(404);
+      response.body(RESOURCE_NOT_FOUND);
+    });
+
+    Spark.init();
+    awaitInitialization();
   }
 
   /**
