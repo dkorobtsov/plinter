@@ -57,7 +57,10 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
 
   private InterceptedHeaders interceptedHeaders(final Headers headers) {
     final InterceptedHeaders.Builder headersBuilder = new InterceptedHeaders.Builder();
-    headers.names().forEach(name -> headersBuilder.add(name, headers.get(name)));
+
+    headers.toMultimap()
+        .forEach((name, values) -> values.forEach(it -> headersBuilder.add(name, it)));
+
     return headersBuilder.build();
   }
 
