@@ -68,7 +68,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         SIMPLE_JSON, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
+    assertThat(loggerOutput)
+        .contains("     \"city\": \"New York\", ");
   }
 
   @Test
@@ -77,7 +78,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         SIMPLE_JSON, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
+    assertThat(loggerOutput)
+        .contains("     \"city\": \"New York\", ");
   }
 
   @Test
@@ -86,8 +88,9 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         JSON_ARRAY, APPLICATION_JSON, false);
 
-    assertThat(loggerOutput).contains("{\"test1\": \"test1\"},");
-    assertThat(loggerOutput).contains("{\"test2\": \"test2\"}");
+    assertThat(loggerOutput)
+        .contains("{\"test1\": \"test1\"},")
+        .contains("{\"test2\": \"test2\"}");
   }
 
   @Test
@@ -96,7 +99,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
+    assertThat(loggerOutput)
+        .containsSequence("     \"name\": \"doggie\", ");
   }
 
   @Test
@@ -105,7 +109,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
+    assertThat(loggerOutput)
+        .containsSequence("     \"name\": \"doggie\", ");
   }
 
   @Test
@@ -129,8 +134,9 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         JSON_ARRAY, APPLICATION_JSON, false);
 
-    assertThat(loggerOutput).contains("{\"test1\": \"test1\"},");
-    assertThat(loggerOutput).contains("{\"test2\": \"test2\"}");
+    assertThat(loggerOutput)
+        .contains("{\"test1\": \"test1\"},")
+        .contains("{\"test2\": \"test2\"}");
   }
 
   @Test
@@ -173,7 +179,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
 
-    assertThat(loggerOutput).contains("  Omitted response body ");
+    assertThat(loggerOutput)
+        .contains("  Omitted response body ");
   }
 
   @Test
@@ -182,7 +189,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
 
-    assertThat(loggerOutput).contains("  Omitted response body ");
+    assertThat(loggerOutput)
+        .contains("  Omitted response body ");
   }
 
 }

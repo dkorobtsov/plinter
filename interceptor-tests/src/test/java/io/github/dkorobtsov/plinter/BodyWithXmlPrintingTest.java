@@ -38,8 +38,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         XML_BODY, APPLICATION_XML, false);
 
-    assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-    assertThat(loggerOutput).contains("</mammals>");
+    assertThat(loggerOutput)
+        .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>")
+        .contains("</mammals>");
   }
 
   @Test
@@ -48,8 +49,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         XML_BODY, APPLICATION_XML, false);
 
-    assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-    assertThat(loggerOutput).contains("</mammals>");
+    assertThat(loggerOutput)
+        .contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>")
+        .contains("</mammals>");
   }
 
   @Test

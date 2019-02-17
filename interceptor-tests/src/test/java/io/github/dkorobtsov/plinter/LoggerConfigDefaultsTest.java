@@ -19,8 +19,7 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_shouldPrintMessageOnly() {
-    final LoggerConfig loggerConfig = LoggerConfig
-        .builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertEquals("Default format", LoggingFormat.JUL_MESSAGE_ONLY, loggerConfig.format);
   }
@@ -34,40 +33,35 @@ public class LoggerConfigDefaultsTest {
 
   @Test
   public void loggerConfigDefaultConfiguration_isLoggable() {
-    final LoggerConfig loggerConfig = LoggerConfig
-        .builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertTrue("Is loggable", loggerConfig.isLoggable);
   }
 
   @Test
   public void loggerConfigDefaultConfiguration_levelSetToBasic() {
-    final LoggerConfig loggerConfig = LoggerConfig
-        .builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertEquals("Logging level", Level.BASIC, loggerConfig.level);
   }
 
   @Test
   public void loggerConfigDefaultConfiguration_executorIsNotDefined() {
-    final LoggerConfig loggerConfig = LoggerConfig
-        .builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertNull("Executor", loggerConfig.executor);
   }
 
   @Test
   public void loggerConfigDefaultConfiguration_threadInfoIsDisabled() {
-    final LoggerConfig loggerConfig = LoggerConfig
-        .builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertFalse("Thread info", loggerConfig.withThreadInfo);
   }
 
   @Test
   public void loggerConfigDefaultConfiguration_loggerIsSet() {
-    final LoggerConfig loggerConfig = LoggerConfig
-        .builder().build();
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 
     assertNotNull("Default Logger", loggerConfig.logger);
   }

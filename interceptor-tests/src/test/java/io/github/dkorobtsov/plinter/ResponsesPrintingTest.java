@@ -34,8 +34,7 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_bodyIsNull() {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .originalBody(null)
         .hasPrintableBody(true)
@@ -48,13 +47,13 @@ public class ResponsesPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
-    Assertions.assertThat(testLogger.formattedOutput()).contains("Omitted response body");
+    Assertions.assertThat(testLogger.formattedOutput())
+        .contains("Omitted response body");
   }
 
   @Test
   public void printResponse_elapsedTime() {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -65,13 +64,13 @@ public class ResponsesPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
-    Assertions.assertThat(testLogger.formattedOutput()).contains("Execution time: 10ms");
+    Assertions.assertThat(testLogger.formattedOutput())
+        .contains("Execution time: 10ms");
   }
 
   @Test
   public void printResponse_isSuccess() {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -83,14 +82,14 @@ public class ResponsesPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
-    Assertions.assertThat(testLogger.formattedOutput()).contains("is success : true");
-    Assertions.assertThat(testLogger.formattedOutput()).contains("Status Code: 200 / OK");
+    Assertions.assertThat(testLogger.formattedOutput())
+        .contains("is success : true")
+        .contains("Status Code: 200 / OK");
   }
 
   @Test
   public void printResponse_isFail() {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(504)
@@ -102,15 +101,14 @@ public class ResponsesPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
-    Assertions.assertThat(testLogger.formattedOutput()).contains("is success : false");
     Assertions.assertThat(testLogger.formattedOutput())
+        .contains("is success : false")
         .contains("Status Code: 504 / GATEWAY_TIMEOUT");
   }
 
   @Test
   public void printResponse_hasNoPrintableBody() {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
         .message(HttpStatus.OK.getMessage())
@@ -156,8 +154,7 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_segmentsPrinting() throws MalformedURLException {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .code(200)
         .message(HttpStatus.OK.getMessage())
@@ -189,7 +186,8 @@ public class ResponsesPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
-    Assertions.assertThat(testLogger.loggerOutput(false)).contains("URL: " + TEST_URL + randomSeed);
+    Assertions.assertThat(testLogger.loggerOutput(false))
+        .contains("URL: " + TEST_URL + randomSeed);
   }
 
   @Test
@@ -197,8 +195,7 @@ public class ResponsesPrintingTest extends BaseTest {
   @SuppressWarnings("BooleanExpressionComplexity")
   public void printResponse_outputResizing(String maxLineLength) throws MalformedURLException {
     final int maxLength = Integer.parseInt(maxLineLength);
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)
@@ -234,8 +231,7 @@ public class ResponsesPrintingTest extends BaseTest {
 
   @Test
   public void printResponse_generalFormatting() {
-    final TestLogger testLogger = new TestLogger(
-        LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
         .chainMs(10)
         .code(200)

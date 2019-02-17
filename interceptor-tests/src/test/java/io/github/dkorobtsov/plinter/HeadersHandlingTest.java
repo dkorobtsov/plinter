@@ -25,12 +25,12 @@ public class HeadersHandlingTest extends BaseTest {
         String.valueOf(server.url(MOCK_SERVER_PATH)),
         Arrays.asList(
             new SimpleEntry<>("Header1", "Value1"),
-            new SimpleEntry<>("Header1", "Value2")),
-        null, null);
+            new SimpleEntry<>("Header1", "Value2")));
 
-    assertThat(testLogger.formattedOutput()).containsIgnoringCase("header1");
-    assertThat(testLogger.formattedOutput()).contains("Value2");
-    assertThat(testLogger.formattedOutput()).contains("Value1");
+    assertThat(testLogger.formattedOutput())
+        .containsIgnoringCase("Header1")
+        .contains("Value2")
+        .contains("Value1");
   }
 
   @Test
@@ -43,11 +43,11 @@ public class HeadersHandlingTest extends BaseTest {
         String.valueOf(server.url(MOCK_SERVER_PATH)),
         Arrays.asList(
             new SimpleEntry<>("Header1", "Value1"),
-            new SimpleEntry<>("Header2", "Value1")),
-        null, null);
+            new SimpleEntry<>("Header2", "Value1")));
 
-    assertThat(testLogger.formattedOutput()).containsIgnoringCase("Header1: Value1");
-    assertThat(testLogger.formattedOutput()).containsIgnoringCase("Header2: Value1");
+    assertThat(testLogger.formattedOutput())
+        .containsIgnoringCase("Header1: Value1")
+        .containsIgnoringCase("Header2: Value1");
   }
 
 }

@@ -202,6 +202,13 @@ public abstract class BaseTest {
     );
   }
 
+  public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
+      String url, List<SimpleEntry<String, String>> headers) {
+
+    interceptWithConfig(interceptor, loggerConfig, url, headers, null, null
+    );
+  }
+
   /**
    * Method executes http request with provided body details using default client implementation.
    * Given test logger was provided to logger configuration, after this method execution we can

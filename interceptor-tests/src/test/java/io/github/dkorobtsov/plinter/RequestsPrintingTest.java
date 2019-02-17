@@ -113,7 +113,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @PUT");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @PUT");
   }
 
   @Test
@@ -128,7 +129,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @POST");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @POST");
   }
 
   @Test
@@ -143,7 +145,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @DELETE");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @DELETE");
   }
 
   @Test
@@ -158,7 +161,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @PATCH");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @PATCH");
   }
 
   @Test
@@ -172,7 +176,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @TRACE");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @TRACE");
   }
 
   @Test
@@ -186,7 +191,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @OPTIONS");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @OPTIONS");
   }
 
   @Test
@@ -200,7 +206,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @HEAD");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @HEAD");
   }
 
   @Test
@@ -214,7 +221,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Method: @CONNECT");
+    assertThat(testLogger.loggerOutput(false))
+        .contains("Method: @CONNECT");
   }
 
   @Test
@@ -228,7 +236,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("URL: " + TEST_URL + randomSeed);
+    assertThat(testLogger.loggerOutput(false))
+        .contains("URL: " + TEST_URL + randomSeed);
   }
 
   @Test
@@ -243,8 +252,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Headers:");
     assertThat(testLogger.loggerOutput(false))
+        .contains("Headers:")
         .contains("Content-Type: application/json");
   }
 
@@ -261,10 +270,10 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
-    assertThat(testLogger.loggerOutput(false)).contains("Headers:");
     assertThat(testLogger.loggerOutput(false))
-        .contains("┌ Content-Type: application/json");
-    assertThat(testLogger.loggerOutput(false)).contains("└ Accept: application/json");
+        .contains("Headers:")
+        .contains("┌ Content-Type: application/json")
+        .contains("└ Accept: application/json");
   }
 
   @Test
@@ -285,22 +294,12 @@ public class RequestsPrintingTest extends BaseTest {
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
     assertThat(testLogger.loggerOutput(false))
-        .contains("Headers:");
-
-    assertThat(testLogger.loggerOutput(false))
-        .contains("┌ Content-Type: application/json");
-
-    assertThat(testLogger.loggerOutput(false))
-        .contains(
-            "├ LongHeader: unogetabukuloqidijibiqodenofigubabuxunetarobukisi"
-                + "keyeguburehuquyogoquxosevutonasedigutiwavepihawiquhidan");
-
-    assertThat(testLogger.loggerOutput(false))
-        .contains(
-            "irotiguwuwacomenubafacufufuhujajajehanacirepexigewuwiwucifayumo"
-                + "kawikoyipofazejixekalunuguxumucaraputoceqaxeyasegipulic");
-
-    assertThat(testLogger.loggerOutput(false))
+        .contains("Headers:")
+        .contains("┌ Content-Type: application/json")
+        .contains("├ LongHeader: unogetabukuloqidijibiqodenofigubabuxunetaro"
+            + "bukisikeyeguburehuquyogoquxosevutonasedigutiwavepihawiquhidan")
+        .contains("irotiguwuwacomenubafacufufuhujajajehanacirepexigewuwiwuci"
+            + "fayumokawikoyipofazejixekalunuguxumucaraputoceqaxeyasegipulic")
         .contains("└ Accept: application/json");
   }
 

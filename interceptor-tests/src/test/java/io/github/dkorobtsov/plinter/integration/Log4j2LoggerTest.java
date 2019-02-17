@@ -1,13 +1,12 @@
-package io.github.dkorobtsov.plinter;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+package io.github.dkorobtsov.plinter.integration;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
+import io.github.dkorobtsov.plinter.BaseTest;
 import io.github.dkorobtsov.plinter.core.LogWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Objects;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.apache.logging.log4j.Level;
@@ -28,6 +27,7 @@ import org.apache.logging.log4j.core.config.builder.api.LayoutComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.api.RootLoggerComponentBuilder;
 import org.apache.logging.log4j.core.config.builder.impl.BuiltConfiguration;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +46,39 @@ public class Log4j2LoggerTest extends BaseTest {
   private static final String OK_HTTP_LOG_PATTERN = "[OkHTTP] %msg%n";
   private static final String HTTP_LOGGER = "OkHttpLogger";
 
+  private final LogWriter log4j2Writer = new LogWriter() {
+
+    final Logger log = LogManager.getLogger(HTTP_LOGGER);
+
+    {
+      final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+      final Configuration config = ctx.getConfiguration();
+
+      final LoggerConfig loggerConfig = new LoggerConfig(HTTP_LOGGER, Level.TRACE, false);
+      final PatternLayout layout = PatternLayout
+          .newBuilder()
+          .withPattern(OK_HTTP_LOG_PATTERN)
+          .build();
+
+      final Appender appender = ConsoleAppender
+          .newBuilder()
+          .withName("OkHttpConsoleAppender")
+          .withLayout(layout)
+          .build();
+
+      appender.start();
+
+      loggerConfig.addAppender(appender, Level.TRACE, null);
+      config.addLogger(HTTP_LOGGER, loggerConfig);
+      ctx.updateLoggers();
+    }
+
+    @Override
+    public void log(String msg) {
+      log.debug(msg);
+    }
+  };
+
   @BeforeClass
   public static void configureLogger() throws IOException {
     initializeBaseLog4j2Configuration();
@@ -55,40 +88,6 @@ public class Log4j2LoggerTest extends BaseTest {
   @Parameters(method = "interceptors")
   public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor) {
     server.enqueue(new MockResponse().setResponseCode(200));
-
-    log.debug("Configuring custom Log4j2 logger for intercepted OkHttp traffic.");
-    final LogWriter log4j2Writer = new LogWriter() {
-
-      final Logger log = LogManager.getLogger(HTTP_LOGGER);
-
-      {
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
-
-        final LoggerConfig loggerConfig = new LoggerConfig(HTTP_LOGGER, Level.TRACE, false);
-        final PatternLayout layout = PatternLayout
-            .newBuilder()
-            .withPattern(OK_HTTP_LOG_PATTERN)
-            .build();
-
-        final Appender appender = ConsoleAppender
-            .newBuilder()
-            .withName("OkHttpConsoleAppender")
-            .withLayout(layout)
-            .build();
-
-        appender.start();
-
-        loggerConfig.addAppender(appender, Level.TRACE, null);
-        config.addLogger(HTTP_LOGGER, loggerConfig);
-        ctx.updateLoggers();
-      }
-
-      @Override
-      public void log(String msg) {
-        log.debug(msg);
-      }
-    };
 
     log.debug("Adding test double appender for output validation.");
     addAppender(LOG_WRITER, "TestWriter", OK_HTTP_LOG_PATTERN);
@@ -101,18 +100,12 @@ public class Log4j2LoggerTest extends BaseTest {
     log.debug("Retrieving logger output for validation.");
     final String logOutput = LOG_WRITER.toString();
 
-    assertFalse("Severity tag should not be present in custom OkHTTP logger output.",
-        logOutput.contains("DEBUG"));
-
-    assertTrue("Logger name should be present as defined by logging pattern.",
-        logOutput.contains("OkHTTP"));
-
-    assertTrue("Request section should be present in logger output.",
-        logOutput.contains("Request"));
-
-    assertTrue("Response section should be present in logger output.",
-        logOutput.contains("Response"));
-
+    Assertions
+        .assertThat(logOutput)
+        .doesNotContain("DEBUG")
+        .contains("OkHTTP")
+        .contains("Request")
+        .contains("Response");
   }
 
   private static void initializeBaseLog4j2Configuration() throws IOException {
@@ -133,19 +126,30 @@ public class Log4j2LoggerTest extends BaseTest {
     Configurator.initialize(builder.build());
   }
 
+  @SuppressWarnings("SameParameterValue")
   private static void addAppender(final Writer writer, final String writerName, String pattern) {
     final LoggerContext context = LoggerContext.getContext(false);
     final Configuration config = context.getConfiguration();
 
-    final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
+    removeAppenderIfExists(writerName, config);
 
+    final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
     final Appender appender = WriterAppender
         .createAppender(layout, null, writer, writerName, false, true);
+
     appender.start();
     config.addAppender(appender);
     updateLoggers(appender, config);
   }
 
+  private static void removeAppenderIfExists(String writerName, Configuration config) {
+    final Appender appender = config.getAppender(writerName);
+    if (Objects.nonNull(appender)) {
+      config.getRootLogger().removeAppender(writerName);
+    }
+  }
+
+  @SuppressWarnings("ConstantConditions")
   private static void updateLoggers(final Appender appender, final Configuration config) {
     final Level level = null;
     final Filter filter = null;
