@@ -1,10 +1,9 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printResponse;
-
 import io.github.dkorobtsov.plinter.core.AbstractInterceptor;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +41,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
 
   private static final Logger logger = Logger
       .getLogger(ApacheHttpResponseInterceptor.class.getName());
+
   private final ResponseConverter<HttpResponse> responseConverter;
 
   public ApacheHttpResponseInterceptor(LoggerConfig loggerConfig) {
@@ -55,7 +55,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
       final InterceptedResponse interceptedResponse = responseConverter.from(
           response, urlFrom(context), null);
 
-      printResponse(loggerConfig, interceptedResponse);
+      ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
     }
   }
 

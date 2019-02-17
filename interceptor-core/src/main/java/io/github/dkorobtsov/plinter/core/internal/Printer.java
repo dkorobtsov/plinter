@@ -25,7 +25,7 @@
 
 package io.github.dkorobtsov.plinter.core.internal;
 
-import static io.github.dkorobtsov.plinter.core.internal.BodyFormatter.formattedBody;
+
 import static io.github.dkorobtsov.plinter.core.internal.Util.hasPrintableBody;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -206,7 +206,7 @@ final class Printer {
   private static void printResponseBody(InterceptedResponse interceptedResponse) {
     if (bodyShouldBePrinted()) {
       if (interceptedResponse.hasPrintableBody && nonNull(interceptedResponse.originalBody)) {
-        final String printableBody = formattedBody(interceptedResponse.originalBody);
+        final String printableBody = BodyFormatter.formattedBody(interceptedResponse.originalBody);
 
         if (printableBody.isEmpty()) {
           logLines(EMPTY_RESPONSE_BODY, true);
@@ -286,7 +286,7 @@ final class Printer {
         return "";
       }
       copy.body().writeTo(buffer);
-      return formattedBody(buffer.readByteArray());
+      return BodyFormatter.formattedBody(buffer.readByteArray());
     } catch (final IOException e) {
       return "{\"err\": \"" + e.getMessage() + "\"}";
     }

@@ -1,17 +1,15 @@
 package io.github.dkorobtsov.plinter.okhttp;
 
-import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printRequest;
-import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printResponse;
-
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import io.github.dkorobtsov.plinter.core.AbstractInterceptor;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.RequestConverter;
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +51,7 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
 
     final InterceptedRequest interceptedRequest = requestConverter.from(request);
 
-    printRequest(loggerConfig, interceptedRequest);
+    ClientPrintingExecutor.printRequest(loggerConfig, interceptedRequest);
 
     final long startTime = System.nanoTime();
     final Response response = chain.proceed(request);
@@ -62,7 +60,7 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
     final InterceptedResponse interceptedResponse = responseConverter
         .from(response, interceptedRequest.url(), executionTime);
 
-    printResponse(loggerConfig, interceptedResponse);
+    ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
 
     return response;
   }

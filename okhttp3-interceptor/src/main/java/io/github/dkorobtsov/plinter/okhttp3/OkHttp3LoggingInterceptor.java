@@ -1,12 +1,10 @@
 package io.github.dkorobtsov.plinter.okhttp3;
 
-import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printRequest;
-import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printResponse;
-
 import io.github.dkorobtsov.plinter.core.AbstractInterceptor;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.RequestConverter;
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import java.io.IOException;
@@ -52,14 +50,14 @@ public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements In
 
     final InterceptedRequest interceptedRequest = requestConverter.from(request);
 
-    printRequest(loggerConfig, interceptedRequest);
+    ClientPrintingExecutor.printRequest(loggerConfig, interceptedRequest);
 
     final Response response = chain.proceed(request);
     final InterceptedResponse interceptedResponse = responseConverter
         .from(response, interceptedRequest.url(),
             response.receivedResponseAtMillis() - response.sentRequestAtMillis());
 
-    printResponse(loggerConfig, interceptedResponse);
+    ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
 
     return response;
   }

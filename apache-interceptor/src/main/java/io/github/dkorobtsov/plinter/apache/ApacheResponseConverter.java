@@ -1,9 +1,8 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.apache.ApacheEntityUtil.readApacheHttpEntity;
-import static io.github.dkorobtsov.plinter.apache.ApacheEntityUtil.recreateHttpEntityFromString;
 import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.HttpStatus;
@@ -61,10 +60,10 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
 
   private InterceptedResponseBody interceptedResponseBody(HttpResponse response) {
     final HttpEntity entity = response.getEntity();
-    if (entity != null) {
+    if (nonNull(entity)) {
       final String requestBodyString;
       try {
-        requestBodyString = readApacheHttpEntity(entity);
+        requestBodyString = ApacheEntityUtil.readApacheHttpEntity(entity);
       } catch (IOException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
         return InterceptedResponseBody.create(InterceptedMediaType.parse(APPLICATION_JSON),
@@ -72,10 +71,12 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
       }
       final Header contentType = response.getEntity().getContentType();
       final String contentTypeValue
-          = contentType == null ? ""
+          = isNull(contentType) ? ""
           : contentType.getValue();
 
-      final HttpEntity newEntity = recreateHttpEntityFromString(requestBodyString, entity);
+      final HttpEntity newEntity = ApacheEntityUtil
+          .recreateHttpEntityFromString(requestBodyString, entity);
+
       response.setEntity(newEntity);
 
       return InterceptedResponseBody
