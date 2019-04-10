@@ -1,68 +1,48 @@
-val archivesBaseName: String by extra { "interceptor-tests" }
-val artefactName: String by extra { "Logging Interceptor Tests" }
-val retrofitVersion: String by extra { "2.5.0" }
-val moshiVersion: String by extra { "1.8.0" }
-
 buildscript {
     repositories {
         gradlePluginPortal()
     }
 
     dependencies {
-        classpath("com.adarshr:gradle-test-logger-plugin:1.6.0")
+        classpath(Dependency.testLoggerPlugin)
     }
 }
 
 plugins {
-    id("com.adarshr.test-logger") version "1.6.0"
+    id(Dependency.testLoggerId) version Dependency.testLoggerVersion
 }
 
 dependencies {
-    testImplementation(project(":interceptor-core"))
-    testImplementation(project(":apache-interceptor"))
-    testImplementation(project(":okhttp-interceptor"))
-    testImplementation(project(":okhttp3-interceptor"))
+    testImplementation(project(Dependency.moduleCore))
+    testImplementation(project(Dependency.moduleApacheInterceptor))
+    testImplementation(project(Dependency.moduleOkHttpInterceptor))
+    testImplementation(project(Dependency.moduleOkHttp3Interceptor))
 
-    // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-moshi:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
-    implementation("com.squareup.retrofit2:converter-jaxb:$retrofitVersion")
+    implementation(Dependency.moshi)
+    implementation(Dependency.moshiAdapters)
 
-    // Moshi
-    implementation("com.squareup.moshi:moshi:$moshiVersion")
-    implementation("com.squareup.moshi:moshi-adapters:$moshiVersion")
+    implementation(Dependency.retrofit)
+    implementation(Dependency.retrofitConverterXml)
+    implementation(Dependency.retrofitConverterJson)
+    implementation(Dependency.retrofitConverterScalars)
 
-    // Apache Client
-    testImplementation("org.apache.httpcomponents:httpclient:4.5.1")
-    testImplementation("org.apache.httpcomponents:httpasyncclient:4.1.4")
-    testImplementation("org.apache.httpcomponents:httpmime:4.5.6")
-
-    //OkHttp3 Client
-    testImplementation("com.squareup.okhttp3:logging-interceptor:3.9.1")
-
-    //Mock WebServer
-    testImplementation("com.squareup.okhttp:mockwebserver:2.7.5")
-
-    // Log4j2
-    testImplementation("org.apache.logging.log4j:log4j-core:2.11.0")
-
-    // AssertJ
-    testImplementation("org.assertj:assertj-core:3.11.1")
-
-    // JUnit
-    testImplementation("junit:junit:4.12")
-    testImplementation("pl.pragmatists:JUnitParams:1.1.1")
-
-    // Spark
-    testImplementation("com.sparkjava:spark-core:2.8.0")
+    testImplementation(Dependency.apacheMime)
+    testImplementation(Dependency.apacheClient)
+    testImplementation(Dependency.apacheAsyncClient)
+    testImplementation(Dependency.mockWebServer)
+    testImplementation(Dependency.log4j2_code)
+    testImplementation(Dependency.sparcCore)
+    testImplementation(Dependency.assertJ)
+    testImplementation(Dependency.junit)
+    testImplementation(Dependency.junitParams)
+    testImplementation(Dependency.okHttp3LoggingInterceptor)
 }
 
 tasks.named<Jar>("jar") {
     manifest {
         attributes(mapOf(
-                "Implementation-Title" to artefactName,
-                "Automatic-Module-Name" to "${rootProject.extra["projectGroup"]}.$archivesBaseName"
+                "Implementation-Title" to Property.implementationTitleInterceptorTests,
+                "Automatic-Module-Name" to Property.moduleNameInterceptorTests
         ))
     }
 }

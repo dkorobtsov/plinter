@@ -1,21 +1,11 @@
 import java.nio.charset.StandardCharsets
 
-val projectUrl: String by extra { "https://github.com/dkorobtsov/plinter" }
-val projectDescription: String by extra { "HTTP traffic Pretty Logging Interceptor" }
-val projectName: String by extra { "Pretty Logging Interceptor" }
-val archivesBaseName: String by extra { "plinter" }
-val projectVersion: String by extra { "5.1.3-SNAPSHOT" }
-val projectGroup: String by extra { "io.github.dkorobtsov.plinter" }
 val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
-
-val okioVersion: String by extra { "2.1.0" }
-
-rootProject.extra.set("projectGroup", projectGroup)
 
 plugins {
     id("java-library")
     id("project-report")
-    id("org.sonarqube") version "2.6.2"
+    id(Dependency.sonarcubeId) version Dependency.sonarcubeVersion
 }
 
 java {
@@ -27,24 +17,24 @@ sonarqube {
     properties {
         property("sonar.dynamicAnalysis", "reuseReports")
         property("sonar.language", "java")
-        property("sonar.projectKey", "Plinter")
-        property("sonar.organization", "dkorobtsov-github")
-        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.projectKey", Property.sonarProjectKey)
+        property("sonar.organization", Property.sonarOrganization)
+        property("sonar.host.url", Property.sonarHost)
         property("sonar.login", project.property("sonar.login"))
-        property("sonar.coverage.exclusions", coverageExclusions())
-        property("sonar.cpd.exclusions", duplicationExclusions())
-        property("sonar.exclusions", sonarExclusions())
+        property("sonar.coverage.exclusions", SonarConfig.coverageExclusions())
+        property("sonar.cpd.exclusions", SonarConfig.duplicationExclusions())
+        property("sonar.exclusions", SonarConfig.sonarExclusions())
         property("sonar.jacoco.reportPaths", "${project.rootDir}/interceptor-tests/build/jacoco/test.exec")
     }
 }
 
 configure(listOf(rootProject)) {
-    description = projectDescription
+    description = Property.projectDescription
 }
 
 allprojects {
-    group = projectGroup
-    version = projectVersion
+    group = Property.projectGroup
+    version = Property.projectVersion
 
     repositories {
         mavenLocal()
@@ -59,7 +49,7 @@ allprojects {
     apply(plugin = "jacoco")
 
     dependencies {
-        implementation("com.squareup.okio:okio:$okioVersion")
+        implementation(Dependency.okio)
     }
 }
 
@@ -85,7 +75,7 @@ configure(subprojects) {
             attributes(mapOf(
                     "Implementation-Version" to project.version,
                     "Implementation-Title" to project.name,
-                    "Implementation-URL" to projectUrl
+                    "Implementation-URL" to Property.projectUrl
             ))
         }
     }
@@ -145,9 +135,9 @@ configure(subprojects) {
                                 }
 
                                 "scm" {
-                                    "url"(projectUrl)
-                                    "connection"("scm:$projectUrl.git")
-                                    "developerConnection"("scm:$projectUrl.git")
+                                    "url"(Property.projectUrl)
+                                    "connection"("scm:${Property.projectUrl}.git")
+                                    "developerConnection"("scm:${Property.projectUrl}.git")
                                 }
 
                                 "developers" {
@@ -160,7 +150,7 @@ configure(subprojects) {
 
                                 "issueManagement" {
                                     "system"("GitHub issues")
-                                    "url"("$projectUrl/issues")
+                                    "url"("${Property.projectUrl}/issues")
                                 }
                             }
                         }
@@ -196,35 +186,6 @@ fun mavenUrl(): String {
     }
 }
 
-fun sonarExclusions(): String {
-    return arrayOf(
-            "**/CacheControl.java",
-            "**/InterceptedRequestBody.java",
-            "**/InterceptedHeaders.java",
-            "**/InterceptedMediaType.java",
-            "**/Protocol.java",
-            "**/Util.java"
-    ).joinToString(separator = ", ")
-}
 
-fun duplicationExclusions(): String {
-    return arrayOf(
-            "**/okhttp/**",
-            "**/okhttp3/**"
-    ).joinToString(separator = ", ")
-}
 
-fun coverageExclusions(): String {
-    return arrayOf(
-            "**/CacheControl.java",
-            "**/HttpHeaders.java",
-            "**/InterceptedHeaders.java",
-            "**/HttpMethod.java",
-            "**/InterceptedMediaType.java",
-            "**/InterceptedRequest.java",
-            "**/InterceptedRequestBody.java",
-            "**/InterceptedResponseBody.java",
-            "**/Protocol.java",
-            "**/Util.java"
-    ).joinToString(separator = ", ")
-}
+
