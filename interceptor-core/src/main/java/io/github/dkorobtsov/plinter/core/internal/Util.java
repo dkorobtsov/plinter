@@ -189,24 +189,6 @@ public final class Util {
     //CHECKSTYLE:ON
   }
 
-  @SuppressWarnings("BooleanExpressionComplexity")
-  public static boolean hasPrintableBody(final String mediaType, long contentLength) {
-    if (isNull(mediaType)) {
-      // If content type is not specified in the header, but request has reasonable size,
-      // we are still trying to pretty print it since multi-part bodies usually don't have
-      // content-type headers
-      return contentLength > 0 && contentLength <= 20_000;
-    }
-
-    return mediaType.contains("xml")
-        || mediaType.contains("raml")
-        || mediaType.contains("yaml")
-        || mediaType.contains("json")
-        || mediaType.contains("html")
-        || mediaType.contains("plain")
-        || mediaType.contains("javascript");
-  }
-
   static boolean isEmpty(CharSequence str) {
     return str == null || str.length() == 0;
   }
