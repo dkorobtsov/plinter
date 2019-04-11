@@ -10,7 +10,7 @@ import org.junit.Test;
  * Test for built-in formatters validation.
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class FormattingTest {
+public class LoggerFormattingTest {
 
   private static final String TEST_MESSAGE = "Test";
 

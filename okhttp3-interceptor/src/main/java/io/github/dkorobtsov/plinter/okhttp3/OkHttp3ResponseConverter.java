@@ -13,7 +13,6 @@ import io.github.dkorobtsov.plinter.core.internal.ResponseDetails;
 import io.github.dkorobtsov.plinter.core.internal.ResponseHandler;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import okhttp3.Headers;
@@ -78,14 +77,14 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
 
     if (nonNull(responseBodyCopy)) {
       final MediaType mediaType = responseBodyCopy.contentType();
-      String responseBodyString = "";
       try {
-        responseBodyString = new String(responseBodyCopy.bytes(), Charset.defaultCharset());
+        return InterceptedResponseBody
+            .create(interceptedMediaType(mediaType), responseBodyCopy.bytes());
       } catch (IOException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
+        return InterceptedResponseBody
+            .create(interceptedMediaType(mediaType), "");
       }
-      return InterceptedResponseBody
-          .create(interceptedMediaType(mediaType), responseBodyString);
     } else {
       return null;
     }

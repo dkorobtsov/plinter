@@ -1,10 +1,9 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor.printRequest;
-
 import io.github.dkorobtsov.plinter.core.AbstractInterceptor;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.RequestConverter;
+import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
@@ -48,7 +47,7 @@ public class ApacheHttpRequestInterceptor extends AbstractInterceptor
     if (!skipLogging()) {
       final InterceptedRequest interceptedRequest = requestConverter.from(request);
 
-      printRequest(loggerConfig, interceptedRequest);
+      ClientPrintingExecutor.printRequest(loggerConfig, interceptedRequest);
     }
   }
 

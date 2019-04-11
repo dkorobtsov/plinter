@@ -1,18 +1,15 @@
-val archivesBaseName: String by extra { "apache-interceptor" }
-val artefactName: String by extra { "Apache Logging Interceptor" }
-
 dependencies {
-    api(project(":interceptor-core"))
-    implementation("org.apache.httpcomponents:httpasyncclient:4.1.4")
-    implementation("org.apache.httpcomponents:httpclient:4.5.1")
-    implementation("org.apache.httpcomponents:httpmime:4.5.6")
+    api(project(Dependency.moduleCore))
+    implementation(Dependency.apacheMime)
+    implementation(Dependency.apacheClient)
+    implementation(Dependency.apacheAsyncClient)
 }
 
 tasks.named<Jar>("jar") {
     manifest {
         attributes(mapOf(
-                "Implementation-Title" to artefactName,
-                "Automatic-Module-Name" to "${rootProject.extra["projectGroup"]}.$archivesBaseName"
+                "Implementation-Title" to Property.implementationTitleApacheInterceptor,
+                "Automatic-Module-Name" to Property.moduleNameApacheInterceptor
         ))
     }
 }

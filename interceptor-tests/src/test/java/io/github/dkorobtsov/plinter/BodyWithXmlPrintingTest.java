@@ -28,9 +28,8 @@ public class BodyWithXmlPrintingTest extends BaseTest {
       "<?xml version=\"1.0\" encoding=\"UTF-16\"?>"
           + "<mammals>"
           + "<animal id=\"0\" species=\"Capra hircus\">Goat</animal>"
-          + "animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>"
           + "<animal id=\"2\" species=\"Equus zebra\">Zebra</animal> "
-          + "</mammals>";
+          + "<mammals>";
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
@@ -38,8 +37,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         XML_BODY, APPLICATION_XML, false);
 
-    assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-    assertThat(loggerOutput).contains("</mammals>");
+    assertThat(loggerOutput)
+        .contains("<animal id=\"0\" species=\"Capra hircus\">Goat</animal>")
+        .contains("<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>");
   }
 
   @Test
@@ -48,21 +48,22 @@ public class BodyWithXmlPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         XML_BODY, APPLICATION_XML, false);
 
-    assertThat(loggerOutput).contains("<?xml version=\"1.0\" encoding=\"UTF-16\"?>");
-    assertThat(loggerOutput).contains("</mammals>");
+    assertThat(loggerOutput)
+        .contains("<animal id=\"0\" species=\"Capra hircus\">Goat</animal>")
+        .contains("<animal id=\"1\" species=\"Panthera pardus\">Leopard</animal>");
   }
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_malformedXmlRequest(String interceptor, boolean withExecutor) {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
-        MALFORMED_XML_BODY, APPLICATION_XML, false);
+        MALFORMED_XML_BODY, APPLICATION_XML, true);
 
     loggerOutput
         .stream()
         .filter(it ->
             it.startsWith(
-                "<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
+                "  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
         .findFirst()
         .orElseThrow(() ->
             new AssertionError("Interceptor should be able to handle xml request body."));
@@ -72,16 +73,16 @@ public class BodyWithXmlPrintingTest extends BaseTest {
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_malformedXmlResponse(String interceptor, boolean withExecutor) {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
-        MALFORMED_XML_BODY, APPLICATION_XML, false);
+        MALFORMED_XML_BODY, APPLICATION_XML, true);
 
     loggerOutput
         .stream()
         .filter(it ->
             it.startsWith(
-                "<?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
+                "  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
         .findFirst()
         .orElseThrow(() ->
-            new AssertionError("Interceptor should be able to handle xml response body."));
+            new AssertionError("Interceptor should be able to handle xml request body."));
   }
 
 

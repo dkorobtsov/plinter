@@ -19,6 +19,7 @@ package io.github.dkorobtsov.plinter.core.internal;
 import static java.util.Objects.isNull;
 
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -27,8 +28,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import okio.Buffer;
 import okio.BufferedSource;
 import okio.ByteString;
+import okio.GzipSink;
 
 /**
  * Junk drawer of utility methods.
@@ -186,23 +189,47 @@ public final class Util {
     //CHECKSTYLE:ON
   }
 
-  @SuppressWarnings("BooleanExpressionComplexity")
-  public static boolean hasPrintableBody(final String mediaType) {
-    if (isNull(mediaType)) {
-      return false;
-    }
-
-    return mediaType.contains("xml")
-        || mediaType.contains("raml")
-        || mediaType.contains("yaml")
-        || mediaType.contains("json")
-        || mediaType.contains("html")
-        || mediaType.contains("plain")
-        || mediaType.contains("javascript");
-  }
-
   static boolean isEmpty(CharSequence str) {
     return str == null || str.length() == 0;
+  }
+
+  /**
+   * Returns true if the body in question probably contains human readable text. Uses a small sample
+   * of code points to detect unicode control characters commonly used in binary file signatures.
+   */
+  static boolean isUtf8(Buffer buffer) {
+    try {
+      final Buffer prefix = new Buffer();
+      final long size = buffer.size();
+      final long byteCount = size < 64 ? size : 64;
+      buffer.copyTo(prefix, 0, byteCount);
+
+      for (int i = 0; i < 16; i++) {
+        if (prefix.exhausted()) {
+          break;
+        }
+        final int codePoint = prefix.readUtf8CodePoint();
+        if (Character.isISOControl(codePoint) && !Character.isWhitespace(codePoint)) {
+          return false;
+        }
+      }
+      return true;
+    } catch (EOFException e) {
+      return false; // Truncated UTF-8 sequence.
+    }
+  }
+
+  public static Buffer gzip(String string) {
+    try (Buffer data = new Buffer()) {
+      data.writeUtf8(string);
+      final Buffer sink = new Buffer();
+      final GzipSink gzipSink = new GzipSink(sink);
+      gzipSink.write(data, data.size());
+      gzipSink.close();
+      return sink;
+    } catch (IOException e) {
+      throw new AssertionError("Failed to gzip target string.", e);
+    }
   }
 
 }

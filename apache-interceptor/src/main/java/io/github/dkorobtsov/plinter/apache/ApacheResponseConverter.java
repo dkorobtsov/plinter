@@ -1,9 +1,9 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.apache.ApacheEntityUtil.readApacheHttpEntity;
-import static io.github.dkorobtsov.plinter.apache.ApacheEntityUtil.recreateHttpEntityFromString;
 import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_PLAIN;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.HttpStatus;
@@ -61,25 +61,30 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
 
   private InterceptedResponseBody interceptedResponseBody(HttpResponse response) {
     final HttpEntity entity = response.getEntity();
-    if (entity != null) {
-      final String requestBodyString;
+    if (nonNull(entity)) {
+
+      final byte[] byteArray;
       try {
-        requestBodyString = readApacheHttpEntity(entity);
+        byteArray = ApacheEntityUtil.getEntityBytes(entity);
       } catch (IOException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
-        return InterceptedResponseBody.create(InterceptedMediaType.parse(APPLICATION_JSON),
-            "[LoggingInterceptorError] : could not parse response body");
+        return InterceptedResponseBody
+            .create(InterceptedMediaType.parse(TEXT_PLAIN),
+                "[LoggingInterceptorError] : could not parse body");
       }
+
       final Header contentType = response.getEntity().getContentType();
       final String contentTypeValue
-          = contentType == null ? ""
+          = isNull(contentType) ? ""
           : contentType.getValue();
 
-      final HttpEntity newEntity = recreateHttpEntityFromString(requestBodyString, entity);
+      final HttpEntity newEntity = ApacheEntityUtil
+          .recreateHttpEntityFromByteArray(byteArray.clone(), entity);
+
       response.setEntity(newEntity);
 
       return InterceptedResponseBody
-          .create(InterceptedMediaType.parse(contentTypeValue), requestBodyString);
+          .create(InterceptedMediaType.parse(contentTypeValue), byteArray);
     }
     return InterceptedResponseBody
         .create(InterceptedMediaType.parse(APPLICATION_JSON), "");

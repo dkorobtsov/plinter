@@ -5,6 +5,8 @@ import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import io.github.dkorobtsov.plinter.core.internal.Util;
+import java.nio.charset.Charset;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -68,7 +70,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         SIMPLE_JSON, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
+    assertThat(loggerOutput)
+        .contains("     \"city\": \"New York\", ");
   }
 
   @Test
@@ -77,7 +80,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         SIMPLE_JSON, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).contains("     \"city\": \"New York\", ");
+    assertThat(loggerOutput)
+        .contains("     \"city\": \"New York\", ");
   }
 
   @Test
@@ -86,8 +90,9 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         JSON_ARRAY, APPLICATION_JSON, false);
 
-    assertThat(loggerOutput).contains("{\"test1\": \"test1\"},");
-    assertThat(loggerOutput).contains("{\"test2\": \"test2\"}");
+    assertThat(loggerOutput)
+        .contains("{\"test1\": \"test1\"},")
+        .contains("{\"test2\": \"test2\"}");
   }
 
   @Test
@@ -96,7 +101,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
+    assertThat(loggerOutput)
+        .containsSequence("     \"name\": \"doggie\", ");
   }
 
   @Test
@@ -105,7 +111,8 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
         PREFORMATTED_JSON_BODY, APPLICATION_JSON, true);
 
-    assertThat(loggerOutput).containsSequence("     \"name\": \"doggie\", ");
+    assertThat(loggerOutput)
+        .containsSequence("     \"name\": \"doggie\", ");
   }
 
   @Test
@@ -129,8 +136,9 @@ public class BodyWithJsonPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
         JSON_ARRAY, APPLICATION_JSON, false);
 
-    assertThat(loggerOutput).contains("{\"test1\": \"test1\"},");
-    assertThat(loggerOutput).contains("{\"test2\": \"test2\"}");
+    assertThat(loggerOutput)
+        .contains("{\"test1\": \"test1\"},")
+        .contains("{\"test2\": \"test2\"}");
   }
 
   @Test
@@ -171,18 +179,22 @@ public class BodyWithJsonPrintingTest extends BaseTest {
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_fileRequest(String interceptor, boolean withExecutor) {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
-        PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
+        Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset()),
+        APPLICATION_ZIP, true);
 
-    assertThat(loggerOutput).contains("  Omitted response body ");
+    assertThat(loggerOutput)
+        .contains("  Omitted request body ");
   }
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_fileResponse(String interceptor, boolean withExecutor) {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
-        PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
+        Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset()),
+        APPLICATION_ZIP, true);
 
-    assertThat(loggerOutput).contains("  Omitted response body ");
+    assertThat(loggerOutput)
+        .contains("  Omitted response body ");
   }
 
 }
