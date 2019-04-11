@@ -6,8 +6,10 @@ import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.HttpStatus;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedHeaders;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
+import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.Util;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
@@ -36,8 +38,7 @@ public class ResponsesPrintingTest extends BaseTest {
   public void printResponse_bodyIsNull() {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse response = InterceptedResponse.builder()
-        .originalBody(null)
-        .hasPrintableBody(true)
+        .responseBody(null)
         .chainMs(10)
         .code(200)
         .isSuccessful(true)
@@ -48,7 +49,7 @@ public class ResponsesPrintingTest extends BaseTest {
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
     Assertions.assertThat(testLogger.formattedOutput())
-        .contains("Omitted response body");
+        .contains("Empty response body");
   }
 
   @Test
@@ -120,7 +121,7 @@ public class ResponsesPrintingTest extends BaseTest {
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
     Assertions.assertThat(testLogger.loggerOutput(false))
-        .contains("Omitted response body");
+        .contains("Empty response body");
   }
 
   @Test
@@ -134,8 +135,8 @@ public class ResponsesPrintingTest extends BaseTest {
         .contentType(InterceptedMediaType.parse(APPLICATION_JSON))
         .message(HttpStatus.OK.getMessage())
         .url(TEST_URL)
-        .originalBody(SIMPLE_JSON.getBytes())
-        .hasPrintableBody(true)
+        .responseBody(InterceptedResponseBody
+            .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
         .build();
 
     ClientPrintingExecutor
@@ -201,11 +202,13 @@ public class ResponsesPrintingTest extends BaseTest {
         .code(200)
         .isSuccessful(true)
         .contentType(InterceptedMediaType.parse(APPLICATION_JSON))
-        .header("LongHeader: " + TestUtil.randomText(500))
+        .headers(new InterceptedHeaders.Builder()
+            .add("LongHeader", TestUtil.randomText(500))
+            .build())
         .message(HttpStatus.OK.getMessage())
         .url(TEST_URL)
-        .originalBody(RESIZABLE_BODY.getBytes())
-        .hasPrintableBody(true)
+        .responseBody(InterceptedResponseBody
+            .create(InterceptedMediaType.parse(APPLICATION_JSON), RESIZABLE_BODY))
         .segmentList(Util.encodedPathSegments(new URL(TEST_URL)))
         .build();
 
@@ -238,10 +241,13 @@ public class ResponsesPrintingTest extends BaseTest {
         .isSuccessful(true)
         .contentType(InterceptedMediaType.parse(APPLICATION_JSON))
         .message(HttpStatus.OK.getMessage())
-        .header("Content-Type: application/json\nAccept: application/json")
+        .headers(new InterceptedHeaders.Builder()
+            .add("Content-Type", "application/json")
+            .add("Accept", "application/json")
+            .build())
         .url(TEST_URL)
-        .originalBody(SIMPLE_JSON.getBytes())
-        .hasPrintableBody(true)
+        .responseBody(InterceptedResponseBody
+            .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
         .build();
 
     ClientPrintingExecutor

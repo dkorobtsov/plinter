@@ -1,6 +1,7 @@
 package io.github.dkorobtsov.plinter.apache;
 
 import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_PLAIN;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -61,26 +62,29 @@ public class ApacheResponseConverter implements ResponseConverter<HttpResponse> 
   private InterceptedResponseBody interceptedResponseBody(HttpResponse response) {
     final HttpEntity entity = response.getEntity();
     if (nonNull(entity)) {
-      final String requestBodyString;
+
+      final byte[] byteArray;
       try {
-        requestBodyString = ApacheEntityUtil.readApacheHttpEntity(entity);
+        byteArray = ApacheEntityUtil.getEntityBytes(entity);
       } catch (IOException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
-        return InterceptedResponseBody.create(InterceptedMediaType.parse(APPLICATION_JSON),
-            "[LoggingInterceptorError] : could not parse response body");
+        return InterceptedResponseBody
+            .create(InterceptedMediaType.parse(TEXT_PLAIN),
+                "[LoggingInterceptorError] : could not parse body");
       }
+
       final Header contentType = response.getEntity().getContentType();
       final String contentTypeValue
           = isNull(contentType) ? ""
           : contentType.getValue();
 
       final HttpEntity newEntity = ApacheEntityUtil
-          .recreateHttpEntityFromString(requestBodyString, entity);
+          .recreateHttpEntityFromByteArray(byteArray.clone(), entity);
 
       response.setEntity(newEntity);
 
       return InterceptedResponseBody
-          .create(InterceptedMediaType.parse(contentTypeValue), requestBodyString);
+          .create(InterceptedMediaType.parse(contentTypeValue), byteArray);
     }
     return InterceptedResponseBody
         .create(InterceptedMediaType.parse(APPLICATION_JSON), "");

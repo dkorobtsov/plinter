@@ -64,14 +64,14 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
   @Test
   @Parameters(method = "interceptors")
-  public void printableBodyHandling_negativeTest_css(String interceptor) {
+  public void printableBodyHandling_css(String interceptor) {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     interceptWithConfig(interceptor, defaultLoggerConfig(testLogger), null, null,
         WEBSERVER_URL + "style.css");
 
     assertThat(testLogger.formattedOutput())
         .containsIgnoringCase("Content-Type: text/css")
-        .containsIgnoringCase("Omitted response body");
+        .containsIgnoringCase("Content of css file");
   }
 
   @Test

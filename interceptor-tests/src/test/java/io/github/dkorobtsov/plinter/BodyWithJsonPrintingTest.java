@@ -5,6 +5,8 @@ import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import io.github.dkorobtsov.plinter.core.internal.Util;
+import java.nio.charset.Charset;
 import java.util.List;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -177,17 +179,19 @@ public class BodyWithJsonPrintingTest extends BaseTest {
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_fileRequest(String interceptor, boolean withExecutor) {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
-        PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
+        Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset()),
+        APPLICATION_ZIP, true);
 
     assertThat(loggerOutput)
-        .contains("  Omitted response body ");
+        .contains("  Omitted request body ");
   }
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_fileResponse(String interceptor, boolean withExecutor) {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
-        PREFORMATTED_JSON_BODY, APPLICATION_ZIP, true);
+        Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset()),
+        APPLICATION_ZIP, true);
 
     assertThat(loggerOutput)
         .contains("  Omitted response body ");

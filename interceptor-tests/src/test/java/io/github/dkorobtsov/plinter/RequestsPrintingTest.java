@@ -42,7 +42,7 @@ public class RequestsPrintingTest extends BaseTest {
         .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
 
     assertThat(testLogger.loggerOutput(false))
-        .contains("Omitted request body");
+        .contains("Empty request body");
   }
 
   @Test
@@ -330,7 +330,7 @@ public class RequestsPrintingTest extends BaseTest {
             + "  ┌ Content-Type: application/json \n"
             + "  └ Accept: application/json \n"
             + "   \n"
-            + "  Omitted request body \n"
+            + "  Empty request body \n"
             + "└─────────────────────────────────────────────────────────────────────────────── \n");
   }
 

@@ -1,7 +1,5 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.UTF_8;
-
 import java.io.IOException;
 import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
@@ -28,21 +26,20 @@ final class BodyFormatter {
   private BodyFormatter() {
   }
 
-  static String formattedBody(final byte[] msg) {
-    final String bodyAsString = new String(msg, UTF_8);
+  static String formattedBody(String printableBody) {
     String message;
     try {
-      if (bodyAsString.trim().charAt(0) == '{') {
-        message = formatAsJsonObject(bodyAsString);
-      } else if (bodyAsString.trim().charAt(0) == '[') {
-        message = formatAsJsonArray(bodyAsString);
-      } else if (bodyAsString.trim().charAt(0) == '<') {
-        message = formatAsXml(bodyAsString);
+      if (printableBody.trim().charAt(0) == '{') {
+        message = formatAsJsonObject(printableBody);
+      } else if (printableBody.trim().charAt(0) == '[') {
+        message = formatAsJsonArray(printableBody);
+      } else if (printableBody.trim().charAt(0) == '<') {
+        message = formatAsXml(printableBody);
       } else {
-        message = bodyAsString;
+        message = printableBody;
       }
     } catch (JSONException e) {
-      message = bodyAsString;
+      message = printableBody;
     } catch (StringIndexOutOfBoundsException e) {
       message = "";
     }

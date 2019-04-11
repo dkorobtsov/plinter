@@ -191,22 +191,19 @@ public abstract class BaseTest {
    */
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig) {
     interceptWithConfig(interceptor, loggerConfig, String.valueOf(server.url(MOCK_SERVER_PATH)),
-        null, null, null
-    );
+        null, null, null);
   }
 
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
       String body, String mediaType, String url) {
 
-    interceptWithConfig(interceptor, loggerConfig, url, null, mediaType, body
-    );
+    interceptWithConfig(interceptor, loggerConfig, url, null, mediaType, body);
   }
 
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
       String url, List<SimpleEntry<String, String>> headers) {
 
-    interceptWithConfig(interceptor, loggerConfig, url, headers, null, null
-    );
+    interceptWithConfig(interceptor, loggerConfig, url, headers, null, null);
   }
 
   /**
@@ -327,7 +324,8 @@ public abstract class BaseTest {
             new com.squareup.okhttp.ConnectionPool(MAX_IDLE_CONNECTIONS,
                 KEEP_ALIVE_DURATION_MS))
         .setDispatcher(new com.squareup.okhttp.Dispatcher());
-    okHttpClient.interceptors().add(interceptor);
+    okHttpClient
+        .interceptors().add(interceptor);
     return okHttpClient;
   }
 
@@ -349,9 +347,6 @@ public abstract class BaseTest {
     if (nonNull(content) && nonNull(mediaType)) {
       requestBuilder.put(RequestBody.create(
           MediaType.parse(mediaType), content));
-    } else {
-      // If not specified, OkHttp3 will automatically add: Accept-encoding: gzip
-      requestBuilder.addHeader("Accept-Encoding", "identity");
     }
     return requestBuilder.build();
   }
@@ -379,8 +374,6 @@ public abstract class BaseTest {
       request.setHeader(new BasicHeader(CONTENT_TYPE, mediaType));
     } else {
       request = new HttpGet(url);
-      // If not specified, Apache Client will automatically add: Accept-encoding: gzip
-      request.addHeader("Accept-Encoding", "identity");
     }
 
     if (nonNull(headers) && !headers.isEmpty()) {

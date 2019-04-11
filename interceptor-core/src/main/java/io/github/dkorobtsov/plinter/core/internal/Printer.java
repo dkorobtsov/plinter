@@ -26,7 +26,7 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.hasPrintableBody;
+import static io.github.dkorobtsov.plinter.core.internal.Util.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -34,12 +34,16 @@ import io.github.dkorobtsov.plinter.core.Level;
 import io.github.dkorobtsov.plinter.core.LogWriter;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 import okio.Buffer;
+import okio.BufferedSource;
+import okio.GzipSource;
 
 
 /**
@@ -49,6 +53,7 @@ import okio.Buffer;
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 final class Printer {
 
+  private static final Logger logger = Logger.getLogger(Printer.class.getName());
   private static final String LINE_SEPARATOR = System.getProperty("line.separator");
   private static final String DOUBLE_SEPARATOR = LINE_SEPARATOR + LINE_SEPARATOR;
   private static final String REGEX_LINE_SEPARATOR = "\r?\n";
@@ -84,6 +89,8 @@ final class Printer {
   private static final String[] OMITTED_REQUEST = {"", "Omitted request body"};
   private static final String[] EMPTY_REQUEST_BODY = {"", "Empty request body"};
   private static final String[] EMPTY_RESPONSE_BODY = {"", "Empty response body"};
+  private static final String[] PRINTING_FAILED = {"",
+      "[LoggingInterceptorError] : failed to print body"};
 
   private static LoggerConfig loggerConfig;
 
@@ -171,55 +178,86 @@ final class Printer {
 
   private static void printRequestBody(InterceptedRequest request) {
     if (bodyShouldBePrinted()) {
-      if (hasPrintableBody(mediaType(request))) {
-        final String printableBody = bodyToString(request);
 
-        // To handle situations, when we expect printable body based on
-        // media type but nothing is returned.
-        if (printableBody.isEmpty()) {
-          logLines(EMPTY_REQUEST_BODY, true);
-        } else {
-          final String requestBody = LINE_SEPARATOR
-              + BODY_TAG
-              + LINE_SEPARATOR
-              + printableBody;
+      final InterceptedRequest copy = request.newBuilder().build();
 
-          logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
-        }
-
-      } else {
-        logLines(OMITTED_REQUEST, true);
+      if (isNull(copy.body)) {
+        logLines(EMPTY_REQUEST_BODY, true);
+        return;
       }
-    }
-  }
 
-  private static String mediaType(InterceptedRequest request) {
-    final InterceptedRequestBody requestBody = request.body();
+      try (Buffer buffer = new Buffer()) {
+        copy.body.writeTo(buffer);
+        if (Util.isUtf8(buffer)) {
+          final String printableBody = BodyFormatter
+              .formattedBody(new String(buffer.readByteArray(), UTF_8));
 
-    String requestSubtype = null;
-    if (nonNull(requestBody) && nonNull(requestBody.contentType())) {
-      requestSubtype = requestBody.contentType().subtype();
+          // To handle situations, when we expect printable body based on
+          // media type but nothing is returned.
+          if (printableBody.isEmpty()) {
+            logLines(EMPTY_REQUEST_BODY, true);
+          } else {
+            final String requestBody = LINE_SEPARATOR
+                + BODY_TAG
+                + LINE_SEPARATOR
+                + printableBody;
+
+            logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
+          }
+        } else {
+          logLines(OMITTED_REQUEST, true);
+        }
+      } catch (IOException e) {
+        logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
+        logLines(PRINTING_FAILED, true);
+      }
+
     }
-    return requestSubtype;
   }
 
   private static void printResponseBody(InterceptedResponse interceptedResponse) {
     if (bodyShouldBePrinted()) {
-      if (interceptedResponse.hasPrintableBody && nonNull(interceptedResponse.originalBody)) {
-        final String printableBody = BodyFormatter.formattedBody(interceptedResponse.originalBody);
+      if (nonNull(interceptedResponse.originalBody)) {
 
-        if (printableBody.isEmpty()) {
+        final String encoding = interceptedResponse.headers != null
+            ? interceptedResponse.headers.get("Content-encoding")
+            : null;
+
+        Buffer buffer = null;
+        try (BufferedSource source = interceptedResponse.originalBody.source()) {
+          source.request(Long.MAX_VALUE); // Buffer the entire body.
+
+          buffer = source.getBuffer();
+          if ("gzip".equals(encoding)) {
+            final Buffer gzippedBuffer = buffer.clone();
+            buffer.clear();
+            buffer.writeAll(new GzipSource(gzippedBuffer));
+          }
+        } catch (IOException e) {
+          logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
+        }
+
+        if (buffer == null || buffer.size() == 0L) {
           logLines(EMPTY_RESPONSE_BODY, true);
-        } else {
+          return;
+        }
+
+        final boolean isPrintable = Util.isUtf8(buffer);
+        if (isPrintable && buffer.size() > 0L) {
+          final String printableBody = BodyFormatter
+              .formattedBody(buffer.clone().readString(Charset.defaultCharset()));
+
           final String responseBody = LINE_SEPARATOR
               + BODY_TAG
               + LINE_SEPARATOR
               + printableBody;
 
           logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
+        } else {
+          logLines(OMITTED_RESPONSE, true);
         }
       } else {
-        logLines(OMITTED_RESPONSE, true);
+        logLines(EMPTY_RESPONSE_BODY, true);
       }
     }
   }
@@ -258,7 +296,8 @@ final class Printer {
         + DOUBLE_SEPARATOR
         + STATUS_CODE_TAG + interceptedResponse.code + " / " + statusMessage
         + DOUBLE_SEPARATOR
-        + printHeaderIfLoggable(interceptedResponse.header, isLoggable);
+        + printHeaderIfLoggable(interceptedResponse.headers != null
+        ? interceptedResponse.headers.toString() : "", isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
@@ -277,19 +316,6 @@ final class Printer {
     return !isEmpty(header) && loggable
         ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
         : "";
-  }
-
-  private static String bodyToString(final InterceptedRequest request) {
-    final InterceptedRequest copy = request.newBuilder().build();
-    try (Buffer buffer = new Buffer()) {
-      if (isNull(copy.body())) {
-        return "";
-      }
-      copy.body().writeTo(buffer);
-      return BodyFormatter.formattedBody(buffer.readByteArray());
-    } catch (final IOException e) {
-      return "{\"err\": \"" + e.getMessage() + "\"}";
-    }
   }
 
   private static void logLines(String[] lines, boolean withLineSize) {
