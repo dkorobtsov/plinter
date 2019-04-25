@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CoreUtilsUnitTest extends BaseTest {
@@ -16,6 +17,13 @@ public class CoreUtilsUnitTest extends BaseTest {
     public void testNoPathSegmentsReturnedOnUrlWithNoPath() throws MalformedURLException {
         final List<String> noSlashInTheEndSegments = Util.encodedPathSegments(new URL("https://google.com"));
         Assert.assertTrue("There should be no segments", noSlashInTheEndSegments.isEmpty());
+    }
+
+    @Test
+    public void testNoPathSegmentsWithSlashOnlyAfterDomain() throws MalformedURLException {
+        final List<String> emptyPathSegment = Util.encodedPathSegments(new URL("https://google.com/"));
+        final List<String> expectedPathSegments = Collections.singletonList("");
+        Assert.assertEquals(emptyPathSegment, expectedPathSegments);
     }
 
     @Test
