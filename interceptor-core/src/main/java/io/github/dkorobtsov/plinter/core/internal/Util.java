@@ -175,8 +175,8 @@ public final class Util {
     }
     final String urlString = url.toString();
     final String scheme = url.getProtocol();
-
-    final int pathStart = urlString.indexOf('/', scheme.length() + 3);
+    final int potentialPathStartIndex = urlString.indexOf('/', scheme.length() + 3);
+    final int pathStart = potentialPathStartIndex < 0 ? urlString.length() : potentialPathStartIndex;
     final int pathEnd = delimiterOffset(urlString, pathStart, urlString.length(), "?#");
     final List<String> result = new ArrayList<>();
     for (int i = pathStart; i < pathEnd; ) {
