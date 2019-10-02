@@ -32,7 +32,6 @@ public class ResponsesPrintingTest extends BaseTest {
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
   private static final String TEST_URL = "http://google.com/api/test/";
   private static final int LINE_LENGTH = 120;
-  private static final int TRAILING_SPACE = 1;
 
   @Test
   public void printResponse_bodyIsNull() {
@@ -143,13 +142,13 @@ public class ResponsesPrintingTest extends BaseTest {
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
     Assertions.assertThat(testLogger.formattedOutput())
-        .contains(""
-            + "  Body: \n"
-            + "  { \n"
-            + "     \"city\": \"New York\", \n"
-            + "     \"name\": \"John\", \n"
-            + "     \"age\": 31 \n"
-            + "  } "
+        .contains("  "
+            + "Body:\n"
+            + "  {\n"
+            + "     \"city\": \"New York\",\n"
+            + "     \"name\": \"John\",\n"
+            + "     \"age\": 31\n"
+            + "  }"
         );
   }
 
@@ -168,7 +167,7 @@ public class ResponsesPrintingTest extends BaseTest {
         .printResponse(defaultLoggerConfig(testLogger, false, LINE_LENGTH), response);
 
     Assertions.assertThat(testLogger.loggerOutput(true))
-        .contains("  /api/test/ - is success : true ");
+        .contains("  /api/test/ - is success : true");
   }
 
   @Test
@@ -220,6 +219,7 @@ public class ResponsesPrintingTest extends BaseTest {
     testLogger
         .loggerOutput(true)
         .stream()
+        .filter(it -> !it.isEmpty())
         .filter(
             it -> it.startsWith("| Thread:")
                 || it.startsWith("  LongHeader:")
@@ -227,9 +227,10 @@ public class ResponsesPrintingTest extends BaseTest {
                 || it.charAt(0) == '┌'
                 || it.charAt(0) == '├'
                 || it.charAt(0) == '└')
+        .map(String::stripTrailing)
         .forEach(
             it -> Assertions.assertThat(it.length())
-                .isEqualTo(maxLength + TRAILING_SPACE));
+                .isEqualTo(maxLength));
   }
 
   @Test
@@ -257,25 +258,25 @@ public class ResponsesPrintingTest extends BaseTest {
             .build(), response);
 
     Assertions.assertThat(testLogger.formattedOutput())
-        .isEqualTo(""
-            + "┌────── Response ─────────────────────────────────────────────────────────────── \n"
-            + "  URL: http://google.com/api/test/ \n"
-            + "   \n"
-            + "  is success : true - Execution time: 10ms \n"
-            + "   \n"
-            + "  Status Code: 200 / OK \n"
-            + "   \n"
-            + "  Headers: \n"
-            + "  ┌ Content-Type: application/json \n"
-            + "  └ Accept: application/json \n"
-            + "   \n"
-            + "  Body: \n"
-            + "  { \n"
-            + "     \"city\": \"New York\", \n"
-            + "     \"name\": \"John\", \n"
-            + "     \"age\": 31 \n"
-            + "  } \n"
-            + "└─────────────────────────────────────────────────────────────────────────────── \n");
+        .contains(""
+            + "┌────── Response ───────────────────────────────────────────────────────────────\n"
+            + "  URL: http://google.com/api/test/\n"
+            + "  \n"
+            + "  is success : true - Execution time: 10ms\n"
+            + "  \n"
+            + "  Status Code: 200 / OK\n"
+            + "  \n"
+            + "  Headers:\n"
+            + "  ┌ Content-Type: application/json\n"
+            + "  └ Accept: application/json\n"
+            + "  \n"
+            + "  Body:\n"
+            + "  {\n"
+            + "     \"city\": \"New York\",\n"
+            + "     \"name\": \"John\",\n"
+            + "     \"age\": 31\n"
+            + "  }\n"
+            + "└───────────────────────────────────────────────────────────────────────────────");
   }
 
 }

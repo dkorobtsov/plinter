@@ -47,7 +47,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
     assertThat(testLogger.formattedOutput())
         .containsIgnoringCase("Content-Type: application/javascript")
-        .containsIgnoringCase("console.log(\"Hello JavaScript\"); ");
+        .containsIgnoringCase("console.log(\"Hello JavaScript\");");
   }
 
   @Test

@@ -39,7 +39,7 @@ public class LoggerConfigurationTest extends BaseTest {
         .build());
 
     assertTrue("Logger should publish events using only default configuration",
-        testLogger.firstFormattedEvent(true)
+        testLogger.firstFormattedEvent(false)
             .contains("Request"));
   }
 
@@ -53,11 +53,9 @@ public class LoggerConfigurationTest extends BaseTest {
         .logger(testLogger)
         .build());
 
-    //Comparing message by length since on Gradle runner characters may be different
-    //unless GradleVM executes with -Dfile.encoding=utf-8 option
     Assert.assertEquals("Logger with default format should publish message only",
-        testLogger.firstRawEvent().length(),
-        testLogger.firstFormattedEvent(false).length());
+        "┌────── Request ──────────────────────────────────────────────────────────────────────────────────────────────",
+        testLogger.firstFormattedEvent(false));
   }
 
   @Test
@@ -100,9 +98,9 @@ public class LoggerConfigurationTest extends BaseTest {
         .logger(testLogger)
         .build());
 
-    final String logEntry = testLogger.lastFormattedEvent(true);
+    final String logEntry = testLogger.firstFormattedEvent(true);
 
-    TestUtil.assertLogEntryElementsCount(logEntry, 3);
+    TestUtil.assertLogEntryElementsCount(logEntry, 2);
     TestUtil.assertEntryStartsWithParsableDate(logEntry);
   }
 

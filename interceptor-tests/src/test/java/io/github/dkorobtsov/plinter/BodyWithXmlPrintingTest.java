@@ -33,9 +33,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
-  public void bodyHandling_xmlRequest(String interceptor, boolean withExecutor) {
+  public void bodyHandling_xmlRequest(String interceptor, boolean withExecutor, boolean logByLine) {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
-        XML_BODY, APPLICATION_XML, false);
+        XML_BODY, APPLICATION_XML, false, logByLine);
 
     assertThat(loggerOutput)
         .contains("<animal id=\"0\" species=\"Capra hircus\">Goat</animal>")
@@ -44,9 +44,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
-  public void bodyHandling_xmlResponse(String interceptor, boolean withExecutor) {
+  public void bodyHandling_xmlResponse(String interceptor, boolean withExecutor, boolean logByLine) {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
-        XML_BODY, APPLICATION_XML, false);
+        XML_BODY, APPLICATION_XML, false, logByLine);
 
     assertThat(loggerOutput)
         .contains("<animal id=\"0\" species=\"Capra hircus\">Goat</animal>")
@@ -55,9 +55,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
-  public void bodyHandling_malformedXmlRequest(String interceptor, boolean withExecutor) {
+  public void bodyHandling_malformedXmlRequest(String interceptor, boolean withExecutor, boolean logByLine) {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
-        MALFORMED_XML_BODY, APPLICATION_XML, true);
+        MALFORMED_XML_BODY, APPLICATION_XML, true, logByLine);
 
     loggerOutput
         .stream()
@@ -71,9 +71,9 @@ public class BodyWithXmlPrintingTest extends BaseTest {
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
-  public void bodyHandling_malformedXmlResponse(String interceptor, boolean withExecutor) {
+  public void bodyHandling_malformedXmlResponse(String interceptor, boolean withExecutor, boolean logByLine) {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
-        MALFORMED_XML_BODY, APPLICATION_XML, true);
+        MALFORMED_XML_BODY, APPLICATION_XML, true, logByLine);
 
     loggerOutput
         .stream()

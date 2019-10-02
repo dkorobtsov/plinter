@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.GzipSource;
@@ -67,7 +68,7 @@ final class Printer {
   private static final String CORNER_UP = "┌ ";
   private static final String CORNER_BOTTOM = "└ ";
   private static final String CENTER_LINE = "├ ";
-  private static final String SECTION_DEFAULT_LINE = "| ";
+  private static final String SECTION_DEFAULT_LINE = "│ ";
   private static final String DEFAULT_LINE = "  ";
   private static final String SECTION_LINE = "├";
   private static final char HORIZONTAL_LINE = '─';
@@ -85,12 +86,14 @@ final class Printer {
   private static final String THREAD_STRING_FORMAT = "%-5s %-{indent}s %-5s %s";
   private static final int THREAD_INDENT = 36;
 
-  private static final String[] OMITTED_RESPONSE = {"", "Omitted response body"};
-  private static final String[] OMITTED_REQUEST = {"", "Omitted request body"};
-  private static final String[] EMPTY_REQUEST_BODY = {"", "Empty request body"};
-  private static final String[] EMPTY_RESPONSE_BODY = {"", "Empty response body"};
-  private static final String[] PRINTING_FAILED = {"",
+  private static final String EMPTY_STRING = "";
+  private static final String[] OMITTED_RESPONSE = {EMPTY_STRING, "Omitted response body"};
+  private static final String[] OMITTED_REQUEST = {EMPTY_STRING, "Omitted request body"};
+  private static final String[] EMPTY_REQUEST_BODY = {EMPTY_STRING, "Empty request body"};
+  private static final String[] EMPTY_RESPONSE_BODY = {EMPTY_STRING, "Empty response body"};
+  private static final String[] PRINTING_FAILED = {EMPTY_STRING,
       "[LoggingInterceptorError] : failed to print body"};
+
 
   private static LoggerConfig loggerConfig;
 
@@ -100,59 +103,74 @@ final class Printer {
   static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request) {
     Printer.loggerConfig = loggerConfig;
 
-    printRequestStartingLine();
-    printDebugDetails(true);
-    printUrl(request.url().toString());
-    printRequestDetails(request);
-    printRequestBody(request);
-    printEndingLine();
+    String event = formatStartingLine(true)
+        + formatDebugDetails(true)
+        + formatUrl(request.url().toString())
+        + formatRequestDetails(request)
+        + formatRequestBody(request)
+        + formatEndingLine();
+
+    logEvent(loggerConfig, event);
   }
 
   static void printResponse(LoggerConfig loggerConfig, InterceptedResponse interceptedResponse) {
     Printer.loggerConfig = loggerConfig;
 
-    printResponseStartingLine();
-    printDebugDetails(false);
-    printUrl(interceptedResponse.url);
-    printResponseDetails(interceptedResponse);
-    printResponseBody(interceptedResponse);
-    printEndingLine();
+    String event = formatStartingLine(false)
+        + formatDebugDetails(false)
+        + formatUrl(interceptedResponse.url)
+        + formatResponseDetails(interceptedResponse)
+        + formatResponseBody(interceptedResponse)
+        + formatEndingLine();
+
+    logEvent(loggerConfig, event);
   }
 
-  private static void printRequestStartingLine() {
-    final int i = loggerConfig.maxLineLength - REQUEST_STARTING_LINE.length();
-    loggerConfig.logger.log(REQUEST_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
-  }
-
-  private static void printResponseStartingLine() {
-    final int i = loggerConfig.maxLineLength - RESPONSE_STARTING_LINE.length();
-    loggerConfig.logger.log(RESPONSE_STARTING_LINE + repeatChar(HORIZONTAL_LINE, i));
-  }
-
-  private static void printEndingLine() {
-    final int i = loggerConfig.maxLineLength - ENDING_LINE.length();
-    loggerConfig.logger.log(ENDING_LINE + repeatChar(HORIZONTAL_LINE, i));
-  }
-
-  private static void printSectionLine() {
-    final int i = loggerConfig.maxLineLength - SECTION_LINE.length();
-    loggerConfig.logger.log(SECTION_LINE + repeatChar(HORIZONTAL_LINE, i));
-  }
-
-  private static void printDebugDetails(boolean isRequest) {
-    if (loggerConfig.withThreadInfo) {
-      final String format = threadInfoStringFormat(isRequest);
-
-      final String debugDetails = LINE_SEPARATOR
-          + String.format(format,
-          THREAD_TAG, Thread.currentThread().getName(),
-          isRequest ? SENT_TAG : RECEIVED_TAG,
-          new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.getDefault())
-              .format(Calendar.getInstance().getTime()));
-
-      logLines(debugDetails.split(REGEX_LINE_SEPARATOR), SECTION_DEFAULT_LINE, true);
-      printSectionLine();
+  private static void logEvent(LoggerConfig loggerConfig, String event) {
+    if (loggerConfig.logByLine) {
+      Arrays.stream(event.split(REGEX_LINE_SEPARATOR))
+          .map(String::stripTrailing)
+          .collect(Collectors.toList())
+          .forEach(loggerConfig.logger::log);
+    } else {
+      loggerConfig.logger.log(event);
     }
+  }
+
+  private static String formatStartingLine(boolean isRequest) {
+    String title = isRequest ? REQUEST_STARTING_LINE : RESPONSE_STARTING_LINE;
+    final int length = loggerConfig.maxLineLength - title.length();
+    return LINE_SEPARATOR + title + drawHorizontalLine(length);
+  }
+
+  private static String formatEndingLine() {
+    final int length = loggerConfig.maxLineLength - ENDING_LINE.length();
+    return LINE_SEPARATOR + ENDING_LINE + drawHorizontalLine(length);
+  }
+
+  private static String formatSectionHorizontalLine() {
+    final int length = loggerConfig.maxLineLength - SECTION_LINE.length();
+    return LINE_SEPARATOR + SECTION_LINE + drawHorizontalLine(length);
+  }
+
+  private static String formatDebugDetails(boolean isRequest) {
+    if (!loggerConfig.withThreadInfo) {
+      return EMPTY_STRING;
+    }
+
+    final String format = threadInfoStringFormat(isRequest);
+    final String tag = isRequest ? SENT_TAG : RECEIVED_TAG;
+    final String thread = Thread.currentThread().getName();
+    final String date = new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.getDefault())
+        .format(Calendar.getInstance().getTime());
+
+    final String debugDetails = N + String.format(format, THREAD_TAG, thread, tag, date);
+
+    StringBuilder sb = logLines(debugDetails
+        .split(REGEX_LINE_SEPARATOR), SECTION_DEFAULT_LINE, true)
+        .append(formatSectionHorizontalLine());
+
+    return sb.toString();
   }
 
   private static String threadInfoStringFormat(boolean isRequest) {
@@ -162,104 +180,104 @@ final class Printer {
     return THREAD_STRING_FORMAT.replace("{indent}", String.valueOf(indent));
   }
 
-  private static void printUrl(String url) {
+  private static String formatUrl(String url) {
     if (!isEmpty(url)) {
-      logLines(new String[]{URL_TAG + url, ""}, false);
+      return logLines(new String[]{URL_TAG + url, EMPTY_STRING}, false);
     }
+    return EMPTY_STRING;
   }
 
-  private static void printRequestDetails(InterceptedRequest request) {
-    logLines(requestDetails(request), true);
+  private static String formatRequestDetails(InterceptedRequest request) {
+    return logLines(requestDetails(request), true);
   }
 
-  private static void printResponseDetails(InterceptedResponse interceptedResponse) {
-    logLines(responseDetails(interceptedResponse), true);
+  private static String formatResponseDetails(InterceptedResponse interceptedResponse) {
+    return logLines(responseDetails(interceptedResponse), true);
   }
 
-  private static void printRequestBody(InterceptedRequest request) {
-    if (bodyShouldBePrinted()) {
+  private static String formatRequestBody(InterceptedRequest request) {
+    if (!bodyShouldBePrinted()) {
+      return EMPTY_STRING;
+    }
 
-      final InterceptedRequest copy = request.newBuilder().build();
+    final InterceptedRequest copy = request.newBuilder().build();
+    if (isNull(copy.body)) {
+      return logLines(EMPTY_REQUEST_BODY, true);
+    }
 
-      if (isNull(copy.body)) {
-        logLines(EMPTY_REQUEST_BODY, true);
-        return;
-      }
+    try (Buffer buffer = new Buffer()) {
+      copy.body.writeTo(buffer);
+      if (Util.isUtf8(buffer)) {
+        final String printableBody = BodyFormatter
+            .formattedBody(new String(buffer.readByteArray(), UTF_8));
 
-      try (Buffer buffer = new Buffer()) {
-        copy.body.writeTo(buffer);
-        if (Util.isUtf8(buffer)) {
-          final String printableBody = BodyFormatter
-              .formattedBody(new String(buffer.readByteArray(), UTF_8));
-
-          // To handle situations, when we expect printable body based on
-          // media type but nothing is returned.
-          if (printableBody.isEmpty()) {
-            logLines(EMPTY_REQUEST_BODY, true);
-          } else {
-            final String requestBody = LINE_SEPARATOR
-                + BODY_TAG
-                + LINE_SEPARATOR
-                + printableBody;
-
-            logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
-          }
+        // To handle situations, when we expect printable body based on
+        // media type but nothing is returned.
+        if (printableBody.isEmpty()) {
+          return logLines(EMPTY_REQUEST_BODY, true);
         } else {
-          logLines(OMITTED_REQUEST, true);
-        }
-      } catch (IOException e) {
-        logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
-        logLines(PRINTING_FAILED, true);
-      }
-
-    }
-  }
-
-  private static void printResponseBody(InterceptedResponse interceptedResponse) {
-    if (bodyShouldBePrinted()) {
-      if (nonNull(interceptedResponse.originalBody)) {
-
-        final String encoding = interceptedResponse.headers != null
-            ? interceptedResponse.headers.get("Content-encoding")
-            : null;
-
-        Buffer buffer = null;
-        try (BufferedSource source = interceptedResponse.originalBody.source()) {
-          source.request(Long.MAX_VALUE); // Buffer the entire body.
-
-          buffer = source.getBuffer();
-          if ("gzip".equals(encoding)) {
-            final Buffer gzippedBuffer = buffer.clone();
-            buffer.clear();
-            buffer.writeAll(new GzipSource(gzippedBuffer));
-          }
-        } catch (IOException e) {
-          logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
-        }
-
-        if (buffer == null || buffer.size() == 0L) {
-          logLines(EMPTY_RESPONSE_BODY, true);
-          return;
-        }
-
-        final boolean isPrintable = Util.isUtf8(buffer);
-        if (isPrintable && buffer.size() > 0L) {
-          final String printableBody = BodyFormatter
-              .formattedBody(buffer.clone().readString(Charset.defaultCharset()));
-
-          final String responseBody = LINE_SEPARATOR
+          final String requestBody = LINE_SEPARATOR
               + BODY_TAG
               + LINE_SEPARATOR
               + printableBody;
 
-          logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
-        } else {
-          logLines(OMITTED_RESPONSE, true);
+          return logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
         }
       } else {
-        logLines(EMPTY_RESPONSE_BODY, true);
+        return logLines(OMITTED_REQUEST, true);
       }
+    } catch (IOException e) {
+      logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
+      return logLines(PRINTING_FAILED, true);
     }
+  }
+
+  private static String formatResponseBody(InterceptedResponse interceptedResponse) {
+    if (!bodyShouldBePrinted()) {
+      return EMPTY_STRING;
+    }
+
+    if (interceptedResponse.originalBody == null) {
+      return logLines(EMPTY_RESPONSE_BODY, true);
+    }
+
+    final String encoding = interceptedResponse.headers != null
+        ? interceptedResponse.headers.get("Content-encoding")
+        : null;
+
+    Buffer buffer = null;
+    try (BufferedSource source = interceptedResponse.originalBody.source()) {
+      source.request(Long.MAX_VALUE); // Buffer the entire body.
+
+      buffer = source.getBuffer();
+      if ("gzip".equals(encoding)) {
+        final Buffer gzippedBuffer = buffer.clone();
+        buffer.clear();
+        buffer.writeAll(new GzipSource(gzippedBuffer));
+      }
+    } catch (IOException e) {
+      logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
+    }
+
+    if (buffer == null || buffer.size() == 0L) {
+      return logLines(EMPTY_RESPONSE_BODY, true);
+    }
+
+    final boolean isPrintable = Util.isUtf8(buffer);
+    if (isPrintable && buffer.size() > 0L) {
+      final String printableBody = BodyFormatter
+          .formattedBody(buffer.clone().readString(Charset.defaultCharset()));
+
+      final String responseBody = LINE_SEPARATOR
+          + BODY_TAG
+          + LINE_SEPARATOR
+          + printableBody;
+
+      return logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
+    } else {
+      return logLines(OMITTED_RESPONSE, true);
+    }
+
   }
 
   private static boolean bodyShouldBePrinted() {
@@ -283,27 +301,27 @@ final class Printer {
 
     final String segmentString = slashSegments(interceptedResponse.segmentList);
     final String receivedTags = interceptedResponse.chainMs == 0
-        ? ""
+        ? EMPTY_STRING
         : " - " + EXECUTION_TIME_TAG + interceptedResponse.chainMs + "ms";
 
     final String statusMessage = nonNull(interceptedResponse.message)
-        ? interceptedResponse.message : "";
+        ? interceptedResponse.message : EMPTY_STRING;
 
     final String log = (!isEmpty(segmentString)
         ? segmentString + " - "
-        : "") + "is success : "
+        : EMPTY_STRING) + "is success : "
         + interceptedResponse.isSuccessful + receivedTags
         + DOUBLE_SEPARATOR
         + STATUS_CODE_TAG + interceptedResponse.code + " / " + statusMessage
         + DOUBLE_SEPARATOR
         + printHeaderIfLoggable(interceptedResponse.headers != null
-        ? interceptedResponse.headers.toString() : "", isLoggable);
+        ? interceptedResponse.headers.toString() : EMPTY_STRING, isLoggable);
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
   private static String slashSegments(List<String> segments) {
     if (isNull(segments) || segments.isEmpty()) {
-      return "";
+      return EMPTY_STRING;
     }
     final StringBuilder segmentString = new StringBuilder();
     for (String segment : segments) {
@@ -315,39 +333,44 @@ final class Printer {
   private static String printHeaderIfLoggable(String header, boolean loggable) {
     return !isEmpty(header) && loggable
         ? HEADERS_TAG + LINE_SEPARATOR + dotHeaders(header)
-        : "";
+        : EMPTY_STRING;
   }
 
-  private static void logLines(String[] lines, boolean withLineSize) {
-    logLines(lines, DEFAULT_LINE, withLineSize);
+  private static String logLines(String[] lines, boolean withLineSize) {
+    return logLines(lines, DEFAULT_LINE, withLineSize).toString();
   }
 
-  private static void logLines(String[] lines, String startingWith, boolean withLineSize) {
+  private static StringBuilder logLines(String[] lines, String startingWith, boolean withLineSize) {
+    StringBuilder sb = new StringBuilder();
     for (String line : lines) {
       if (isEmpty(line)) {
-        loggerConfig.logger.log(startingWith);
+        sb.append(LINE_SEPARATOR).append(startingWith);
       } else {
-        logLine(startingWith, withLineSize, line);
+        sb.append(logLine(startingWith, withLineSize, line));
       }
     }
+    return sb;
   }
 
-  private static void logLine(String startingWith, boolean withLineSize, String line) {
+  private static StringBuilder logLine(String startingWith, boolean withLineSize, String line) {
     final int lineLength = line.length();
     final int maxLongSize = withLineSize
         ? loggerConfig.maxLineLength - startingWith.length()
         : lineLength;
+
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i <= lineLength / maxLongSize; i++) {
       final int start = i * maxLongSize;
       int end = (i + 1) * maxLongSize;
-      end = end > line.length() ? line.length() : end;
+      end = Math.min(end, line.length());
 
       if (start != end) {
         // This condition check handles very rare occasion when multiline string exactly matches
         // max line length, in that case unnecessary empty line will be printed
-        loggerConfig.logger.log(startingWith + line.substring(start, end));
+        sb.append(LINE_SEPARATOR).append(startingWith).append(line, start, end);
       }
     }
+    return sb;
   }
 
   private static boolean isEmpty(String line) {
@@ -361,7 +384,7 @@ final class Printer {
     final String[] headers = header.split(REGEX_LINE_SEPARATOR);
 
     final StringBuilder builder = new StringBuilder();
-    String tag = "";
+    String tag = EMPTY_STRING;
     if (headers.length > 1) {
       for (int i = 0; i < headers.length; i++) {
         if (i == 0) {
@@ -371,19 +394,19 @@ final class Printer {
         } else {
           tag = CENTER_LINE;
         }
-        builder.append(tag).append(headers[i]).append(N);
+        builder.append(tag).append(headers[i]).append(LINE_SEPARATOR);
       }
     } else {
       for (String item : headers) {
-        builder.append(tag).append(item).append(N);
+        builder.append(tag).append(item).append(LINE_SEPARATOR);
       }
     }
     return builder.toString();
   }
 
-  private static String repeatChar(final char val, final int times) {
-    final char[] chars = new char[times < 0 ? 0 : times];
-    Arrays.fill(chars, val);
+  private static String drawHorizontalLine(final int length) {
+    final char[] chars = new char[Math.max(length, 0)];
+    Arrays.fill(chars, Printer.HORIZONTAL_LINE);
     return new String(chars);
   }
 
