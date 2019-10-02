@@ -194,7 +194,7 @@ public abstract class BaseTest {
   }
 
   protected ExecutorService loggingExecutor() {
-    return Executors.newSingleThreadExecutor(new ThreadFactory() {
+    return Executors.newCachedThreadPool(new ThreadFactory() {
       private final AtomicInteger threadNumber = new AtomicInteger(1);
 
       @Override
