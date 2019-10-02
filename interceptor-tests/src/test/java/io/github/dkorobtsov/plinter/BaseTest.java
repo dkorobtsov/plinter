@@ -6,7 +6,6 @@ import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.exception;
-import static spark.Spark.get;
 import static spark.Spark.staticFiles;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -57,7 +56,11 @@ import spark.Spark;
  * Starting point for all tests. Contains all general methods for use in child tests. Check specific
  * method javadocs for details.
  */
-@SuppressWarnings({"ClassDataAbstractionCoupling", "ClassFanOutComplexity", "PMD.ExcessiveImports"})
+@SuppressWarnings({
+    "ClassDataAbstractionCoupling",
+    "ClassFanOutComplexity",
+    "PMD.ExcessiveImports",
+    "PMD.TooManyMethods"})
 public abstract class BaseTest {
 
   protected static final String WEBSERVER_URL = "http://localhost:4567/";
@@ -157,7 +160,7 @@ public abstract class BaseTest {
   }
 
   public LoggerConfig defaultLoggerConfig(final LogWriter logWriter,
-                                   final boolean withExecutor, final Integer lineLength) {
+                                          final boolean withExecutor, final Integer lineLength) {
     return defaultLoggerConfig(logWriter, withExecutor, lineLength, false);
   }
 
@@ -207,6 +210,7 @@ public abstract class BaseTest {
         null, null, null);
   }
 
+  @SuppressWarnings("PMD.UseObjectForClearerAPI")
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
                                   String body, String mediaType, String url) {
 
@@ -452,7 +456,7 @@ public abstract class BaseTest {
       return response;
     });
 
-    get("/*", (q, a) -> {
+    Spark.get("/*", (q, a) -> {
       throw new NoSuchFileException("Not found");
     });
 

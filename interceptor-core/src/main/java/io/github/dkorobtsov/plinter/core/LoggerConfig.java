@@ -61,7 +61,7 @@ public class LoggerConfig {
     private boolean isLoggable = true;
     private Level level = Level.BASIC;
     private int maxLineLength = 110;
-    private boolean logByLine = false;
+    private boolean logByLine;
     private boolean withThreadInfo;
     private Executor executor;
 

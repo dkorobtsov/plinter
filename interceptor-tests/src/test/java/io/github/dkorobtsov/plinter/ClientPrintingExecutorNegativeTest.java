@@ -21,7 +21,7 @@ public class ClientPrintingExecutorNegativeTest {
 
   @Test
   public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .get()
         .addHeader(CONTENT_TYPE, APPLICATION_JSON)
@@ -44,7 +44,7 @@ public class ClientPrintingExecutorNegativeTest {
 
   @Test
   public void testInterruptingPrintingFileRequestDoesntCrashProcess() {
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
         .get()
         .addHeader(CONTENT_TYPE, APPLICATION_ZIP)
@@ -67,7 +67,7 @@ public class ClientPrintingExecutorNegativeTest {
 
   @Test
   public void testInterruptingPrintingResponseDoesntCrashProcess() {
-    TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
+    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedResponse responseDetails = InterceptedResponse.builder().build();
     final LoggerConfig loggerConfig = LoggerConfig
         .builder()

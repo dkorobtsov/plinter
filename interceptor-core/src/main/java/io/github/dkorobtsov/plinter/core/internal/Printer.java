@@ -103,7 +103,7 @@ final class Printer {
   static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request) {
     Printer.loggerConfig = loggerConfig;
 
-    String event = formatStartingLine(true)
+    final String event = formatStartingLine(true)
         + formatDebugDetails(true)
         + formatUrl(request.url().toString())
         + formatRequestDetails(request)
@@ -116,7 +116,7 @@ final class Printer {
   static void printResponse(LoggerConfig loggerConfig, InterceptedResponse interceptedResponse) {
     Printer.loggerConfig = loggerConfig;
 
-    String event = formatStartingLine(false)
+    final String event = formatStartingLine(false)
         + formatDebugDetails(false)
         + formatUrl(interceptedResponse.url)
         + formatResponseDetails(interceptedResponse)
@@ -137,7 +137,7 @@ final class Printer {
   }
 
   private static String formatStartingLine(boolean isRequest) {
-    String title = isRequest ? REQUEST_STARTING_LINE : RESPONSE_STARTING_LINE;
+    final String title = isRequest ? REQUEST_STARTING_LINE : RESPONSE_STARTING_LINE;
     final int length = loggerConfig.maxLineLength - title.length();
     return LINE_SEPARATOR + title + drawHorizontalLine(length);
   }
@@ -165,7 +165,7 @@ final class Printer {
 
     final String debugDetails = N + String.format(format, THREAD_TAG, thread, tag, date);
 
-    StringBuilder sb = logLines(debugDetails
+    final StringBuilder sb = logLines(debugDetails
         .split(REGEX_LINE_SEPARATOR), SECTION_DEFAULT_LINE, true)
         .append(formatSectionHorizontalLine());
 
@@ -215,12 +215,7 @@ final class Printer {
         if (printableBody.isEmpty()) {
           return logLines(EMPTY_REQUEST_BODY, true);
         } else {
-          final String requestBody = LINE_SEPARATOR
-              + BODY_TAG
-              + LINE_SEPARATOR
-              + printableBody;
-
-          return logLines(requestBody.split(REGEX_LINE_SEPARATOR), true);
+          return formatBody(printableBody);
         }
       } else {
         return logLines(OMITTED_REQUEST, true);
@@ -231,6 +226,7 @@ final class Printer {
     }
   }
 
+  @SuppressFBWarnings("RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE")
   private static String formatResponseBody(InterceptedResponse interceptedResponse) {
     if (!bodyShouldBePrinted()) {
       return EMPTY_STRING;
@@ -240,16 +236,12 @@ final class Printer {
       return logLines(EMPTY_RESPONSE_BODY, true);
     }
 
-    final String encoding = interceptedResponse.headers != null
-        ? interceptedResponse.headers.get("Content-encoding")
-        : null;
-
     Buffer buffer = null;
     try (BufferedSource source = interceptedResponse.originalBody.source()) {
       source.request(Long.MAX_VALUE); // Buffer the entire body.
 
       buffer = source.getBuffer();
-      if ("gzip".equals(encoding)) {
+      if (isGzipEncoded(interceptedResponse)) {
         final Buffer gzippedBuffer = buffer.clone();
         buffer.clear();
         buffer.writeAll(new GzipSource(gzippedBuffer));
@@ -266,17 +258,27 @@ final class Printer {
     if (isPrintable && buffer.size() > 0L) {
       final String printableBody = BodyFormatter
           .formattedBody(buffer.clone().readString(Charset.defaultCharset()));
-
-      final String responseBody = LINE_SEPARATOR
-          + BODY_TAG
-          + LINE_SEPARATOR
-          + printableBody;
-
-      return logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
+      return formatBody(printableBody);
     } else {
       return logLines(OMITTED_RESPONSE, true);
     }
+  }
 
+  private static boolean isGzipEncoded(InterceptedResponse interceptedResponse) {
+    final String encoding = interceptedResponse.headers != null
+        ? interceptedResponse.headers.get("Content-encoding")
+        : null;
+
+    return "gzip".equals(encoding);
+  }
+
+  private static String formatBody(String printableBody) {
+    final String responseBody = LINE_SEPARATOR
+        + BODY_TAG
+        + LINE_SEPARATOR
+        + printableBody;
+
+    return logLines(responseBody.split(REGEX_LINE_SEPARATOR), true);
   }
 
   private static boolean bodyShouldBePrinted() {
@@ -315,6 +317,7 @@ final class Printer {
         + DOUBLE_SEPARATOR
         + printHeaderIfLoggable(interceptedResponse.headers != null
         ? interceptedResponse.headers.toString() : EMPTY_STRING, isLoggable);
+
     return log.split(REGEX_LINE_SEPARATOR);
   }
 
@@ -324,7 +327,9 @@ final class Printer {
     }
     final StringBuilder segmentString = new StringBuilder();
     for (String segment : segments) {
-      segmentString.append('/').append(segment);
+      segmentString
+          .append('/')
+          .append(segment);
     }
     return segmentString.toString();
   }
@@ -340,7 +345,7 @@ final class Printer {
   }
 
   private static StringBuilder logLines(String[] lines, String startingWith, boolean withLineSize) {
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     for (String line : lines) {
       if (isEmpty(line)) {
         sb.append(LINE_SEPARATOR).append(startingWith);
@@ -357,7 +362,7 @@ final class Printer {
         ? loggerConfig.maxLineLength - startingWith.length()
         : lineLength;
 
-    StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder();
     for (int i = 0; i <= lineLength / maxLongSize; i++) {
       final int start = i * maxLongSize;
       int end = (i + 1) * maxLongSize;
@@ -366,7 +371,9 @@ final class Printer {
       if (start != end) {
         // This condition check handles very rare occasion when multiline string exactly matches
         // max line length, in that case unnecessary empty line will be printed
-        sb.append(LINE_SEPARATOR).append(startingWith).append(line, start, end);
+        sb.append(LINE_SEPARATOR)
+            .append(startingWith)
+            .append(line, start, end);
       }
     }
     return sb;

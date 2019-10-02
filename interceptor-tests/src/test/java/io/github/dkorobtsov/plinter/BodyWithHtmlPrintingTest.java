@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -85,7 +84,7 @@ public class BodyWithHtmlPrintingTest extends BaseTest {
                 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"))
         .collect(Collectors.toList());
 
-    Assertions.assertThat(filteredOutput)
+    assertThat(filteredOutput)
         .withFailMessage("Interceptor should be able to handle html request body.")
         .isNotEmpty();
   }
@@ -104,7 +103,7 @@ public class BodyWithHtmlPrintingTest extends BaseTest {
                 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>"))
         .collect(Collectors.toList());
 
-    Assertions.assertThat(filteredOutput)
+    assertThat(filteredOutput)
         .withFailMessage("Interceptor should be able to handle html request body.")
         .isNotEmpty();
   }

@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,9 +21,7 @@ import org.junit.runner.RunWith;
 public class BodyWithJsonPrintingTest extends BaseTest {
 
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
-
   private static final String JSON_ARRAY = "[{\"test1\": \"test1\"}, {\"test2\": \"test2\"}]";
-
   private static final String PREFORMATTED_JSON_BODY = ""
       + "  {\n"
       + "    \"id\": 431169,\n"
@@ -149,7 +146,7 @@ public class BodyWithJsonPrintingTest extends BaseTest {
         .filter(it -> it.startsWith("\"status\": \"available\""))
         .collect(Collectors.toList());
 
-    Assertions.assertThat(filteredOutput)
+    assertThat(filteredOutput)
         .withFailMessage("Interceptor should be able to handle malformed json request body.")
         .isNotEmpty();
   }
@@ -189,7 +186,7 @@ public class BodyWithJsonPrintingTest extends BaseTest {
         .filter(it -> it.startsWith("\"status\": \"available\""))
         .collect(Collectors.toList());
 
-    Assertions.assertThat(filteredOutput)
+    assertThat(filteredOutput)
         .withFailMessage("Interceptor should be able to handle malformed json request body.")
         .isNotEmpty();
   }

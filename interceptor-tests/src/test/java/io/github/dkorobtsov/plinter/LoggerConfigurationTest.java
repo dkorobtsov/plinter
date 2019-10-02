@@ -54,7 +54,8 @@ public class LoggerConfigurationTest extends BaseTest {
         .build());
 
     Assert.assertEquals("Logger with default format should publish message only",
-        "┌────── Request ──────────────────────────────────────────────────────────────────────────────────────────────",
+        "┌────── Request ───────────────────────────────────────────"
+            + "───────────────────────────────────────────────────",
         testLogger.firstFormattedEvent(false));
   }
 

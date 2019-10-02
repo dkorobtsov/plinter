@@ -13,6 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import spark.Spark;
 
+/**
+ * Unit tests to validate that different body types are handled properly.
+ */
 @RunWith(JUnitParamsRunner.class)
 public class InterceptorBodyHandlingTest extends BaseTest {
 

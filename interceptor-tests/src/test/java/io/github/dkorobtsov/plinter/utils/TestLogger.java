@@ -115,7 +115,6 @@ public class TestLogger implements LogWriter {
       }
     } catch (InterruptedException e) {
       logger.error(e);
-      System.out.println(e);
     }
   }
 

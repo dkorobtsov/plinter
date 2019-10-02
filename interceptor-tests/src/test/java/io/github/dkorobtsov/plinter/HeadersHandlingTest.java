@@ -12,7 +12,11 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Unit tests to validate that headers are handled properly.
+ */
 @RunWith(JUnitParamsRunner.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class HeadersHandlingTest extends BaseTest {
 
   @Test
