@@ -51,7 +51,7 @@ public final class TestUtil {
   }
 
   public static void assertLogEntryElementsCount(String entrySeparatedByBrackets,
-      int expectedCount) {
+                                                 int expectedCount) {
     final String[] entryElements = TestUtil
         .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
 
@@ -68,5 +68,14 @@ public final class TestUtil {
         .map(String::trim)
         .toArray(String[]::new);
   }
+
+  public static Thread loggingExecutorThread() {
+    return Thread.getAllStackTraces().keySet()
+        .stream()
+        .filter(it -> it.getName().startsWith(PRINTING_THREAD_PREFIX))
+        .findFirst()
+        .orElseThrow(() -> new AssertionError("Logging executor thread should be available."));
+  }
+
 
 }

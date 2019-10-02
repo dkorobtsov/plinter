@@ -10,14 +10,14 @@ import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import java.util.concurrent.Executors;
+import io.github.dkorobtsov.plinter.utils.TestUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 /**
  * Tests validating that printing thread interruption will not cause any unexpected exceptions.
  */
-public class ClientPrintingExecutorNegativeTest {
+public class ClientPrintingExecutorNegativeTest extends BaseTest {
 
   @Test
   public void testInterruptingPrintingJsonRequestDoesntCrashProcess() {
@@ -31,15 +31,10 @@ public class ClientPrintingExecutorNegativeTest {
     final LoggerConfig loggerConfig = LoggerConfig
         .builder()
         .logger(testLogger)
-        .executor(Executors.newCachedThreadPool())
+        .executor(loggingExecutor())
         .build();
 
-    Thread.currentThread().interrupt();
-    ClientPrintingExecutor.printRequest(loggerConfig, request);
-
-    Assertions
-        .assertThat(testLogger.formattedOutput())
-        .isNotEmpty();
+    assertThatThreadInterruptionDoesNotCauseCrashes(request, loggerConfig);
   }
 
   @Test
@@ -54,33 +49,47 @@ public class ClientPrintingExecutorNegativeTest {
     final LoggerConfig loggerConfig = LoggerConfig
         .builder()
         .logger(testLogger)
-        .executor(Executors.newCachedThreadPool())
+        .executor(loggingExecutor())
         .build();
 
-    Thread.currentThread().interrupt();
-    ClientPrintingExecutor.printRequest(loggerConfig, request);
-
-    Assertions
-        .assertThat(testLogger.formattedOutput())
-        .isNotEmpty();
+    assertThatThreadInterruptionDoesNotCauseCrashes(request, loggerConfig);
   }
 
   @Test
   public void testInterruptingPrintingResponseDoesntCrashProcess() {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedResponse responseDetails = InterceptedResponse.builder().build();
+    final InterceptedResponse response = InterceptedResponse.builder().build();
     final LoggerConfig loggerConfig = LoggerConfig
         .builder()
         .logger(testLogger)
-        .executor(Executors.newCachedThreadPool())
+        .executor(loggingExecutor())
         .build();
 
-    Thread.currentThread().interrupt();
-    ClientPrintingExecutor.printResponse(loggerConfig, responseDetails);
+    assertThatThreadInterruptionDoesNotCauseCrashes(response, loggerConfig);
+  }
 
-    Assertions
-        .assertThat(testLogger.formattedOutput())
-        .isNotEmpty();
+  private void assertThatThreadInterruptionDoesNotCauseCrashes(InterceptedRequest request,
+                                                               LoggerConfig loggerConfig) {
+    ClientPrintingExecutor.printRequest(loggerConfig, request);
+    final Thread thread = TestUtil.loggingExecutorThread();
+    Assertions.assertThat(thread.isInterrupted()).isFalse();
+
+    thread.interrupt();
+    Assertions.assertThat(thread.isInterrupted()).isTrue();
+
+    ClientPrintingExecutor.printRequest(loggerConfig, request);
+  }
+
+  private void assertThatThreadInterruptionDoesNotCauseCrashes(InterceptedResponse response,
+                                                               LoggerConfig loggerConfig) {
+    ClientPrintingExecutor.printResponse(loggerConfig, response);
+    final Thread thread = TestUtil.loggingExecutorThread();
+    Assertions.assertThat(thread.isInterrupted()).isFalse();
+
+    thread.interrupt();
+    Assertions.assertThat(thread.isInterrupted()).isTrue();
+
+    ClientPrintingExecutor.printResponse(loggerConfig, response);
   }
 
 }
