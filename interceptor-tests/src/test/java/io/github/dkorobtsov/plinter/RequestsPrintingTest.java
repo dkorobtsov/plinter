@@ -29,7 +29,6 @@ public class RequestsPrintingTest extends BaseTest {
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";
   private static final String TEST_URL = "http://google.com/api/test/";
   private static final int MAX_LINE_LENGTH = 120;
-  private static final int TRAILING_SPACE = 1;
 
   @Test
   public void printRequest_hasNoPrintableBody() {
@@ -59,12 +58,12 @@ public class RequestsPrintingTest extends BaseTest {
 
     assertThat(testLogger.formattedOutput())
         .contains(""
-            + "  Body: \n"
-            + "  { \n"
-            + "     \"city\": \"New York\", \n"
-            + "     \"name\": \"John\", \n"
-            + "     \"age\": 31 \n"
-            + "  } "
+            + "  Body:\n"
+            + "  {\n"
+            + "     \"city\": \"New York\",\n"
+            + "     \"name\": \"John\",\n"
+            + "     \"age\": 31\n"
+            + "  }"
         );
   }
 
@@ -89,6 +88,7 @@ public class RequestsPrintingTest extends BaseTest {
     testLogger
         .loggerOutput(true)
         .stream()
+        .filter(it -> !it.isEmpty())
         .filter(
             it -> it.startsWith("| Thread:")
                 || it.startsWith("  LongHeader:")
@@ -96,9 +96,10 @@ public class RequestsPrintingTest extends BaseTest {
                 || it.charAt(0) == '┌'
                 || it.charAt(0) == '├'
                 || it.charAt(0) == '└')
+        .map(String::stripTrailing)
         .forEach(
             it -> assertThat(it.length())
-                .isEqualTo(maxLength + TRAILING_SPACE));
+                .isEqualTo(maxLength));
   }
 
   @Test
@@ -321,16 +322,17 @@ public class RequestsPrintingTest extends BaseTest {
 
     assertThat(testLogger.formattedOutput())
         .isEqualTo(""
-            + "┌────── Request ──────────────────────────────────────────────────────────────── \n"
-            + "  URL: http://google.com/api/test/ \n"
-            + "   \n"
-            + "  Method: @GET \n"
-            + "   \n"
-            + "  Headers: \n"
-            + "  ┌ Content-Type: application/json \n"
-            + "  └ Accept: application/json \n"
-            + "   \n"
-            + "  Empty request body \n"
+            + "\n"
+            + "┌────── Request ────────────────────────────────────────────────────────────────\n"
+            + "  URL: http://google.com/api/test/\n"
+            + "  \n"
+            + "  Method: @GET\n"
+            + "  \n"
+            + "  Headers:\n"
+            + "  ┌ Content-Type: application/json\n"
+            + "  └ Accept: application/json\n"
+            + "  \n"
+            + "  Empty request body\n"
             + "└─────────────────────────────────────────────────────────────────────────────── \n");
   }
 

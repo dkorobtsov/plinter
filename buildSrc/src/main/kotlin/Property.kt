@@ -5,13 +5,12 @@ object Property {
     const val projectUrl = "https://github.com/dkorobtsov/plinter"
     const val projectGroup = "io.github.dkorobtsov.plinter"
     const val projectName = "Pretty Logging Interceptor"
-    const val projectVersion = "5.2.1-SNAPSHOT"
+    const val projectVersion = "5.2.2-SNAPSHOT"
     const val archivesBaseName = "plinter"
 
     const val sonarProjectKey = "Plinter"
     const val sonarHost = "https://sonarcloud.io"
     const val sonarOrganization = "dkorobtsov-github"
-
 
     const val moduleNameInterceptorCore = "$projectGroup.interceptor-core"
     const val moduleNameInterceptorTests = "$projectGroup.interceptor-tests"

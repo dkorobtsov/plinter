@@ -13,6 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import spark.Spark;
 
+/**
+ * Unit tests to validate that different body types are handled properly.
+ */
 @RunWith(JUnitParamsRunner.class)
 public class InterceptorBodyHandlingTest extends BaseTest {
 
@@ -47,7 +50,7 @@ public class InterceptorBodyHandlingTest extends BaseTest {
 
     assertThat(testLogger.formattedOutput())
         .containsIgnoringCase("Content-Type: application/javascript")
-        .containsIgnoringCase("console.log(\"Hello JavaScript\"); ");
+        .containsIgnoringCase("console.log(\"Hello JavaScript\");");
   }
 
   @Test

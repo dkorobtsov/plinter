@@ -13,11 +13,13 @@ public class LoggerConfig {
   public final Executor executor;
   public final int maxLineLength;
   public final boolean isLoggable;
+  public final boolean logByLine;
   public final boolean withThreadInfo;
   public final LoggingFormat format;
 
-  LoggerConfig(boolean isLoggable, Level level, LogWriter logger, LoggingFormat format,
-      Executor executor, int maxLineLength, boolean withThreadInfo) {
+  LoggerConfig(boolean isLoggable, Level level, LogWriter logger, boolean logByLine,
+               LoggingFormat format, Executor executor, int maxLineLength, boolean withThreadInfo) {
+    this.logByLine = logByLine;
     this.withThreadInfo = withThreadInfo;
     this.maxLineLength = maxLineLength;
     this.isLoggable = isLoggable;
@@ -59,6 +61,7 @@ public class LoggerConfig {
     private boolean isLoggable = true;
     private Level level = Level.BASIC;
     private int maxLineLength = 110;
+    private boolean logByLine;
     private boolean withThreadInfo;
     private Executor executor;
 
@@ -135,6 +138,17 @@ public class LoggerConfig {
     }
 
     /**
+     * @param logByLine if true event will be printed line by line (each line - separate log event),
+     * otherwise whole event will be printed as a single log message
+     *
+     * Default: false
+     */
+    public LoggerConfigBuilder logByLine(boolean logByLine) {
+      this.logByLine = logByLine;
+      return this;
+    }
+
+    /**
      * @param withThreadInfo specifies if request executor thread name and timestamp should be
      * printed. Default: false
      *
@@ -154,7 +168,7 @@ public class LoggerConfig {
 
     public LoggerConfig build() {
       return new LoggerConfig(isLoggable, level, logger,
-          format, executor, maxLineLength, withThreadInfo);
+          logByLine, format, executor, maxLineLength, withThreadInfo);
     }
   }
 

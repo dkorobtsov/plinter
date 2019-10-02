@@ -53,6 +53,13 @@ public class LoggerConfigDefaultsTest {
   }
 
   @Test
+  public void loggerConfigDefaultConfiguration_logByLine() {
+    final LoggerConfig loggerConfig = LoggerConfig.builder().build();
+
+    assertFalse("Log by Line", loggerConfig.logByLine);
+  }
+
+  @Test
   public void loggerConfigDefaultConfiguration_threadInfoIsDisabled() {
     final LoggerConfig loggerConfig = LoggerConfig.builder().build();
 

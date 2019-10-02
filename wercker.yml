@@ -1,6 +1,6 @@
 # docker box definition
 box:
-  id: openjdk:8
+  id: openjdk:11
 
 # defining the dev pipeline
 dev:

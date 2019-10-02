@@ -6,7 +6,6 @@ import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 import static spark.Spark.awaitInitialization;
 import static spark.Spark.exception;
-import static spark.Spark.get;
 import static spark.Spark.staticFiles;
 
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -57,7 +57,11 @@ import spark.Spark;
  * Starting point for all tests. Contains all general methods for use in child tests. Check specific
  * method javadocs for details.
  */
-@SuppressWarnings({"ClassDataAbstractionCoupling", "ClassFanOutComplexity", "PMD.ExcessiveImports"})
+@SuppressWarnings({
+    "ClassDataAbstractionCoupling",
+    "ClassFanOutComplexity",
+    "PMD.ExcessiveImports",
+    "PMD.TooManyMethods"})
 public abstract class BaseTest {
 
   protected static final String WEBSERVER_URL = "http://localhost:4567/";
@@ -95,17 +99,20 @@ public abstract class BaseTest {
    * @param preserveTrailingSpaces if true, logger output will have trailing spaces - exactly the
    * way it's displayed in console, if false, trailing spaces will be trimmed, leaving only string
    * contents for validation
+   * @param logByLine if true will each line will be printed separate log event
    * @return logger output for validation
    *
    * NB. If content and media type params are not provided request won't have body.
    */
   List<String> interceptedRequest(String interceptor, boolean withExecutor,
-      String body, String mediaType, boolean preserveTrailingSpaces) {
+                                  String body, String mediaType, boolean preserveTrailingSpaces,
+                                  boolean logByLine) {
 
     server.enqueue(new MockResponse().setResponseCode(200));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger,
+        withExecutor, null, logByLine);
 
     interceptWithConfig(interceptor, loggerConfig, body, mediaType,
         String.valueOf(server.url(MOCK_SERVER_PATH)));
@@ -123,14 +130,16 @@ public abstract class BaseTest {
    * @param body response body content as String, can be null
    * @param mediaType response body media type, can be null
    * @param preserveTrailingSpaces if true, logger output will have trailing spaces - exactly the
-   * way it's displayed in console, if false, trailing spaces will be trimmed, leaving only string
-   * contents for validation
+   * @param logByLine if true will each line will be printed separate log event way it's displayed
+   * in console, if false, trailing spaces will be trimmed, leaving only string contents for
+   * validation
    * @return logger output for validation
    *
    * NB. If content and media type params are not provided response won't have body.
    */
   List<String> interceptedResponse(String interceptor, boolean withExecutor,
-      String body, String mediaType, boolean preserveTrailingSpaces) {
+                                   String body, String mediaType, boolean preserveTrailingSpaces,
+                                   boolean logByLine) {
 
     server.enqueue(new MockResponse()
         .setResponseCode(200)
@@ -138,7 +147,8 @@ public abstract class BaseTest {
         .setBody(body));
 
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger, withExecutor, null);
+    final LoggerConfig loggerConfig = defaultLoggerConfig(testLogger,
+        withExecutor, null, logByLine);
 
     interceptWithConfig(interceptor, loggerConfig);
 
@@ -147,7 +157,12 @@ public abstract class BaseTest {
 
 
   public LoggerConfig defaultLoggerConfig(final LogWriter logWriter) {
-    return defaultLoggerConfig(logWriter, false, null);
+    return defaultLoggerConfig(logWriter, false, null, false);
+  }
+
+  public LoggerConfig defaultLoggerConfig(final LogWriter logWriter,
+                                          final boolean withExecutor, final Integer lineLength) {
+    return defaultLoggerConfig(logWriter, withExecutor, lineLength, false);
   }
 
   /**
@@ -159,10 +174,12 @@ public abstract class BaseTest {
    * be used.
    */
   LoggerConfig defaultLoggerConfig(final LogWriter logWriter,
-      final boolean withExecutor, final Integer lineLength) {
+                                   final boolean withExecutor, final Integer lineLength,
+                                   boolean logByLine) {
 
     final LoggerConfigBuilder builder = LoggerConfig.builder()
         .withThreadInfo(true)
+        .logByLine(logByLine)
         .logger(logWriter);
 
     if (nonNull(lineLength)) {
@@ -170,18 +187,22 @@ public abstract class BaseTest {
     }
 
     if (withExecutor) {
-      builder.executor(Executors.newSingleThreadExecutor(new ThreadFactory() {
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-
-        @Override
-        public Thread newThread(Runnable r) {
-          return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
-        }
-
-      }));
+      builder.executor(loggingExecutor());
     }
 
     return builder.build();
+  }
+
+  protected ExecutorService loggingExecutor() {
+    return Executors.newCachedThreadPool(new ThreadFactory() {
+      private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+      @Override
+      public Thread newThread(Runnable r) {
+        return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
+      }
+
+    });
   }
 
   /**
@@ -194,14 +215,15 @@ public abstract class BaseTest {
         null, null, null);
   }
 
+  @SuppressWarnings("PMD.UseObjectForClearerAPI")
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
-      String body, String mediaType, String url) {
+                                  String body, String mediaType, String url) {
 
     interceptWithConfig(interceptor, loggerConfig, url, null, mediaType, body);
   }
 
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig,
-      String url, List<SimpleEntry<String, String>> headers) {
+                                  String url, List<SimpleEntry<String, String>> headers) {
 
     interceptWithConfig(interceptor, loggerConfig, url, headers, null, null);
   }
@@ -222,7 +244,8 @@ public abstract class BaseTest {
    */
   @SuppressWarnings("PMD.UseObjectForClearerAPI")
   public void interceptWithConfig(String interceptor, LoggerConfig loggerConfig, String url,
-      List<SimpleEntry<String, String>> headers, String mediaType, String body) {
+                                  List<SimpleEntry<String, String>> headers, String mediaType,
+                                  String body) {
 
     switch (Interceptor.fromString(interceptor)) {
       case OKHTTP:
@@ -269,7 +292,7 @@ public abstract class BaseTest {
   }
 
   com.squareup.okhttp.Response executeOkHttpRequest(com.squareup.okhttp.OkHttpClient client,
-      com.squareup.okhttp.Request request) {
+                                                    com.squareup.okhttp.Request request) {
     try {
       return client.newCall(request).execute();
     } catch (IOException e) {
@@ -302,7 +325,7 @@ public abstract class BaseTest {
    * Returns Apache client for use in tests.
    */
   HttpClient defaultApacheClient(ApacheHttpRequestInterceptor requestInterceptor,
-      ApacheHttpResponseInterceptor responseInterceptor) {
+                                 ApacheHttpResponseInterceptor responseInterceptor) {
 
     return HttpClientBuilder
         .create()
@@ -336,7 +359,7 @@ public abstract class BaseTest {
    * @param mediaType Request body media type. Can be null.
    */
   Request okHttp3Request(String content, String mediaType, String url,
-      List<SimpleEntry<String, String>> headers) {
+                         List<SimpleEntry<String, String>> headers) {
     final Request.Builder requestBuilder = new Request.Builder()
         .url(url);
 
@@ -361,7 +384,7 @@ public abstract class BaseTest {
    * To add body to request both content and media type should be non null, otherwise request will
    */
   private HttpUriRequest apacheHttpRequest(String content, String mediaType, String url,
-      List<SimpleEntry<String, String>> headers) {
+                                           List<SimpleEntry<String, String>> headers) {
 
     final HttpUriRequest request;
     if (nonNull(content) && nonNull(mediaType)) {
@@ -390,7 +413,7 @@ public abstract class BaseTest {
    * @param mediaType Request body media type. Can be null.
    */
   private com.squareup.okhttp.Request okHttpRequest(String content, String mediaType, String url,
-      List<SimpleEntry<String, String>> headers) {
+                                                    List<SimpleEntry<String, String>> headers) {
     final com.squareup.okhttp.Request.Builder requestBuilder
         = new com.squareup.okhttp.Request.Builder()
         .url(url);
@@ -438,7 +461,7 @@ public abstract class BaseTest {
       return response;
     });
 
-    get("/*", (q, a) -> {
+    Spark.get("/*", (q, a) -> {
       throw new NoSuchFileException("Not found");
     });
 
@@ -479,12 +502,18 @@ public abstract class BaseTest {
    */
   String[] interceptorsWithExecutors() {
     return new String[]{
-        "okhttp, true",
-        "okhttp, false",
-        "okhttp3, true",
-        "okhttp3, false",
-        "apacheHttpclientRequest, true",
-        "apacheHttpclientRequest, false",
+        "okhttp, true, true",
+        "okhttp, true, false",
+        "okhttp, false, true",
+        "okhttp, false, false",
+        "okhttp3, true, true",
+        "okhttp3, true, false",
+        "okhttp3, false, true",
+        "okhttp3, false, false",
+        "apacheHttpclientRequest, true, true",
+        "apacheHttpclientRequest, true, false",
+        "apacheHttpclientRequest, false, true",
+        "apacheHttpclientRequest, false, false",
     };
   }
 

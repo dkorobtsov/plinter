@@ -127,14 +127,19 @@ public class TestLogger implements LogWriter {
     }
     return Arrays.stream(formattedOutput()
         .split(REGEX_LINE_SEPARATOR))
-        .map(String::trim).collect(Collectors.toList());
+        .map(String::trim)
+        .collect(Collectors.toList());
   }
 
   /**
    * @return Returns first formatted event published by current logger
    */
   public String firstFormattedEvent(boolean preserveTrailingSpaces) {
-    return loggerOutput(preserveTrailingSpaces).get(0);
+    return loggerOutput(preserveTrailingSpaces).stream()
+        .filter(it -> !it.isEmpty())
+        .findFirst()
+        .orElseThrow(()
+            -> new AssertionError("Output should not be empty."));
   }
 
   /**
