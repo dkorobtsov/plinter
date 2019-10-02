@@ -129,7 +129,6 @@ final class Printer {
   private static void logEvent(LoggerConfig loggerConfig, String event) {
     if (loggerConfig.logByLine) {
       Arrays.stream(event.split(REGEX_LINE_SEPARATOR))
-          .map(String::stripTrailing)
           .collect(Collectors.toList())
           .forEach(loggerConfig.logger::log);
     } else {

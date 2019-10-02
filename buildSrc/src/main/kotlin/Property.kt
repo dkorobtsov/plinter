@@ -12,7 +12,6 @@ object Property {
     const val sonarHost = "https://sonarcloud.io"
     const val sonarOrganization = "dkorobtsov-github"
 
-
     const val moduleNameInterceptorCore = "$projectGroup.interceptor-core"
     const val moduleNameInterceptorTests = "$projectGroup.interceptor-tests"
     const val moduleNameApacheInterceptor = "$projectGroup.apache-interceptor"
