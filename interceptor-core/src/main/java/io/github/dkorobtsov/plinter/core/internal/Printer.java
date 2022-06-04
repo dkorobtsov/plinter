@@ -232,7 +232,8 @@ final class Printer {
       return EMPTY_STRING;
     }
 
-    if (interceptedResponse.originalBody == null) {
+    if (interceptedResponse.originalBody == null ||
+            interceptedResponse.originalBody.contentLength() <= 0) {
       return logLines(EMPTY_RESPONSE_BODY, true);
     }
 
