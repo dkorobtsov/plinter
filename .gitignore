@@ -4,3 +4,5 @@
 **/out/
 **/build/
 /$WERCKER_CACHE_DIR/
+.sdkmanrc
+.vscode
