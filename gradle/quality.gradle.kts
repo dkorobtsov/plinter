@@ -1,4 +1,3 @@
-import com.github.spotbugs.SpotBugsPlugin
 import ru.vyarus.gradle.plugin.quality.QualityExtension
 import ru.vyarus.gradle.plugin.quality.QualityPlugin
 
@@ -12,13 +11,11 @@ buildscript {
 
     dependencies {
         classpath("ru.vyarus:gradle-quality-plugin:3.3.0")
-        classpath("gradle.plugin.com.github.spotbugs:spotbugs-gradle-plugin:1.6.9")
     }
 }
 
 apply<JavaPlugin>()
 apply<QualityPlugin>()
-apply<SpotBugsPlugin>()
 apply<CheckstylePlugin>()
 apply<PmdPlugin>()
 
