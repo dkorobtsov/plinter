@@ -1,8 +1,5 @@
 package io.github.dkorobtsov.plinter.utils;
 
-import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
-import static java.lang.Thread.State.RUNNABLE;
-
 import io.github.dkorobtsov.plinter.core.LogWriter;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import java.io.ByteArrayOutputStream;
@@ -16,6 +13,9 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import java.util.stream.Collectors;
+
+import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
+import static java.lang.Thread.State.RUNNABLE;
 
 /**
  * DefaultLogger double with additional methods for testing purposes. All published events are
@@ -106,7 +106,7 @@ public class TestLogger implements LogWriter {
           .findFirst();
 
       // obviously we don't want to fall into to endless loop
-      final int maxThreadSleep = 30;
+      final int maxThreadSleep = 300;
       int i = 0;
       while (printerThread.isPresent()
           && printerThread.get().getState().equals(RUNNABLE) && i < maxThreadSleep) {

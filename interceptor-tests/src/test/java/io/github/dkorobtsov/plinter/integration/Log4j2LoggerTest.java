@@ -1,14 +1,10 @@
 package io.github.dkorobtsov.plinter.integration;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
 import io.github.dkorobtsov.plinter.BaseTest;
 import io.github.dkorobtsov.plinter.core.LogWriter;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Objects;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import okhttp3.mockwebserver.MockResponse;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +27,11 @@ import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Objects;
 
 /**
  * Test added as a proof that interceptors can be easily integrated with external logging

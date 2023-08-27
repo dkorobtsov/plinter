@@ -9,6 +9,7 @@ object Dependency {
     // Versions
     const val okioVersion = "2.1.0"
     const val moshiVersion = "1.8.0"
+    const val okHttpVersion = "2.7.5"
     const val sonarcubeVersion = "2.6.2"
     const val testLoggerVersion = "1.6.0"
     const val retrofitVersion = "2.5.0"
@@ -28,6 +29,7 @@ object Dependency {
 
     const val retrofitConverterXml = "com.squareup.retrofit2:converter-jaxb:$retrofitVersion"
     const val moshi = "com.squareup.moshi:moshi:$moshiVersion"
+    const val okHttp = "com.squareup.okhttp:okhttp:$okHttpVersion"
 
     // Test Libraries
     const val moshiAdapters = "com.squareup.moshi:moshi-adapters:$moshiVersion"
@@ -36,7 +38,7 @@ object Dependency {
     const val apacheAsyncClient = "org.apache.httpcomponents:httpasyncclient:4.1.4"
     const val okHttp3LoggingInterceptor = "com.squareup.okhttp3:logging-interceptor:3.9.1"
     const val okHttpLoggingInterceptor = "com.squareup.okhttp:logging-interceptor:2.7.5"
-    const val mockWebServer = "com.squareup.okhttp:mockwebserver:2.7.5"
+    const val mockWebServer = "com.squareup.okhttp3:mockwebserver:4.11.0"
     const val log4j2_code = "org.apache.logging.log4j:log4j-core:2.11.0"
     const val junitParams = "pl.pragmatists:JUnitParams:1.1.1"
     const val assertJ = "org.assertj:assertj-core:3.11.1"

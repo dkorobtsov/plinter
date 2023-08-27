@@ -1,15 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
-import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
-import static java.util.Objects.nonNull;
-import static org.junit.Assert.fail;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.exception;
-import static spark.Spark.staticFiles;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpResponseInterceptor;
 import io.github.dkorobtsov.plinter.core.LogWriter;
@@ -20,17 +11,6 @@ import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
 import okhttp3.MediaType;
@@ -38,6 +18,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -49,9 +31,30 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import spark.Spark;
+
+import java.io.IOException;
+import java.nio.file.NoSuchFileException;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
+import static java.util.Objects.nonNull;
+import static org.junit.Assert.fail;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.exception;
+import static spark.Spark.staticFiles;
 
 /**
  * Starting point for all tests. Contains all general methods for use in child tests. Check specific
@@ -78,7 +81,18 @@ public abstract class BaseTest {
   private static final String RESOURCE_NOT_FOUND = "Resource Not Found";
 
   @Rule
-  public MockWebServer server = new MockWebServer();
+  public MockWebServer server;
+
+  @Before
+  public void setUpMockServer() throws IOException {
+    server = new MockWebServer();
+    server.start();
+  }
+
+  @After
+  public void tearDownMockServer() throws IOException {
+    server.shutdown();
+  }
 
   @Before
   public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
@@ -313,7 +327,7 @@ public abstract class BaseTest {
   /**
    * Returns OkHttp3 client for use in tests.
    */
-  OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
+  okhttp3.OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
     return new OkHttpClient.Builder()
         .connectionPool(CONNECTION_POOL)
         .dispatcher(DISPATCHER)

@@ -1,18 +1,18 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
-
-import com.squareup.okhttp.mockwebserver.MockResponse;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import okhttp3.mockwebserver.MockResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 
 /**
  * General smoke test for output resizing validation.

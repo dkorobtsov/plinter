@@ -1,14 +1,15 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_HTML;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_HTML;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Tests validating that event body containing HTML document is handled properly.

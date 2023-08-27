@@ -1,16 +1,17 @@
 package io.github.dkorobtsov.plinter;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.squareup.okhttp.mockwebserver.MockResponse;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Arrays;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import okhttp3.mockwebserver.MockResponse;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests to validate that headers are handled properly.

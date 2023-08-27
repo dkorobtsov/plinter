@@ -1,7 +1,5 @@
 package io.github.dkorobtsov.plinter.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.github.dkorobtsov.plinter.BaseTest;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
@@ -12,6 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import spark.Spark;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit tests to validate that different body types are handled properly.

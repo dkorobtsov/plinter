@@ -30,6 +30,7 @@ dependencies {
     testImplementation(Dependency.apacheClient)
     testImplementation(Dependency.apacheAsyncClient)
     testImplementation(Dependency.mockWebServer)
+    testImplementation(Dependency.okHttp)
     testImplementation(Dependency.log4j2_code)
     testImplementation(Dependency.sparcCore)
     testImplementation(Dependency.assertJ)
