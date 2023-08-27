@@ -31,6 +31,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -262,71 +263,67 @@ public abstract class BaseTest {
                                   String body) {
 
     switch (Interceptor.fromString(interceptor)) {
-      case OKHTTP:
+      case OKHTTP -> {
         logger.info("OkHttp Interceptor: {}",
             loggerConfig.toString());
-
         executeOkHttpRequest(
             defaultOkHttpClient(new OkHttpLoggingInterceptor(loggerConfig)),
             okHttpRequest(body, mediaType, url, headers));
-        break;
-
-      case OKHTTP3:
+      }
+      case OKHTTP3 -> {
         logger.info("OkHttp3 Interceptor: {}",
             loggerConfig.toString());
-
         executeOkHttp3Request(
             defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
             okHttp3Request(body, mediaType, url, headers));
-        break;
-
-      case APACHE_HTTPCLIENT_REQUEST:
+      }
+      case APACHE_HTTPCLIENT_REQUEST -> {
         logger.info("Apache Interceptors: {}",
             loggerConfig.toString());
-
         executeApacheRequest(defaultApacheClient(
-            new ApacheHttpRequestInterceptor(loggerConfig),
-            new ApacheHttpResponseInterceptor(loggerConfig)),
+                new ApacheHttpRequestInterceptor(loggerConfig),
+                new ApacheHttpResponseInterceptor(loggerConfig)),
             apacheHttpRequest(body, mediaType, url, headers));
-        break;
-
-      default:
-        fail("Unknown interceptor version: " + interceptor);
-        break;
+      }
+      default -> fail("Unknown interceptor version: " + interceptor);
     }
   }
 
-  Response executeOkHttp3Request(OkHttpClient client, Request request) {
+  void executeOkHttp3Request(OkHttpClient client, Request request) {
     try {
-      return client.newCall(request).execute();
+      Response response = client.newCall(request).execute();
+      // Let's make sure it's closed
+      response.close();
     } catch (IOException e) {
-      logger.error(e);
+      logger.error("Failed to execute OkHttp3 request", e);
     }
-    return null;
   }
 
-  com.squareup.okhttp.Response executeOkHttpRequest(com.squareup.okhttp.OkHttpClient client,
-                                                    com.squareup.okhttp.Request request) {
+  void executeOkHttpRequest(com.squareup.okhttp.OkHttpClient client, com.squareup.okhttp.Request request) {
     try {
-      return client.newCall(request).execute();
+      com.squareup.okhttp.Response response = client.newCall(request).execute();
+      // Let's make sure it's closed
+      response.body().close();
     } catch (IOException e) {
-      logger.error(e);
+      logger.error("Failed to execute OkHttp request", e);
     }
-    return null;
   }
 
-  HttpResponse executeApacheRequest(HttpClient client, HttpUriRequest request) {
+  void executeApacheRequest(HttpClient client, HttpUriRequest request) {
     try {
-      return client.execute(request);
+      HttpResponse response = client.execute(request);
+      // Let's make sure it's closed
+      EntityUtils.consume(response.getEntity());
     } catch (IOException e) {
-      logger.error(e);
+      logger.error("Failed to execute Apache request", e);
     }
-    return null;
   }
+
 
   /**
    * Returns OkHttp3 client for use in tests.
    */
+  @SuppressWarnings("KotlinInternalInJava")
   okhttp3.OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
     return new OkHttpClient.Builder()
         .connectionPool(CONNECTION_POOL)
@@ -395,7 +392,7 @@ public abstract class BaseTest {
    * @param content Request body content as String. Can be null.
    * @param mediaType Request body media type. Can be null.
    *
-   * To add body to request both content and media type should be non null, otherwise request will
+   * To add body to request both content and media type should be non-null, otherwise request will
    */
   private HttpUriRequest apacheHttpRequest(String content, String mediaType, String url,
                                            List<SimpleEntry<String, String>> headers) {
@@ -445,7 +442,7 @@ public abstract class BaseTest {
 
   /**
    * Method starts local web server for integration tests.
-   *
+   * <p>
    * All resources from resources/files will be made available for get requests
    */
   protected static void startSparkServer() {
@@ -490,14 +487,15 @@ public abstract class BaseTest {
 
   /**
    * Returns list of parameters for data driven tests.
-   *
+   * <p>
    * Format: "Interceptor name 1", "Interceptor name 2" etc
-   *
+   * <p>
    * For valid interceptor names please check: {@link Interceptor}
    *
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] interceptors() {
     return new String[]{
         "okhttp", "okhttp3", "apacheHttpclientRequest",
@@ -506,14 +504,15 @@ public abstract class BaseTest {
 
   /**
    * Returns list of parameters for data driven tests.
-   *
+   * <p>
    * Format: "Interceptor name, should use manually provided executor?"
-   *
+   * <p>
    * For valid interceptor names please check: {@link Interceptor}
    *
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] interceptorsWithExecutors() {
     return new String[]{
         "okhttp, true, true",
@@ -537,6 +536,7 @@ public abstract class BaseTest {
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] validMaxLineSizes() {
     return new String[]{
         "80", "110", "180",
@@ -549,6 +549,7 @@ public abstract class BaseTest {
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] invalidMaxLineSizes() {
     return new String[]{
         "79", "181", "-1",
