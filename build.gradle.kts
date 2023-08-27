@@ -6,6 +6,7 @@ plugins {
     id("java-library")
     id("project-report")
     id(Dependency.sonarcubeId) version Dependency.sonarcubeVersion
+    `maven-publish`
 }
 
 java {
@@ -39,13 +40,12 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         gradlePluginPortal()
-        maven { setUrl("http://repo1.maven.org/maven2/") }
+        maven { setUrl("https://repo1.maven.org/maven2/") }
     }
 
     apply(plugin = "java")
-    apply(plugin = "maven")
+    apply(plugin = "maven-publish")
     apply(plugin = "jacoco")
 
     dependencies {
@@ -60,7 +60,8 @@ configure(subprojects) {
 
     // passing through current project SourceSets to quality.gradle.kts
     rootProject.extra.set("sourceSets", listOf(project.sourceSets["main"], project.sourceSets["test"]))
-    apply(from = "$gradleScriptDir/quality.gradle.kts")
+    // Todo: add new code quality plugin
+    // apply(from = "$gradleScriptDir/quality.gradle.kts")
 
     tasks.withType(JavaCompile::class) {
         options.encoding = StandardCharsets.UTF_8.displayName()
@@ -105,60 +106,61 @@ configure(subprojects) {
         into("runtime/")
     }
 
-    tasks {
-        getByName<Upload>("uploadArchives") {
+    // todo: fix publish, setup both local and external
+    // tasks {
+    //     getByName<Upload>("uploadArchives") {
 
-            onlyIf {
-                // skipping publishing for test only modules
-                !project.sourceSets["main"].allJava.isEmpty
-            }
+    //         onlyIf {
+    //             // skipping publishing for test only modules
+    //             !project.sourceSets["main"].allJava.isEmpty
+    //         }
 
-            repositories {
+    //         repositories {
 
-                withConvention(MavenRepositoryHandlerConvention::class) {
+    //             withConvention(MavenRepositoryHandlerConvention::class) {
 
-                    mavenDeployer {
+    //                 mavenDeployer {
 
-                        withGroovyBuilder {
-                            "repository"("url" to uri(mavenUrl()))
-                            //"snapshotRepository"("url" to uri("$buildDir/m2/snapshots"))
-                        }
+    //                     withGroovyBuilder {
+    //                         "repository"("url" to uri(mavenUrl()))
+    //                         //"snapshotRepository"("url" to uri("$buildDir/m2/snapshots"))
+    //                     }
 
-                        pom.project {
-                            withGroovyBuilder {
-                                "licenses" {
-                                    "license" {
-                                        "name"("MIT")
-                                        "url"("https://opensource.org/licenses/MIT")
-                                        "distribution"("repo")
-                                    }
-                                }
+    //                     pom.project {
+    //                         withGroovyBuilder {
+    //                             "licenses" {
+    //                                 "license" {
+    //                                     "name"("MIT")
+    //                                     "url"("https://opensource.org/licenses/MIT")
+    //                                     "distribution"("repo")
+    //                                 }
+    //                             }
 
-                                "scm" {
-                                    "url"(Property.projectUrl)
-                                    "connection"("scm:${Property.projectUrl}.git")
-                                    "developerConnection"("scm:${Property.projectUrl}.git")
-                                }
+    //                             "scm" {
+    //                                 "url"(Property.projectUrl)
+    //                                 "connection"("scm:${Property.projectUrl}.git")
+    //                                 "developerConnection"("scm:${Property.projectUrl}.git")
+    //                             }
 
-                                "developers" {
-                                    "developer" {
-                                        "id"("dkorobtsov")
-                                        "name"("Dmitri Korobtsov")
-                                        "email"("dmitri.korobtsov@gmail.com")
-                                    }
-                                }
+    //                             "developers" {
+    //                                 "developer" {
+    //                                     "id"("dkorobtsov")
+    //                                     "name"("Dmitri Korobtsov")
+    //                                     "email"("dmitri.korobtsov@gmail.com")
+    //                                 }
+    //                             }
 
-                                "issueManagement" {
-                                    "system"("GitHub issues")
-                                    "url"("${Property.projectUrl}/issues")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //                             "issueManagement" {
+    //                                 "system"("GitHub issues")
+    //                                 "url"("${Property.projectUrl}/issues")
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 
 }
 
@@ -178,13 +180,13 @@ tasks.register<Delete>("cleanAll") {
     isFollowSymlinks = true
 }
 
-fun mavenUrl(): String {
-    return when {
-        //this.hasProperty("remote") -> "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-        this.hasProperty("maven.repo.local") -> this.property("maven.repo.local").toString()
-        else -> "./build/repo"
-    }
-}
+// fun mavenUrl(): String {
+//     return when {
+//         //this.hasProperty("remote") -> "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+//         this.hasProperty("maven.repo.local") -> this.property("maven.repo.local").toString()
+//         else -> "./build/repo"
+//     }
+// }
 
 
 
