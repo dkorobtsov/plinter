@@ -5,7 +5,6 @@ Just attach interceptor to your favorite HTTP client and forward all requests an
 Simple as that.
 
 --------
-[![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/s/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![quality gate](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=alert_status)](https://sonarcloud.io/dashboard?id=Plinter)
 [![reliability](https://sonarcloud.io/api/project_badges/measure?project=Plinter&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=Plinter)
@@ -312,4 +311,3 @@ Part of internal requests/responses handling logic based on [OkHttp3](https://gi
 [![Twitter Follow](https://img.shields.io/twitter/follow/dkorobtsov.svg?style=social&label=Follow)](https://twitter.com/dkorobtsov)
 
 -----
-[![wercker status](https://app.wercker.com/status/117435c366adf0defdc2c1012d467fcf/m/ "wercker status")](https://app.wercker.com/project/byKey/117435c366adf0defdc2c1012d467fcf)
