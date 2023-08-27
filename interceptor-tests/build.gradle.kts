@@ -40,10 +40,12 @@ dependencies {
 
 tasks.named<Jar>("jar") {
     manifest {
-        attributes(mapOf(
+        attributes(
+            mapOf(
                 "Implementation-Title" to Property.implementationTitleInterceptorTests,
-                "Automatic-Module-Name" to Property.moduleNameInterceptorTests
-        ))
+                "Automatic-Module-Name" to Property.moduleNameInterceptorTests,
+            ),
+        )
     }
 }
 
@@ -51,7 +53,7 @@ tasks.named<Test>("test") {
     useJUnit()
 
     jacoco {
-        toolVersion = "0.8.2"
+        toolVersion = "0.8.8"
 
         enabled = true
 
@@ -77,5 +79,4 @@ tasks.named<Test>("test") {
         showSkippedStandardStreams = true
         showFailedStandardStreams = true
     }
-
 }
