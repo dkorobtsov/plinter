@@ -32,6 +32,7 @@ import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -213,7 +214,7 @@ public abstract class BaseTest {
       private final AtomicInteger threadNumber = new AtomicInteger(1);
 
       @Override
-      public Thread newThread(Runnable r) {
+      public Thread newThread(@NotNull Runnable r) {
         return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
       }
 
@@ -252,7 +253,7 @@ public abstract class BaseTest {
    * for valid values.
    * @param loggerConfig LoggerConfiguration that will be used to print intercepted traffic
    * @param mediaType body media type, can be null
-   *
+   * <p>
    * NB. Note that if this method executed directly, server response should be mocked otherwise
    * connection will time out.
    * @param body body content as String, can be null

@@ -29,9 +29,9 @@ public class TestLogger implements LogWriter {
   private static final int MAX_WAIT_TIME_MS = 3000;
   private static final int SLEEP_INTERVAL_MS = 2;
   private final List<String> events = new ArrayList<>(Collections.emptyList());
-  private StreamHandler logOutputHandler;
-  private OutputStream logOut;
-  private Logger testLogger = Logger.getLogger(TestLogger.class.getName());
+  private final StreamHandler logOutputHandler;
+  private final OutputStream logOut;
+  private final Logger testLogger = Logger.getLogger(TestLogger.class.getName());
 
   public TestLogger(LoggingFormat logFormatter) {
     testLogger.setUseParentHandlers(false);
@@ -68,6 +68,7 @@ public class TestLogger implements LogWriter {
   /**
    * @return Returns first formatted event published by current logger
    */
+  @SuppressWarnings("unused")
   public String firstRawEvent() {
     return rawMessages().get(0).trim();
   }
@@ -75,6 +76,7 @@ public class TestLogger implements LogWriter {
   /**
    * @return Returns last formatted event published by current logger
    */
+  @SuppressWarnings("unused")
   String lastRawEvent() {
     return rawMessages().get(rawMessages().size() - 1).trim();
   }
