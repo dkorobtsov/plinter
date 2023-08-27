@@ -52,15 +52,16 @@ tasks.named<Jar>("jar") {
 
 tasks.named<Test>("test") {
     useJUnit()
+    finalizedBy(tasks.jacocoTestReport)
 
     jacoco {
-        toolVersion = "0.8.8"
-
+        toolVersion = "0.8.10"
         enabled = true
-
         reports {
-            html.setEnabled(true)
+            html.required.set(true)
+            junitXml.required.set(true)
         }
+
     }
 
     outputs.upToDateWhen {
@@ -79,5 +80,28 @@ tasks.named<Test>("test") {
         showPassedStandardStreams = true
         showSkippedStandardStreams = true
         showFailedStandardStreams = true
+    }
+}
+
+tasks.jacocoTestReport {
+    val allClassDirs = files()
+    val allSourceDirs = files()
+
+    rootProject.subprojects.forEach { subproject ->
+        val subprojectSourceSet = subproject.extensions.findByType(SourceSetContainer::class.java)!!["main"]
+        allClassDirs.from(subprojectSourceSet.output.classesDirs)
+        allSourceDirs.from(subprojectSourceSet.allJava.srcDirs)
+    }
+
+    sourceDirectories.setFrom(allSourceDirs)
+    classDirectories.setFrom(allClassDirs)
+
+    executionData.setFrom(
+        fileTree(rootDir.absolutePath).include("**/build/jacoco/test.exec")
+    )
+    reports {
+        xml.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }

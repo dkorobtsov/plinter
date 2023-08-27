@@ -3,181 +3,183 @@ import java.nio.charset.StandardCharsets
 val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
 
 plugins {
-    id("java-library")
-    id("project-report")
-    id(Dependency.sonarcubeId) version Dependency.sonarcubeVersion
-    `maven-publish`
+  id("java-library")
+  id("project-report")
+  id(Dependency.sonarcubeId) version Dependency.sonarcubeVersion
+  jacoco
+  `maven-publish`
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+  sourceCompatibility = JavaVersion.VERSION_17
+  targetCompatibility = JavaVersion.VERSION_17
 }
 
-sonarqube {
-    properties {
-        property("sonar.dynamicAnalysis", "reuseReports")
-        property("sonar.language", "java")
-        property("sonar.projectKey", Property.sonarProjectKey)
-        property("sonar.organization", Property.sonarOrganization)
-        property("sonar.host.url", Property.sonarHost)
-        property("sonar.login", project.property("sonar.login"))
-        property("sonar.coverage.exclusions", SonarConfig.coverageExclusions())
-        property("sonar.cpd.exclusions", SonarConfig.duplicationExclusions())
-        property("sonar.exclusions", SonarConfig.sonarExclusions())
-        property("sonar.jacoco.reportPaths", "${project.rootDir}/interceptor-tests/build/jacoco/test.exec")
-    }
+sonar {
+  properties {
+    property("sonar.dynamicAnalysis", "reuseReports")
+    property("sonar.language", "java")
+    property("sonar.projectKey", Property.sonarProjectKey)
+    property("sonar.organization", Property.sonarOrganization)
+    property("sonar.host.url", Property.sonarHost)
+    property("sonar.coverage.exclusions", SonarConfig.coverageExclusions())
+    property("sonar.cpd.exclusions", SonarConfig.duplicationExclusions())
+    property("sonar.exclusions", SonarConfig.sonarExclusions())
+    property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/interceptor-tests/build/reports/jacoco/test/jacocoTestReport.xml")
+  }
 }
 
 configure(listOf(rootProject)) {
-    description = Property.projectDescription
+  description = Property.projectDescription
 }
 
 allprojects {
-    group = Property.projectGroup
-    version = Property.projectVersion
+  group = Property.projectGroup
+  version = Property.projectVersion
 
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        gradlePluginPortal()
-        maven { setUrl("https://repo1.maven.org/maven2/") }
-    }
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    gradlePluginPortal()
+    maven { setUrl("https://repo1.maven.org/maven2/") }
+  }
 
-    apply(plugin = "java")
-    apply(plugin = "maven-publish")
-    apply(plugin = "jacoco")
+  apply(plugin = "java")
+  apply(plugin = "maven-publish")
+  apply(plugin = "jacoco")
 
-    dependencies {
-        implementation(Dependency.okio)
-    }
+  dependencies {
+    implementation(Dependency.okio)
+  }
 }
 
 configure(subprojects) {
-    val project = this
+  val project = this
 
-    apply(plugin = "java-library")
+  apply(plugin = "java-library")
 
-    // passing through current project SourceSets to quality.gradle.kts
-    rootProject.extra.set("sourceSets", listOf(project.sourceSets["main"], project.sourceSets["test"]))
-    // Todo: add new code quality plugin
-    // apply(from = "$gradleScriptDir/quality.gradle.kts")
+  // passing through current project SourceSets to quality.gradle.kts
+  rootProject.extra.set("sourceSets", listOf(project.sourceSets["main"], project.sourceSets["test"]))
+  // Todo: add new code quality plugin
+  // apply(from = "$gradleScriptDir/quality.gradle.kts")
 
-    tasks.withType(JavaCompile::class) {
-        options.encoding = StandardCharsets.UTF_8.displayName()
-        options.isDebug = true
-        options.isDeprecation = false
-        options.compilerArgs.add("-nowarn")
-        options.compilerArgs.add("-Xlint:none")
+  tasks.withType(JavaCompile::class) {
+    options.encoding = StandardCharsets.UTF_8.displayName()
+    options.isDebug = true
+    options.isDeprecation = false
+    options.compilerArgs.add("-nowarn")
+    options.compilerArgs.add("-Xlint:none")
+  }
+
+  tasks.named<Jar>("jar") {
+    manifest {
+      attributes(mapOf(
+          "Implementation-Version" to project.version,
+          "Implementation-Title" to project.name,
+          "Implementation-URL" to Property.projectUrl
+      ))
     }
+  }
 
-    tasks.named<Jar>("jar") {
-        manifest {
-            attributes(mapOf(
-                    "Implementation-Version" to project.version,
-                    "Implementation-Title" to project.name,
-                    "Implementation-URL" to Property.projectUrl
-            ))
-        }
-    }
+  tasks.withType(Javadoc::class) {
+    isFailOnError = true
+    options.outputLevel = JavadocOutputLevel.QUIET
+    (options as StandardJavadocDocletOptions)
+        .addStringOption("Xdoclint:none", "-nodeprecated")
+  }
 
-    tasks.withType(Javadoc::class) {
-        isFailOnError = true
-        options.outputLevel = JavadocOutputLevel.QUIET
-        (options as StandardJavadocDocletOptions)
-                .addStringOption("Xdoclint:none", "-nodeprecated")
-    }
+  val sourceJar by tasks.creating(Jar::class) {
+    from(project.the<SourceSetContainer>().getByName("main").allJava)
+    this.archiveClassifier.set("sources")
+  }
 
-    val sourceJar by tasks.creating(Jar::class) {
-        from(project.the<SourceSetContainer>().getByName("main").allJava)
-        this.archiveClassifier.set("sources")
-    }
+  val javadocJar by tasks.creating(Jar::class) {
+    from(tasks.getByName("javadoc"))
+    this.archiveClassifier.set("javadoc")
+  }
 
-    val javadocJar by tasks.creating(Jar::class) {
-        from(tasks.getByName("javadoc"))
-        this.archiveClassifier.set("javadoc")
-    }
+  artifacts.add("archives", sourceJar)
+  artifacts.add("archives", javadocJar)
 
-    artifacts.add("archives", sourceJar)
-    artifacts.add("archives", javadocJar)
+  tasks.register<Copy>("getDependencies") {
+    from(project.sourceSets["main"].runtimeClasspath)
+    into("runtime/")
+  }
 
-    tasks.register<Copy>("getDependencies") {
-        from(project.sourceSets["main"].runtimeClasspath)
-        into("runtime/")
-    }
 
-    // todo: fix publish, setup both local and external
-    // tasks {
-    //     getByName<Upload>("uploadArchives") {
 
-    //         onlyIf {
-    //             // skipping publishing for test only modules
-    //             !project.sourceSets["main"].allJava.isEmpty
-    //         }
+  // todo: fix publish, setup both local and external
+  // tasks {
+  //     getByName<Upload>("uploadArchives") {
 
-    //         repositories {
+  //         onlyIf {
+  //             // skipping publishing for test only modules
+  //             !project.sourceSets["main"].allJava.isEmpty
+  //         }
 
-    //             withConvention(MavenRepositoryHandlerConvention::class) {
+  //         repositories {
 
-    //                 mavenDeployer {
+  //             withConvention(MavenRepositoryHandlerConvention::class) {
 
-    //                     withGroovyBuilder {
-    //                         "repository"("url" to uri(mavenUrl()))
-    //                         //"snapshotRepository"("url" to uri("$buildDir/m2/snapshots"))
-    //                     }
+  //                 mavenDeployer {
 
-    //                     pom.project {
-    //                         withGroovyBuilder {
-    //                             "licenses" {
-    //                                 "license" {
-    //                                     "name"("MIT")
-    //                                     "url"("https://opensource.org/licenses/MIT")
-    //                                     "distribution"("repo")
-    //                                 }
-    //                             }
+  //                     withGroovyBuilder {
+  //                         "repository"("url" to uri(mavenUrl()))
+  //                         //"snapshotRepository"("url" to uri("$buildDir/m2/snapshots"))
+  //                     }
 
-    //                             "scm" {
-    //                                 "url"(Property.projectUrl)
-    //                                 "connection"("scm:${Property.projectUrl}.git")
-    //                                 "developerConnection"("scm:${Property.projectUrl}.git")
-    //                             }
+  //                     pom.project {
+  //                         withGroovyBuilder {
+  //                             "licenses" {
+  //                                 "license" {
+  //                                     "name"("MIT")
+  //                                     "url"("https://opensource.org/licenses/MIT")
+  //                                     "distribution"("repo")
+  //                                 }
+  //                             }
 
-    //                             "developers" {
-    //                                 "developer" {
-    //                                     "id"("dkorobtsov")
-    //                                     "name"("Dmitri Korobtsov")
-    //                                     "email"("dmitri.korobtsov@gmail.com")
-    //                                 }
-    //                             }
+  //                             "scm" {
+  //                                 "url"(Property.projectUrl)
+  //                                 "connection"("scm:${Property.projectUrl}.git")
+  //                                 "developerConnection"("scm:${Property.projectUrl}.git")
+  //                             }
 
-    //                             "issueManagement" {
-    //                                 "system"("GitHub issues")
-    //                                 "url"("${Property.projectUrl}/issues")
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+  //                             "developers" {
+  //                                 "developer" {
+  //                                     "id"("dkorobtsov")
+  //                                     "name"("Dmitri Korobtsov")
+  //                                     "email"("dmitri.korobtsov@gmail.com")
+  //                                 }
+  //                             }
+
+  //                             "issueManagement" {
+  //                                 "system"("GitHub issues")
+  //                                 "url"("${Property.projectUrl}/issues")
+  //                             }
+  //                         }
+  //                     }
+  //                 }
+  //             }
+  //         }
+  //     }
+  // }
 
 }
 
 tasks.register<Delete>("cleanAll") {
-    delete("build",
-            "apache-interceptor/build",
-            "okhttp-interceptor/build",
-            "okhttp3-interceptor/build",
-            "interceptor-core/build",
-            "interceptor-tests/build")
-    delete("out",
-            "apache-interceptor/out",
-            "okhttp-interceptor/out",
-            "okhttp3-interceptor/out",
-            "interceptor-core/out",
-            "interceptor-tests/out")
-    isFollowSymlinks = true
+  delete("build",
+      "apache-interceptor/build",
+      "okhttp-interceptor/build",
+      "okhttp3-interceptor/build",
+      "interceptor-core/build",
+      "interceptor-tests/build")
+  delete("out",
+      "apache-interceptor/out",
+      "okhttp-interceptor/out",
+      "okhttp3-interceptor/out",
+      "interceptor-core/out",
+      "interceptor-tests/out")
+  isFollowSymlinks = true
 }
 
 // fun mavenUrl(): String {

@@ -10,7 +10,7 @@ object Dependency {
     const val okioVersion = "2.1.0"
     const val moshiVersion = "1.8.0"
     const val okHttpVersion = "2.7.5"
-    const val sonarcubeVersion = "2.6.2"
+    const val sonarcubeVersion = "4.3.0.3225"
     const val testLoggerVersion = "1.6.0"
     const val retrofitVersion = "2.5.0"
 

@@ -30,7 +30,8 @@ class SonarConfig {
                     "**/InterceptedHeaders.java",
                     "**/InterceptedMediaType.java",
                     "**/Protocol.java",
-                    "**/Util.java"
+                    "**/Util.java",
+                    "**/build.gradle.kts"
             ).joinToString(separator = ", ")
         }
     }
