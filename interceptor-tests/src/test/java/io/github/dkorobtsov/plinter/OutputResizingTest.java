@@ -16,7 +16,7 @@ import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 
 /**
  * General smoke test for output resizing validation.
- *
+ * <p>
  * Dynamic content resizing is tested in scope of Printer related unit tests: {@link
  * RequestsPrintingTest}.
  */
