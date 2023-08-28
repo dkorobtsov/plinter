@@ -17,7 +17,7 @@ Simple as that.
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 
 <p >
-    <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/image1.png"/>
+    <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/image1.png" alt="Console Logging Example"/>
 </p>
 
 ### Features
