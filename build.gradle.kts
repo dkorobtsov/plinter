@@ -58,17 +58,12 @@ configure(subprojects) {
 
   apply(plugin = "java-library")
 
-  // passing through current project SourceSets to quality.gradle.kts
-  rootProject.extra.set("sourceSets", listOf(project.sourceSets["main"], project.sourceSets["test"]))
-  // Todo: add new code quality plugin
-  // apply(from = "$gradleScriptDir/quality.gradle.kts")
-
   tasks.withType(JavaCompile::class) {
     options.encoding = StandardCharsets.UTF_8.displayName()
     options.isDebug = true
     options.isDeprecation = false
     options.compilerArgs.add("-nowarn")
-    options.compilerArgs.add("-Xlint:none")
+    options.compilerArgs.add("-Xlint:deprecation")
   }
 
   tasks.named<Jar>("jar") {
@@ -105,65 +100,6 @@ configure(subprojects) {
     from(project.sourceSets["main"].runtimeClasspath)
     into("runtime/")
   }
-
-
-
-  // todo: fix publish, setup both local and external
-  // tasks {
-  //     getByName<Upload>("uploadArchives") {
-
-  //         onlyIf {
-  //             // skipping publishing for test only modules
-  //             !project.sourceSets["main"].allJava.isEmpty
-  //         }
-
-  //         repositories {
-
-  //             withConvention(MavenRepositoryHandlerConvention::class) {
-
-  //                 mavenDeployer {
-
-  //                     withGroovyBuilder {
-  //                         "repository"("url" to uri(mavenUrl()))
-  //                         //"snapshotRepository"("url" to uri("$buildDir/m2/snapshots"))
-  //                     }
-
-  //                     pom.project {
-  //                         withGroovyBuilder {
-  //                             "licenses" {
-  //                                 "license" {
-  //                                     "name"("MIT")
-  //                                     "url"("https://opensource.org/licenses/MIT")
-  //                                     "distribution"("repo")
-  //                                 }
-  //                             }
-
-  //                             "scm" {
-  //                                 "url"(Property.projectUrl)
-  //                                 "connection"("scm:${Property.projectUrl}.git")
-  //                                 "developerConnection"("scm:${Property.projectUrl}.git")
-  //                             }
-
-  //                             "developers" {
-  //                                 "developer" {
-  //                                     "id"("dkorobtsov")
-  //                                     "name"("Dmitri Korobtsov")
-  //                                     "email"("dmitri.korobtsov@gmail.com")
-  //                                 }
-  //                             }
-
-  //                             "issueManagement" {
-  //                                 "system"("GitHub issues")
-  //                                 "url"("${Property.projectUrl}/issues")
-  //                             }
-  //                         }
-  //                     }
-  //                 }
-  //             }
-  //         }
-  //     }
-  // }
-
 }
 
 tasks.register<Delete>("cleanAll") {
@@ -181,15 +117,3 @@ tasks.register<Delete>("cleanAll") {
       "interceptor-tests/out")
   isFollowSymlinks = true
 }
-
-// fun mavenUrl(): String {
-//     return when {
-//         //this.hasProperty("remote") -> "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-//         this.hasProperty("maven.repo.local") -> this.property("maven.repo.local").toString()
-//         else -> "./build/repo"
-//     }
-// }
-
-
-
-
