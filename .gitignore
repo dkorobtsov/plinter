@@ -8,3 +8,5 @@
 .sdkmanrc
 .vscode
 **/bin/**
+**/runtime/**
+
