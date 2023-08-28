@@ -11,8 +11,8 @@ plugins {
 }
 
 java {
-  sourceCompatibility = JavaVersion.VERSION_17
-  targetCompatibility = JavaVersion.VERSION_17
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }
 
 sonar {
@@ -25,7 +25,10 @@ sonar {
     property("sonar.coverage.exclusions", SonarConfig.coverageExclusions())
     property("sonar.cpd.exclusions", SonarConfig.duplicationExclusions())
     property("sonar.exclusions", SonarConfig.sonarExclusions())
-    property("sonar.coverage.jacoco.xmlReportPaths", "${project.rootDir}/interceptor-tests/build/reports/jacoco/test/jacocoTestReport.xml")
+    property(
+      "sonar.coverage.jacoco.xmlReportPaths",
+      "${project.rootDir}/interceptor-tests/build/reports/jacoco/test/jacocoTestReport.xml"
+    )
   }
 }
 
@@ -68,11 +71,13 @@ configure(subprojects) {
 
   tasks.named<Jar>("jar") {
     manifest {
-      attributes(mapOf(
+      attributes(
+        mapOf(
           "Implementation-Version" to project.version,
           "Implementation-Title" to project.name,
           "Implementation-URL" to Property.projectUrl
-      ))
+        )
+      )
     }
   }
 
@@ -80,7 +85,7 @@ configure(subprojects) {
     isFailOnError = true
     options.outputLevel = JavadocOutputLevel.QUIET
     (options as StandardJavadocDocletOptions)
-        .addStringOption("Xdoclint:none", "-nodeprecated")
+      .addStringOption("Xdoclint:none", "-nodeprecated")
   }
 
   val sourceJar by tasks.creating(Jar::class) {
@@ -103,17 +108,21 @@ configure(subprojects) {
 }
 
 tasks.register<Delete>("cleanAll") {
-  delete("build",
-      "apache-interceptor/build",
-      "okhttp-interceptor/build",
-      "okhttp3-interceptor/build",
-      "interceptor-core/build",
-      "interceptor-tests/build")
-  delete("out",
-      "apache-interceptor/out",
-      "okhttp-interceptor/out",
-      "okhttp3-interceptor/out",
-      "interceptor-core/out",
-      "interceptor-tests/out")
+  delete(
+    "build",
+    "apache-interceptor/build",
+    "okhttp-interceptor/build",
+    "okhttp3-interceptor/build",
+    "interceptor-core/build",
+    "interceptor-tests/build"
+  )
+  delete(
+    "out",
+    "apache-interceptor/out",
+    "okhttp-interceptor/out",
+    "okhttp3-interceptor/out",
+    "interceptor-core/out",
+    "interceptor-tests/out"
+  )
   isFollowSymlinks = true
 }
