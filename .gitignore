@@ -1,6 +1,13 @@
 *.iml
 .gradle
+.env
 .idea/
 **/out/
 **/build/
 /$WERCKER_CACHE_DIR/
+.sdkmanrc
+.vscode
+bin
+**/bin/**
+runtime
+**/runtime/**

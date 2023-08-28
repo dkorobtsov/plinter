@@ -8,9 +8,9 @@ object Property {
     const val projectVersion = "5.2.2-SNAPSHOT"
     const val archivesBaseName = "plinter"
 
-    const val sonarProjectKey = "Plinter"
+    const val sonarProjectKey = "dkorobtsov_plinter"
     const val sonarHost = "https://sonarcloud.io"
-    const val sonarOrganization = "dkorobtsov-github"
+    const val sonarOrganization = "dkorobtsov"
 
     const val moduleNameInterceptorCore = "$projectGroup.interceptor-core"
     const val moduleNameInterceptorTests = "$projectGroup.interceptor-tests"

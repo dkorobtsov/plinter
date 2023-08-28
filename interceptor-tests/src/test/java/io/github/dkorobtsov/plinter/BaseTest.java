@@ -1,15 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
-import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
-import static java.util.Objects.nonNull;
-import static org.junit.Assert.fail;
-import static spark.Spark.awaitInitialization;
-import static spark.Spark.exception;
-import static spark.Spark.staticFiles;
 
-import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
 import io.github.dkorobtsov.plinter.apache.ApacheHttpResponseInterceptor;
 import io.github.dkorobtsov.plinter.core.LogWriter;
@@ -20,17 +11,6 @@ import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
-import java.io.IOException;
-import java.nio.file.NoSuchFileException;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
 import okhttp3.MediaType;
@@ -38,6 +18,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -49,9 +31,32 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
+import org.jetbrains.annotations.NotNull;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import spark.Spark;
+
+import java.io.IOException;
+import java.nio.file.NoSuchFileException;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
+import static java.util.Objects.nonNull;
+import static org.junit.Assert.fail;
+import static spark.Spark.awaitInitialization;
+import static spark.Spark.exception;
+import static spark.Spark.staticFiles;
 
 /**
  * Starting point for all tests. Contains all general methods for use in child tests. Check specific
@@ -78,7 +83,18 @@ public abstract class BaseTest {
   private static final String RESOURCE_NOT_FOUND = "Resource Not Found";
 
   @Rule
-  public MockWebServer server = new MockWebServer();
+  public MockWebServer server;
+
+  @Before
+  public void setUpMockServer() throws IOException {
+    server = new MockWebServer();
+    server.start();
+  }
+
+  @After
+  public void tearDownMockServer() throws IOException {
+    server.shutdown();
+  }
 
   @Before
   public void cleanAnyExistingJavaUtilityLoggingConfigurations() {
@@ -198,7 +214,7 @@ public abstract class BaseTest {
       private final AtomicInteger threadNumber = new AtomicInteger(1);
 
       @Override
-      public Thread newThread(Runnable r) {
+      public Thread newThread(@NotNull Runnable r) {
         return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
       }
 
@@ -237,7 +253,7 @@ public abstract class BaseTest {
    * for valid values.
    * @param loggerConfig LoggerConfiguration that will be used to print intercepted traffic
    * @param mediaType body media type, can be null
-   *
+   * <p>
    * NB. Note that if this method executed directly, server response should be mocked otherwise
    * connection will time out.
    * @param body body content as String, can be null
@@ -248,72 +264,68 @@ public abstract class BaseTest {
                                   String body) {
 
     switch (Interceptor.fromString(interceptor)) {
-      case OKHTTP:
+      case OKHTTP -> {
         logger.info("OkHttp Interceptor: {}",
             loggerConfig.toString());
-
         executeOkHttpRequest(
             defaultOkHttpClient(new OkHttpLoggingInterceptor(loggerConfig)),
             okHttpRequest(body, mediaType, url, headers));
-        break;
-
-      case OKHTTP3:
+      }
+      case OKHTTP3 -> {
         logger.info("OkHttp3 Interceptor: {}",
             loggerConfig.toString());
-
         executeOkHttp3Request(
             defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
             okHttp3Request(body, mediaType, url, headers));
-        break;
-
-      case APACHE_HTTPCLIENT_REQUEST:
+      }
+      case APACHE_HTTPCLIENT_REQUEST -> {
         logger.info("Apache Interceptors: {}",
             loggerConfig.toString());
-
         executeApacheRequest(defaultApacheClient(
-            new ApacheHttpRequestInterceptor(loggerConfig),
-            new ApacheHttpResponseInterceptor(loggerConfig)),
+                new ApacheHttpRequestInterceptor(loggerConfig),
+                new ApacheHttpResponseInterceptor(loggerConfig)),
             apacheHttpRequest(body, mediaType, url, headers));
-        break;
-
-      default:
-        fail("Unknown interceptor version: " + interceptor);
-        break;
+      }
+      default -> fail("Unknown interceptor version: " + interceptor);
     }
   }
 
-  Response executeOkHttp3Request(OkHttpClient client, Request request) {
+  void executeOkHttp3Request(OkHttpClient client, Request request) {
     try {
-      return client.newCall(request).execute();
+      Response response = client.newCall(request).execute();
+      // Let's make sure it's closed
+      response.close();
     } catch (IOException e) {
-      logger.error(e);
+      logger.error("Failed to execute OkHttp3 request", e);
     }
-    return null;
   }
 
-  com.squareup.okhttp.Response executeOkHttpRequest(com.squareup.okhttp.OkHttpClient client,
-                                                    com.squareup.okhttp.Request request) {
+  void executeOkHttpRequest(com.squareup.okhttp.OkHttpClient client, com.squareup.okhttp.Request request) {
     try {
-      return client.newCall(request).execute();
+      com.squareup.okhttp.Response response = client.newCall(request).execute();
+      // Let's make sure it's closed
+      response.body().close();
     } catch (IOException e) {
-      logger.error(e);
+      logger.error("Failed to execute OkHttp request", e);
     }
-    return null;
   }
 
-  HttpResponse executeApacheRequest(HttpClient client, HttpUriRequest request) {
+  void executeApacheRequest(HttpClient client, HttpUriRequest request) {
     try {
-      return client.execute(request);
+      HttpResponse response = client.execute(request);
+      // Let's make sure it's closed
+      EntityUtils.consume(response.getEntity());
     } catch (IOException e) {
-      logger.error(e);
+      logger.error("Failed to execute Apache request", e);
     }
-    return null;
   }
+
 
   /**
    * Returns OkHttp3 client for use in tests.
    */
-  OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
+  @SuppressWarnings("KotlinInternalInJava")
+  okhttp3.OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
     return new OkHttpClient.Builder()
         .connectionPool(CONNECTION_POOL)
         .dispatcher(DISPATCHER)
@@ -381,7 +393,7 @@ public abstract class BaseTest {
    * @param content Request body content as String. Can be null.
    * @param mediaType Request body media type. Can be null.
    *
-   * To add body to request both content and media type should be non null, otherwise request will
+   * To add body to request both content and media type should be non-null, otherwise request will
    */
   private HttpUriRequest apacheHttpRequest(String content, String mediaType, String url,
                                            List<SimpleEntry<String, String>> headers) {
@@ -431,7 +443,7 @@ public abstract class BaseTest {
 
   /**
    * Method starts local web server for integration tests.
-   *
+   * <p>
    * All resources from resources/files will be made available for get requests
    */
   protected static void startSparkServer() {
@@ -476,14 +488,15 @@ public abstract class BaseTest {
 
   /**
    * Returns list of parameters for data driven tests.
-   *
+   * <p>
    * Format: "Interceptor name 1", "Interceptor name 2" etc
-   *
+   * <p>
    * For valid interceptor names please check: {@link Interceptor}
    *
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] interceptors() {
     return new String[]{
         "okhttp", "okhttp3", "apacheHttpclientRequest",
@@ -492,14 +505,15 @@ public abstract class BaseTest {
 
   /**
    * Returns list of parameters for data driven tests.
-   *
+   * <p>
    * Format: "Interceptor name, should use manually provided executor?"
-   *
+   * <p>
    * For valid interceptor names please check: {@link Interceptor}
    *
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] interceptorsWithExecutors() {
     return new String[]{
         "okhttp, true, true",
@@ -523,6 +537,7 @@ public abstract class BaseTest {
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] validMaxLineSizes() {
     return new String[]{
         "80", "110", "180",
@@ -535,6 +550,7 @@ public abstract class BaseTest {
    * NB: In IDE current method shown as unused, but it's refereed in @Parameters annotation in child
    * classes.
    */
+  @SuppressWarnings("unused") // used in parameterized tests
   String[] invalidMaxLineSizes() {
     return new String[]{
         "79", "181", "-1",
