@@ -7,11 +7,11 @@ Simple as that.
 
 --------
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=bugs)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
+[![Reliability Rating
+](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
