@@ -47,7 +47,7 @@ public class LoggerConfig {
    */
   @Override
   public String toString() {
-    final char lineChar = '─';
+    final char lineChar = '-';
     final int lineLength = 80;
     String line = String.valueOf(lineChar).repeat(lineLength);
 
