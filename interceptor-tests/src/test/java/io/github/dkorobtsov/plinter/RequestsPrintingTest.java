@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit tests for requests printing validation.
  */
 @RunWith(JUnitParamsRunner.class)
-@SuppressWarnings("Indentation")
+@SuppressWarnings({"Indentation", "PMD"})
 public class RequestsPrintingTest extends BaseTest {
 
   private static final String RESIZABLE_BODY = "{name: \"" + TestUtil.randomText(500) + "\"}";

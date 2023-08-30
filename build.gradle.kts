@@ -112,7 +112,7 @@ configure(subprojects) {
     }
 
     lint {
-      // Only works if  when one of the Android Plugins
+      // Only works if one of the Android Plugins
       // (com.android.application, com.android.library, etc.) are applied.
       //
       // For details check:
@@ -159,9 +159,9 @@ configure(subprojects) {
     // https://github.com/aaschmid/gradle-cpd-plugin
     cpd {
       enabled = true
-      source = "src"
+      source = sourceSets.main.get().allJava.toString()
       language = "java"
-      ignoreFailures = null
+      ignoreFailures = false
       minimumTokenCount = 50
     }
 

@@ -27,7 +27,10 @@ import static java.util.Objects.nonNull;
  * Helper class implementing conversion logic from OkHTTP client response to this library's internal
  * {@link InterceptedResponse}.
  */
-@SuppressWarnings("Duplicates")
+@SuppressWarnings({
+  "Duplicates",
+  "PMD"
+}) // PMD gives false positives here
 class OkHttpResponseConverter implements ResponseConverter<Response> {
 
   private static final Logger logger = Logger.getLogger(OkHttpResponseConverter.class.getName());
@@ -35,7 +38,7 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
   @Override
   public InterceptedResponse from(final Response response, final URL requestUrl, final Long ms) {
     return ResponseHandler
-        .interceptedResponse(responseDetails(response), requestUrl, ms);
+      .interceptedResponse(responseDetails(response), requestUrl, ms);
   }
 
   private ResponseDetails responseDetails(final Response response) {
@@ -43,13 +46,13 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
       throw new IllegalStateException("httpResponse == null");
     } else {
       return ResponseDetails.builder()
-          .code(response.code())
-          .headers(interceptedHeaders(response.headers()))
-          .isSuccessful(response.isSuccessful())
-          .mediaType(interceptedMediaType(response.body().contentType()))
-          .message(response.message())
-          .responseBody(interceptedResponseBody(response.body()))
-          .build();
+        .code(response.code())
+        .headers(interceptedHeaders(response.headers()))
+        .isSuccessful(response.isSuccessful())
+        .mediaType(interceptedMediaType(response.body().contentType()))
+        .message(response.message())
+        .responseBody(interceptedResponseBody(response.body()))
+        .build();
     }
   }
 
@@ -62,9 +65,9 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
   private InterceptedResponseBody interceptedResponseBody(final ResponseBody responseBody) {
     ResponseBody responseBodyCopy = null;
     try {
-      // Since body is readable only once, here we applying this hack to get a copy.
+      // Since body is readable only once, here we are applying this hack to get a copy.
       // NB: In general we are reading body only if it has "printable" content type, and those
-      // files are usually not too big so we are not limiting maximum size.
+      // files are usually not too big, so we are not limiting maximum size.
       responseBodyCopy = copyBody(responseBody, Long.MAX_VALUE);
     } catch (IOException e) {
       logger.log(Level.SEVERE, e.getMessage(), e);
@@ -78,7 +81,7 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
         logger.log(Level.SEVERE, e.getMessage(), e);
       }
       return InterceptedResponseBody
-          .create(interceptedMediaType(mediaType), responseBodyString);
+        .create(interceptedMediaType(mediaType), responseBodyString);
     } else {
       return null;
     }
@@ -86,7 +89,7 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
 
   private InterceptedMediaType interceptedMediaType(MediaType mediaType) {
     return mediaType == null ? InterceptedMediaType.parse("")
-        : InterceptedMediaType.parse(mediaType.toString());
+      : InterceptedMediaType.parse(mediaType.toString());
   }
 
   /**
@@ -108,7 +111,7 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
    * See <a href="https://github.com/square/okhttp">OkHttp3</a>
    */
   private ResponseBody copyBody(final ResponseBody responseBody, final long byteCount)
-      throws IOException {
+    throws IOException {
 
     final BufferedSource source = responseBody.source();
     source.request(byteCount);

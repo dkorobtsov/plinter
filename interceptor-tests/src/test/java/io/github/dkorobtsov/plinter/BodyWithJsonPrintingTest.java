@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
  * Tests validating that event body containing JSON document is handled properly.
  */
 @RunWith(JUnitParamsRunner.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class BodyWithJsonPrintingTest extends BaseTest {
 
   private static final String SIMPLE_JSON = "{name: \"John\", age: 31, city: \"New York\"}";

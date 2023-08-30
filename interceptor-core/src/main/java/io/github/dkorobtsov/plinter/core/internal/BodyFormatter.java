@@ -27,6 +27,10 @@ final class BodyFormatter {
   private BodyFormatter() {
   }
 
+  @SuppressWarnings({
+    "PMD.AvoidLiteralsInIfCondition",
+    "PMD.DataflowAnomalyAnalysis"
+  }) //by design
   static String formattedBody(String printableBody) {
     String message;
     try {
@@ -93,7 +97,7 @@ final class BodyFormatter {
 
       final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
       final DOMImplementationLS impl = (DOMImplementationLS) registry
-          .getDOMImplementation("LS");
+        .getDOMImplementation("LS");
 
       final LSSerializer writer = impl.createLSSerializer();
 
@@ -103,7 +107,7 @@ final class BodyFormatter {
       return writer.writeToString(document);
 
     } catch (IOException | InstantiationException | ParserConfigurationException
-        | IllegalAccessException | SAXException | ClassNotFoundException e) {
+             | IllegalAccessException | SAXException | ClassNotFoundException e) {
 
       // If failed to parse document - just showing as is.
       return msg;

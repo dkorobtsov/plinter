@@ -5,7 +5,7 @@ package io.github.dkorobtsov.plinter.core.internal;
  * Helper class for collecting all response details from external library's response and provide it
  * to {@link ResponseHandler} for internal InterceptedResponse instance creation.
  */
-@SuppressWarnings("PMD.LinguisticNaming")
+@SuppressWarnings({"PMD.LinguisticNaming", "PMD.AvoidFieldNameMatchingMethodName"})
 public class ResponseDetails {
 
   /**

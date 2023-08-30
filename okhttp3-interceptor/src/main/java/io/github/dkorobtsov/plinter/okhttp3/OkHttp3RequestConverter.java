@@ -21,7 +21,7 @@ import static okhttp3.internal.http.HttpMethod.permitsRequestBody;
  * Helper class implementing conversion logic from OkHttp3 client request to this library's
  * internal {@link InterceptedRequest}.
  */
-@SuppressWarnings("Duplicates")
+@SuppressWarnings({"Duplicates", "PMD"}) // PMD gives false positives
 class OkHttp3RequestConverter implements RequestConverter<Request> {
 
   @Override

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
  */
 public class DefaultLogger implements LogWriter {
 
-  private final Logger logger = Logger.getLogger(DefaultLogger.class.getName());
+  private static final Logger logger = Logger.getLogger(DefaultLogger.class.getName());
 
   DefaultLogger(LoggingFormat logFormatter) {
     logger.setUseParentHandlers(false);

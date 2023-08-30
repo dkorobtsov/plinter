@@ -6,6 +6,7 @@ import java.util.concurrent.Executor;
  * This class is used to customize Interceptor's behavior. Check {@link LoggerConfigBuilder} for
  * default values.
  */
+@SuppressWarnings("PMD.AvoidFieldNameMatchingMethodName")
 public class LoggerConfig {
 
   public final Level level;

@@ -67,7 +67,9 @@ import static spark.Spark.staticFiles;
   "JavadocTagContinuationIndentation",
   "ClassFanOutComplexity",
   "PMD.ExcessiveImports",
-  "PMD.TooManyMethods"})
+  "PMD.TooManyMethods",
+  "PMD.AvoidDuplicateLiterals"
+})
 public abstract class BaseTest {
 
   protected static final String WEBSERVER_URL = "http://localhost:4567/";
@@ -303,10 +305,8 @@ public abstract class BaseTest {
   }
 
   void executeOkHttp3Request(OkHttpClient client, Request request) {
-    try {
-      Response response = client.newCall(request).execute();
-      // Let's make sure it's closed
-      response.close();
+    try (Response response = client.newCall(request).execute()) {
+      logger.info("OkHttp3 request executed successfully, status: {}", response.code());
     } catch (IOException e) {
       logger.error("Failed to execute OkHttp3 request", e);
     }
@@ -333,12 +333,11 @@ public abstract class BaseTest {
     }
   }
 
-
   /**
    * Returns OkHttp3 client for use in tests.
    */
   @SuppressWarnings("KotlinInternalInJava")
-  okhttp3.OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
+  OkHttpClient defaultOkHttp3Client(okhttp3.Interceptor interceptor) {
     return new OkHttpClient.Builder()
       .connectionPool(CONNECTION_POOL)
       .dispatcher(DISPATCHER)

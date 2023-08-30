@@ -20,6 +20,7 @@ import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX
  * DefaultLogger double with additional methods for testing purposes. All published events are
  * registered and can be retrieved for validation.
  */
+@SuppressWarnings("PMD")
 public class TestLogger implements LogWriter {
 
   private static final org.apache.logging.log4j.Logger logger

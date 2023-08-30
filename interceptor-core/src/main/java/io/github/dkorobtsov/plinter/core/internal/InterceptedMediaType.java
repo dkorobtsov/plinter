@@ -33,6 +33,11 @@ import java.util.regex.Pattern;
  * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
+@SuppressWarnings({
+  "PMD.AvoidLiteralsInIfCondition",
+  "PMD.DataflowAnomalyAnalysis",
+  "PMD.AvoidFieldNameMatchingMethodName",
+}) //by design
 public final class InterceptedMediaType {
 
   private static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";

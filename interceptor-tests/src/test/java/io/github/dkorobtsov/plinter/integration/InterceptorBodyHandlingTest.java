@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit tests to validate that different body types are handled properly.
  */
 @RunWith(JUnitParamsRunner.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class InterceptorBodyHandlingTest extends BaseTest {
 
   @BeforeClass

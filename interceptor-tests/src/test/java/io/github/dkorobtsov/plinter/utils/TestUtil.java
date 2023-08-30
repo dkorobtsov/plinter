@@ -13,6 +13,7 @@ import static org.junit.Assert.fail;
 /**
  * Collection of utility methods for use in tests.
  */
+@SuppressWarnings("PMD")
 public final class TestUtil {
 
   public static final String PRINTING_THREAD_PREFIX = "Printer";
@@ -106,6 +107,5 @@ public final class TestUtil {
       .findFirst()
       .orElseThrow(() -> new AssertionError("Logging executor thread should be available."));
   }
-
 
 }

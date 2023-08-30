@@ -126,7 +126,7 @@ public final class Util {
   }
 
   public static Charset bomAwareCharset(BufferedSource source, Charset charset)
-      throws IOException {
+    throws IOException {
     if (source.rangeEquals(0, UTF_8_BOM)) {
       source.skip(UTF_8_BOM.size());
       return UTF_8;
@@ -160,7 +160,7 @@ public final class Util {
    * <tr><td>{@code http://host/a/b/c}</td><td>{@code ["a", "b", "c"]}</td></tr>
    * <tr><td>{@code http://host/a/b%20c/d}</td><td>{@code ["a", "b%20c", "d"]}</td></tr>
    * </table>
-   *
+   * <p>
    * --------------------------------------------------------------------------------------
    * <p>
    * NB: Method copied with some small modifications from OkHttp3 client's HttpUrl. In order to
@@ -199,8 +199,7 @@ public final class Util {
    * of code points to detect unicode control characters commonly used in binary file signatures.
    */
   static boolean isUtf8(Buffer buffer) {
-    try {
-      final Buffer prefix = new Buffer();
+    try (Buffer prefix = new Buffer()) {
       final long size = buffer.size();
       final long byteCount = size < 64 ? size : 64;
       buffer.copyTo(prefix, 0, byteCount);
@@ -220,10 +219,10 @@ public final class Util {
     }
   }
 
+  @SuppressWarnings("PMD.CloseResource") // false positive, using try with resources already
   public static Buffer gzip(String string) {
-    try (Buffer data = new Buffer()) {
+    try (Buffer data = new Buffer(); Buffer sink = new Buffer()) {
       data.writeUtf8(string);
-      final Buffer sink = new Buffer();
       final GzipSink gzipSink = new GzipSink(sink);
       gzipSink.write(data, data.size());
       gzipSink.close();
