@@ -11,4 +11,4 @@
 
 ## Optional GIF
 <!--- You can add a GIF to make your PR special! -->
-<!--- ![Optional GIF](GIF_URL_HERE) -->
+![Gif](add_gif_url_here)
