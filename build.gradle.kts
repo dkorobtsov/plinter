@@ -65,6 +65,11 @@ allprojects {
   dependencies {
     implementation(Dependency.okio)
   }
+
+  java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+  }
 }
 
 configure(subprojects) {
