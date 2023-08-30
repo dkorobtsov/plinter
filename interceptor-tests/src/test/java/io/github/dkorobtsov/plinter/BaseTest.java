@@ -278,29 +278,37 @@ public abstract class BaseTest {
                                   String body) {
 
     switch (Interceptor.fromString(interceptor)) {
-      case OKHTTP -> {
+      case OKHTTP:
         logger.info("OkHttp Interceptor: {}",
           loggerConfig.toString());
+
         executeOkHttpRequest(
           defaultOkHttpClient(new OkHttpLoggingInterceptor(loggerConfig)),
           okHttpRequest(body, mediaType, url, headers));
-      }
-      case OKHTTP3 -> {
+        break;
+
+      case OKHTTP3:
         logger.info("OkHttp3 Interceptor: {}",
           loggerConfig.toString());
+
         executeOkHttp3Request(
           defaultOkHttp3Client(new OkHttp3LoggingInterceptor(loggerConfig)),
           okHttp3Request(body, mediaType, url, headers));
-      }
-      case APACHE_HTTPCLIENT_REQUEST -> {
+        break;
+
+      case APACHE_HTTPCLIENT_REQUEST:
         logger.info("Apache Interceptors: {}",
           loggerConfig.toString());
+
         executeApacheRequest(defaultApacheClient(
             new ApacheHttpRequestInterceptor(loggerConfig),
             new ApacheHttpResponseInterceptor(loggerConfig)),
           apacheHttpRequest(body, mediaType, url, headers));
-      }
-      default -> fail("Unknown interceptor version: " + interceptor);
+        break;
+
+      default:
+        fail("Unknown interceptor version: " + interceptor);
+        break;
     }
   }
 

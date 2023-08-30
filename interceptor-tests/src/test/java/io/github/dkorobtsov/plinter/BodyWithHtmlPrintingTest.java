@@ -19,47 +19,45 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class BodyWithHtmlPrintingTest extends BaseTest {
 
   private static final String EMPTY_BODY = "";
-  private static final String HTML_BODY = """
-        <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
-                <title>Error 404 Not Found</title>
-            </head>
-            <body>
-                <div style="font-family:Arial,Helvetica,sans-serif;">
-                    <h2>HTTP ERROR 404</h2>
-                    <pre>Not Found</pre>
-                </div>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </body>
-        </html>
-    """;
+  private static final String HTML_BODY =
+    "<html>\n"
+      + "    <head>\n"
+      + "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>\n"
+      + "        <title>Error 404 Not Found</title>\n"
+      + "    </head>\n"
+      + "    <body>\n"
+      + "        <div style=\"font-family:Arial,Helvetica,sans-serif;\">\n"
+      + "            <h2>HTTP ERROR 404</h2>\n"
+      + "            <pre>Not Found</pre>\n"
+      + "        </div>\n"
+      + "        <tr>\n"
+      + "            <th></th>\n"
+      + "            <th></th>\n"
+      + "            <th></th>\n"
+      + "            <th></th>\n"
+      + "        </tr>\n"
+      + "    </body>\n"
+      + "</html>";
 
-  private static final String MALFORMED_HTML_BODY = """
-        <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
-                <title>Error 404 Not Found</title>
-            </head>
-            <body>
-                <div style="font-family:Arial,Helvetica,sans-serif;">
-                    <h2>HTTP ERROR 404</h2>
-                    <pre>Not Found</pre>
-                </div>
-                <tr>
-                    <th></th>
-                    <th><th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </body>
-        </html>
-    """;
+  private static final String MALFORMED_HTML_BODY =
+    "<html>\n"
+      + "    <head>\n"
+      + "        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\"/>\n"
+      + "        <title>Error 404 Not Found</title>\n"
+      + "    </head>\n"
+      + "    <body>\n"
+      + "        <div style=\"font-family:Arial,Helvetica,sans-serif;\">\n"
+      + "            <h2>HTTP ERROR 404</h2>\n"
+      + "            <pre>Not Found</pre>\n"
+      + "        </div>\n"
+      + "        <tr>\n"
+      + "            <th></th>\n"
+      + "            <th><th></th>\n"
+      + "            <th></th>\n"
+      + "            <th></th>\n"
+      + "        </tr>\n"
+      + "    </body>\n"
+      + "</html>";
 
   @Test
   @Parameters(method = "interceptorsWithExecutors")
