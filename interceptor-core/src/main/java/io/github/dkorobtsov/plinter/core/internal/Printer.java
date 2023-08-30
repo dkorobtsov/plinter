@@ -52,7 +52,7 @@ import static java.util.Objects.nonNull;
  * Class responsible for formatting intercepted events and logging them using provided {@link
  * LogWriter} implementation.
  */
-@SuppressWarnings("PMD") // Crashes on Fields
+@SuppressWarnings({"PMD", "PMD.UnnecessaryImport"}) // Crashes on Fields + gives false positives
 final class Printer {
 
   private static final Logger logger = Logger.getLogger(Printer.class.getName());

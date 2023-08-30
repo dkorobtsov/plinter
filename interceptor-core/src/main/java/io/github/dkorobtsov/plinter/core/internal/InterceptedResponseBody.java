@@ -21,7 +21,6 @@ import okio.BufferedSource;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 
 import static io.github.dkorobtsov.plinter.core.internal.Util.UTF_8;
@@ -170,11 +169,6 @@ public abstract class InterceptedResponseBody implements Closeable {
    * -1 if unknown.
    */
   public abstract long contentLength();
-
-  @SuppressWarnings("unused")
-  public final InputStream byteStream() {
-    return source().inputStream();
-  }
 
   public abstract BufferedSource source();
 

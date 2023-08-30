@@ -45,14 +45,30 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
     if (isNull(response)) {
       throw new IllegalStateException("httpResponse == null");
     } else {
-      return ResponseDetails.builder()
-        .code(response.code())
-        .headers(interceptedHeaders(response.headers()))
-        .isSuccessful(response.isSuccessful())
-        .mediaType(interceptedMediaType(response.body().contentType()))
-        .message(response.message())
-        .responseBody(interceptedResponseBody(response.body()))
-        .build();
+      try (ResponseBody responseBody = response.body()) {
+        return ResponseDetails.builder()
+          .code(response.code())
+          .headers(interceptedHeaders(response.headers()))
+          .isSuccessful(response.isSuccessful())
+          .mediaType(interceptedMediaType(responseBody.contentType()))
+          .message(response.message())
+          .responseBody(interceptedResponseBody(responseBody))
+          .build();
+      } catch (IOException e) {
+        logger.log(Level.SEVERE, e.getMessage(), e);
+
+        InterceptedMediaType mediaType = InterceptedMediaType.parse("text/plain; charset=utf-8");
+        String errorMessage = "Error occurred: " + e.getMessage();
+
+        return ResponseDetails.builder()
+          .code(response.code())
+          .headers(interceptedHeaders(response.headers()))
+          .isSuccessful(response.isSuccessful())
+          .mediaType(mediaType)
+          .message(errorMessage)
+          .responseBody(InterceptedResponseBody.create(mediaType, errorMessage))
+          .build();
+      }
     }
   }
 
