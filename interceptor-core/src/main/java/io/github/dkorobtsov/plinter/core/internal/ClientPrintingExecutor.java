@@ -42,6 +42,7 @@ public final class ClientPrintingExecutor {
         executor.awaitTermination(5, TimeUnit.MILLISECONDS);
       } catch (InterruptedException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
+        Thread.currentThread().interrupt();
       }
     }
   }
