@@ -10,17 +10,19 @@ import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.protocol.HttpContext;
 
 /**
- * Interceptor for requests sent by Apache HttpClient. Intended to be used with response interceptor
- * {@link ApacheHttpResponseInterceptor}.
- *
+ * Interceptor for requests sent by Apache HttpClient.
+ * Intended to be used with response interceptor {@link ApacheHttpResponseInterceptor}.
+ * <p>
  * Interceptor's behavior can be configured using {@link LoggerConfig}
  *
  * Usage instructions:
  *
  * <pre>
  *
- *  ApacheRequestInterceptor requestInterceptor = new ApacheRequestInterceptor(LoggerConfig.builder().build());
- *  ApacheResponseInterceptor responseInterceptor = new ApacheResponseInterceptor(LoggerConfig.builder().build());
+ *  ApacheRequestInterceptor requestInterceptor
+ *  = new ApacheRequestInterceptor(LoggerConfig.builder().build());
+ *  ApacheResponseInterceptor responseInterceptor
+ *  = new ApacheResponseInterceptor(LoggerConfig.builder().build());
  *
  *  CloseableHttpClient client = HttpClientBuilder
  *      .create()

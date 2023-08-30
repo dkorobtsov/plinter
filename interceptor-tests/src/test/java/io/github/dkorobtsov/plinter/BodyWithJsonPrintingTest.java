@@ -1,18 +1,19 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
-import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import io.github.dkorobtsov.plinter.core.internal.Util;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.stream.Collectors;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests validating that event body containing JSON document is handled properly.

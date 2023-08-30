@@ -18,7 +18,7 @@ package io.github.dkorobtsov.plinter.core.internal;
 /**
  * Protocols that OkHttp implements for <a href="http://tools.ietf.org/html/draft-ietf-tls-applayerprotoneg">ALPN</a>
  * selection.
- *
+ * <p>
  * <h3>Protocol vs Scheme</h3> Despite its name, {@link java.net.URL#getProtocol()} returns the
  * {@linkplain java.net.URI#getScheme() scheme} (http, https, etc.) of the URL, not the protocol
  * (http/1.1, spdy/3.1, etc.). OkHttp uses the word <i>protocol</i> to identify how HTTP messages
@@ -46,6 +46,7 @@ public enum Protocol {
    *
    * @deprecated OkHttp has dropped support for SPDY. Prefer {@link #HTTP_2}.
    */
+  @SuppressWarnings("DeprecatedIsStillUsed")
   @Deprecated
   SPDY_3("spdy/3.1"),
 

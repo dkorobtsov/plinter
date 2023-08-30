@@ -1,0 +1,20 @@
+# EditorConfig is a configuration file format supported by most code editors.
+# This file is used to define and maintain consistent coding styles between different editors and IDEs.
+
+# Top-most EditorConfig file
+root = true
+
+# Set the default charset to UTF-8
+[*]
+charset = utf-8
+
+# Use spaces instead of tabs for indentation
+[*.{java,kt,kts}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+# Trim trailing whitespace
+trim_trailing_whitespace = true
+# Ensure a newline at the end of each file
+insert_final_newline = true
+

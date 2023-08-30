@@ -1,10 +1,10 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
-import static java.util.Objects.isNull;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 /**
  * Utility class intended to reduce code duplication Response converters code duplication.

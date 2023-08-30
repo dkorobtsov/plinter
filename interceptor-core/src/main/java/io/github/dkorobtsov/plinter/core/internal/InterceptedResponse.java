@@ -9,6 +9,7 @@ import java.util.List;
  */
 public final class InterceptedResponse {
 
+  @SuppressWarnings("unused")
   public final InterceptedMediaType contentType;
   public final List<String> segmentList;
   public final boolean isSuccessful;

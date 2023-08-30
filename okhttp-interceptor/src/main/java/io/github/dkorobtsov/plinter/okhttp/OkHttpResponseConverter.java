@@ -1,8 +1,9 @@
 package io.github.dkorobtsov.plinter.okhttp;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
+import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedHeaders;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
@@ -10,17 +11,17 @@ import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.ResponseDetails;
 import io.github.dkorobtsov.plinter.core.internal.ResponseHandler;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import okio.Buffer;
-import okio.BufferedSource;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Helper class implementing conversion logic from OkHTTP client response to this library's internal
@@ -98,12 +99,12 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
    *
    * <p><strong>Warning:</strong> this method loads the requested bytes into memory. Most
    * applications should set a modest limit on {@code byteCount}, such as 1 MiB.
-   *
+   * <p>
    * --------------------------------------------------------------------------------------
-   *
+   * <p>
    * NB: Method copied with some small modifications from OkHttp3 client's Response#peekBody
    * (removed deprecated method).
-   *
+   * <p>
    * See <a href="https://github.com/square/okhttp">OkHttp3</a>
    */
   private ResponseBody copyBody(final ResponseBody responseBody, final long byteCount)

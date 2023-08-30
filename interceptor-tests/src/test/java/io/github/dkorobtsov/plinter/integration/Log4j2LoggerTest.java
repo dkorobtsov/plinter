@@ -150,7 +150,6 @@ public class Log4j2LoggerTest extends BaseTest {
     }
   }
 
-  @SuppressWarnings("ConstantConditions")
   private static void updateLoggers(final Appender appender, final Configuration config) {
     final Level level = null;
     final Filter filter = null;

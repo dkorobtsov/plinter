@@ -1,9 +1,5 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
-import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
-import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
-
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
@@ -13,6 +9,10 @@ import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_ZIP;
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
 
 /**
  * Tests validating that printing thread interruption will not cause any unexpected exceptions.

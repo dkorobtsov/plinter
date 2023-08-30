@@ -1,19 +1,20 @@
 package io.github.dkorobtsov.plinter.okhttp;
 
-import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
-
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Request;
 import io.github.dkorobtsov.plinter.core.RequestConverter;
 import io.github.dkorobtsov.plinter.core.internal.CacheControl;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequestBody;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Request;
+import okio.Buffer;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import okio.Buffer;
+
+import static com.squareup.okhttp.internal.http.HttpMethod.permitsRequestBody;
 
 /**
  * Helper class implementing conversion logic from OkHttp client request to this library's

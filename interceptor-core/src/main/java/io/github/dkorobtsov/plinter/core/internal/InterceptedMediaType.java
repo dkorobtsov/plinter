@@ -24,13 +24,13 @@ import java.util.regex.Pattern;
 /**
  * An <a href="http://tools.ietf.org/html/rfc2045">RFC 2045</a> Media Type, appropriate to describe
  * the content type of an HTTP request or response body.
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
- *
+ * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
 public final class InterceptedMediaType {
@@ -39,7 +39,7 @@ public final class InterceptedMediaType {
   private static final String QUOTED = "\"([^\"]*)\"";
   private static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + "/" + TOKEN);
   private static final Pattern PARAMETER = Pattern.compile(
-      ";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
+    ";\\s*(?:" + TOKEN + "=(?:" + TOKEN + "|" + QUOTED + "))?");
 
   private final String mediaType;
   private final String subtype;
@@ -74,18 +74,7 @@ public final class InterceptedMediaType {
       if (!"charset".equalsIgnoreCase(name)) {
         continue;
       }
-      final String charsetParameter;
-      final String token = parameter.group(2);
-      if (token != null) {
-        // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
-        charsetParameter =
-            (token.startsWith("'") && token.endsWith("'") && token.length() > 2)
-                ? token.substring(1, token.length() - 1)
-                : token;
-      } else {
-        // Value is "double-quoted". That's valid and our regex group already strips the quotes.
-        charsetParameter = parameter.group(3);
-      }
+      final String charsetParameter = getCharsetParameter(parameter);
       if (charset != null && !charsetParameter.equalsIgnoreCase(charset)) {
         return null; // Multiple different charsets!
       }
@@ -94,6 +83,22 @@ public final class InterceptedMediaType {
 
     final String subtype = typeSubtype.group(2).toLowerCase(Locale.US);
     return new InterceptedMediaType(string, subtype, charset);
+  }
+
+  private static String getCharsetParameter(Matcher parameter) {
+    final String charsetParameter;
+    final String token = parameter.group(2);
+    if (token != null) {
+      // If the token is 'single-quoted' it's invalid! But we're lenient and strip the quotes.
+      charsetParameter =
+        token.startsWith("'") && token.endsWith("'") && token.length() > 2
+          ? token.substring(1, token.length() - 1)
+          : token;
+    } else {
+      // Value is "double-quoted". That's valid and our regex group already strips the quotes.
+      charsetParameter = parameter.group(3);
+    }
+    return charsetParameter;
   }
 
   /**
@@ -134,7 +139,7 @@ public final class InterceptedMediaType {
   @Override
   public boolean equals(Object other) {
     return other instanceof InterceptedMediaType && ((InterceptedMediaType) other).mediaType
-        .equals(mediaType);
+      .equals(mediaType);
   }
 
   @Override

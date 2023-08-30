@@ -16,7 +16,10 @@
 
 package io.github.dkorobtsov.plinter.core.internal;
 
-import static java.util.Objects.isNull;
+import okio.Buffer;
+import okio.BufferedSource;
+import okio.ByteString;
+import okio.GzipSink;
 
 import java.io.Closeable;
 import java.io.EOFException;
@@ -28,16 +31,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.ByteString;
-import okio.GzipSink;
+
+import static java.util.Objects.isNull;
 
 /**
  * Junk drawer of utility methods.
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
@@ -161,7 +162,7 @@ public final class Util {
    * </table>
    *
    * --------------------------------------------------------------------------------------
-   *
+   * <p>
    * NB: Method copied with some small modifications from OkHttp3 client's HttpUrl. In order to
    * remove hard dependency from OkHttp3 this library uses java native URL class. This method copied
    * for convenience.
@@ -190,7 +191,7 @@ public final class Util {
   }
 
   static boolean isEmpty(CharSequence str) {
-    return str == null || str.length() == 0;
+    return str == null || str.isEmpty();
   }
 
   /**

@@ -1,6 +1,7 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
+
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,12 +31,14 @@ public final class ClientPrintingExecutor {
     sendCommandToPrinter(executor, printResponse);
   }
 
+  @SuppressWarnings("PMD")
   private static void sendCommandToPrinter(ExecutorService executor, Runnable command) {
     if (Objects.isNull(executor)) {
       command.run();
     } else {
       try {
         executor.execute(command);
+        //noinspection ResultOfMethodCallIgnored
         executor.awaitTermination(5, TimeUnit.MILLISECONDS);
       } catch (InterruptedException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);

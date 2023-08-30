@@ -1,4 +1,3 @@
-@Suppress("MemberVisibilityCanBePrivate", "unused")
 object Dependency {
 
     const val moduleCore = ":interceptor-core"

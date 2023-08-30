@@ -2,7 +2,7 @@ package io.github.dkorobtsov.plinter.core;
 
 /**
  * LogWriter interface responsible for logging intercepted events.
- *
+ * <p>
  * Usage example:
  * <pre>
  *   LoggerConfig.builder()

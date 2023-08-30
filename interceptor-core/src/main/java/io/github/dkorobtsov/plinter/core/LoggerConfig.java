@@ -37,21 +37,21 @@ public class LoggerConfig {
   public String toString() {
     final String line = "\n────────────────────────────────────────────────────────────────────────────────────────";
     return line
-        + "\n LoggerConfig:"
-        + line
-        + "\n isLoggable     : " + isLoggable
-        + "\n level          : " + level
-        + "\n logger         : " + logger
-        + "\n format         : " + format
-        + "\n executor       : " + executor
-        + "\n maxLineLength  : " + maxLineLength
-        + "\n withThreadInfo : " + withThreadInfo
-        + line;
+      + "\n LoggerConfig:"
+      + line
+      + "\n isLoggable     : " + isLoggable
+      + "\n level          : " + level
+      + "\n logger         : " + logger
+      + "\n format         : " + format
+      + "\n executor       : " + executor
+      + "\n maxLineLength  : " + maxLineLength
+      + "\n withThreadInfo : " + withThreadInfo
+      + line;
   }
 
   /**
    * Helper class for creating {@link LoggerConfig} instances.
-   *
+   * <p>
    * To use default configuration use: LoggerConfig.builder().build()
    */
   public static class LoggerConfigBuilder {
@@ -84,20 +84,20 @@ public class LoggerConfig {
 
     /**
      * @param logger use this method to provide your logging interface implementation.
+     *               <p>
+     *               Example:
+     *               <pre>
+     *                       LoggerConfig config = LoggerConfig.builder()
+     *                       .logger(new LogWriter() {
+     *                         final Logger log = LogManager.getLogger("OkHttpLogger");
      *
-     * Example:
-     * <pre>
-     *         LoggerConfig config = LoggerConfig.builder()
-     *         .logger(new LogWriter() {
-     *           final Logger log = LogManager.getLogger("OkHttpLogger");
-     *
-     *           Override
-     *           public void log(String msg) {
-     *             log.debug(msg);
-     *           }
-     *         })
-     *         .build();
-     * </pre>
+     *                         Override
+     *                         public void log(String msg) {
+     *                           log.debug(msg);
+     *                         }
+     *                       })
+     *                       .build();
+     *               </pre>
      */
     public LoggerConfigBuilder logger(LogWriter logger) {
       this.logger = logger;
@@ -106,8 +106,8 @@ public class LoggerConfig {
 
     /**
      * @param format set format for default Java Utility Logger
-     *
-     * (will be ignored in case custom logger is used)
+     *               <p>
+     *               (will be ignored in case custom logger is used)
      */
     public LoggerConfigBuilder format(LoggingFormat format) {
       this.format = format;
@@ -124,13 +124,13 @@ public class LoggerConfig {
 
     /**
      * @param length specifies max line length when printing request/response body
-     *
-     * Min value: 80, Max value: 180, Default: 110
+     *               <p>
+     *               Min value: 80, Max value: 180, Default: 110
      */
     public LoggerConfigBuilder maxLineLength(int length) {
       if (length < 80 || length > 180) {
         throw new IllegalArgumentException(
-            "Invalid line length. Should be longer then 10 and shorter then 500.");
+          "Invalid line length. Should be longer then 10 and shorter then 500.");
       } else {
         this.maxLineLength = length;
       }
@@ -139,9 +139,9 @@ public class LoggerConfig {
 
     /**
      * @param logByLine if true event will be printed line by line (each line - separate log event),
-     * otherwise whole event will be printed as a single log message
-     *
-     * Default: false
+     *                  otherwise whole event will be printed as a single log message
+     *                  <p>
+     *                  Default: false
      */
     public LoggerConfigBuilder logByLine(boolean logByLine) {
       this.logByLine = logByLine;
@@ -150,16 +150,16 @@ public class LoggerConfig {
 
     /**
      * @param withThreadInfo specifies if request executor thread name and timestamp should be
-     * printed. Default: false
+     *                       printed. Default: false
      *
-     * <pre>
-     * Example:
+     *                       <pre>
+     *                       Example:
      *
-     * ┌────── Request ────────────────────────────────────────────────────────────────────────
-     * |
-     * | Thread:  pool-31-thread-1                                   Sent:  2018-11-25 01:51:39
-     * ├───────────────────────────────────────────────────────────────────────────────────────
-     * </pre>
+     *                       ┌────── Request ────────────────────────────────────────────────────────────────────────
+     *                       |
+     *                       | Thread:  pool-31-thread-1                                   Sent:  2018-11-25 01:51:39
+     *                       ├───────────────────────────────────────────────────────────────────────────────────────
+     *                       </pre>
      */
     public LoggerConfigBuilder withThreadInfo(boolean withThreadInfo) {
       this.withThreadInfo = withThreadInfo;
@@ -168,7 +168,7 @@ public class LoggerConfig {
 
     public LoggerConfig build() {
       return new LoggerConfig(isLoggable, level, logger,
-          logByLine, format, executor, maxLineLength, withThreadInfo);
+        logByLine, format, executor, maxLineLength, withThreadInfo);
     }
   }
 

@@ -1,7 +1,5 @@
 package io.github.dkorobtsov.plinter;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
-
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
@@ -13,13 +11,16 @@ import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.Util;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import io.github.dkorobtsov.plinter.utils.TestUtil;
-import java.net.MalformedURLException;
-import java.net.URL;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 
 /**
  * Unit tests for requests printing validation.

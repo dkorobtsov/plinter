@@ -11,6 +11,7 @@ public enum Level {
    */
   NONE,
   /**
+   * Basic Logging, will include both body and headers.
    * Example:
    * <pre>{@code
    *  - URL
@@ -21,6 +22,7 @@ public enum Level {
    */
   BASIC,
   /**
+   * Only headers.
    * Example:
    * <pre>{@code
    *  - URL
@@ -30,6 +32,7 @@ public enum Level {
    */
   HEADERS,
   /**
+   * Will log only body.
    * Example:
    * <pre>{@code
    *  - URL

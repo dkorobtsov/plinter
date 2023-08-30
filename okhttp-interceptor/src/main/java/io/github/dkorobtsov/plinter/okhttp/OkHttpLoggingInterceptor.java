@@ -10,13 +10,14 @@ import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Interceptor for OkHttp client requests and responses. Interceptor's behavior can be configured
  * using {@link LoggerConfig}
- *
+ * <p>
  * Usage instructions:
  *
  * <pre>
@@ -40,6 +41,14 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
     this.loggerConfig = loggerConfig;
   }
 
+  /**
+   * Intercepts the OkHttp client request and response. This method is called by OkHttp's interceptor chain.
+   * It logs the request and response details according to the configured {@link LoggerConfig}.
+   *
+   * @param chain The interceptor chain.
+   * @return The intercepted response.
+   * @throws IOException If an I/O error occurs during the interception.
+   */
   @Override
   @SuppressWarnings("Duplicates")
   public Response intercept(final Chain chain) throws IOException {
@@ -58,7 +67,7 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
     final long executionTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - startTime);
 
     final InterceptedResponse interceptedResponse = responseConverter
-        .from(response, interceptedRequest.url(), executionTime);
+      .from(response, interceptedRequest.url(), executionTime);
 
     ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
 

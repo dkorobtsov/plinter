@@ -17,9 +17,9 @@ package io.github.dkorobtsov.plinter.core.internal;
 
 /**
  * Headers and utilities for internal use by OkHttp.
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications  from OkHttp3 client (removed external
  * dependencies and unused methods). Idea was to remove hard dependency on OkHttp3, so
  * request/response handling logic was made a part of this library.

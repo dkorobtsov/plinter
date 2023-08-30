@@ -7,9 +7,9 @@ import java.util.concurrent.TimeUnit;
  * on what responses can be stored, and which requests can be satisfied by those stored responses.
  *
  * @see <a href="https://tools.ietf.org/html/rfc7234#section-5.2">RFC 7234, 5.2</a>
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
@@ -227,7 +227,7 @@ public final class CacheControl {
     if (immutable) {
       result.append("immutable, ");
     }
-    if (result.length() == 0) {
+    if (result.isEmpty()) {
       return "";
     }
     result.delete(result.length() - 2, result.length());

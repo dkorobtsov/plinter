@@ -1,8 +1,5 @@
 package io.github.dkorobtsov.plinter.okhttp3;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedHeaders;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
@@ -11,14 +8,18 @@ import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.Protocol;
 import io.github.dkorobtsov.plinter.core.internal.ResponseDetails;
 import io.github.dkorobtsov.plinter.core.internal.ResponseHandler;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Helper class implementing conversion logic from OkHTTP3 client response to this library's

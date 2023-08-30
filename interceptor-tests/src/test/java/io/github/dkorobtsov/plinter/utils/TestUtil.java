@@ -1,13 +1,14 @@
 package io.github.dkorobtsov.plinter.utils;
 
-import static org.junit.Assert.fail;
+import org.junit.Assert;
 
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Locale;
-import org.junit.Assert;
+
+import static org.junit.Assert.fail;
 
 /**
  * Collection of utility methods for use in tests.
@@ -21,6 +22,12 @@ public final class TestUtil {
 
   }
 
+  /**
+   * Generates random text of the specified length.
+   *
+   * @param length The length of the random text.
+   * @return The random text.
+   */
   @SuppressWarnings("PMD.AssignmentInOperand")
   public static String randomText(int length) {
     final StringBuilder text = new StringBuilder();
@@ -39,9 +46,14 @@ public final class TestUtil {
     return text.toString();
   }
 
+  /**
+   * Asserts that the entry starts with a parsable date stamp.
+   *
+   * @param rawEntry The raw entry to check.
+   */
   public static void assertEntryStartsWithParsableDate(String rawEntry) {
     final String[] entryElements = TestUtil
-        .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
+      .extractTextFromLogEntrySeparatedByBrackets(rawEntry);
 
     try {
       new SimpleDateFormat("yyyy-MM-ddd kk:mm:ss", Locale.ENGLISH).parse(entryElements[0]);
@@ -50,31 +62,49 @@ public final class TestUtil {
     }
   }
 
+  /**
+   * Asserts the number of elements in a log entry separated by brackets.
+   *
+   * @param entrySeparatedByBrackets The log entry separated by brackets.
+   * @param expectedCount            The expected number of elements.
+   */
   public static void assertLogEntryElementsCount(String entrySeparatedByBrackets,
                                                  int expectedCount) {
     final String[] entryElements = TestUtil
-        .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
+      .extractTextFromLogEntrySeparatedByBrackets(entrySeparatedByBrackets);
 
     Assert.assertEquals(
-        "Log event expected to contain " + expectedCount + " of elements. But was: \n"
-            + entryElements.length, expectedCount, entryElements.length);
+      "Log event expected to contain " + expectedCount + " of elements. But was: \n"
+        + entryElements.length, expectedCount, entryElements.length);
   }
 
+  /**
+   * Extracts text from a log entry separated by brackets.
+   *
+   * @param logEntry The log entry.
+   * @return An array of extracted text elements.
+   */
   @SuppressWarnings({"RegExpRedundantEscape", "RegExpSingleCharAlternation"})
   private static String[] extractTextFromLogEntrySeparatedByBrackets(String logEntry) {
     return Arrays
-        .stream(logEntry.split("\\[|\\]"))
-        .filter(s -> s.trim().length() > 0)
-        .map(String::trim)
-        .toArray(String[]::new);
+      .stream(logEntry.split("\\[|\\]"))
+      .map(String::trim)
+      .filter(trim -> !trim.isEmpty())
+      .toArray(String[]::new);
   }
 
+  /**
+   * Returns the logging executor thread.
+   *
+   * @return The logging executor thread.
+   * @throws AssertionError If the logging executor thread is not available.
+   */
   public static Thread loggingExecutorThread() {
     return Thread.getAllStackTraces().keySet()
-        .stream()
-        .filter(it -> it.getName().startsWith(PRINTING_THREAD_PREFIX))
-        .findFirst()
-        .orElseThrow(() -> new AssertionError("Logging executor thread should be available."));
+      .stream()
+      .filter(it -> it.getName().startsWith(PRINTING_THREAD_PREFIX))
+      .findFirst()
+      .orElseThrow(() -> new AssertionError("Logging executor thread should be available."));
   }
 
 

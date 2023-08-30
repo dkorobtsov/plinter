@@ -1,10 +1,5 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
-import java.io.IOException;
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +9,12 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Helper class for formatting printable requests and responses bodies.
@@ -56,14 +57,13 @@ final class BodyFormatter {
 
   /**
    * Method for pretty printing XML content.
-   *
+   * <p>
    * N.B. Default implementation was adjusted according to OWASP suggestions to mitigate possible
    * security risks. For detailed information check:
    *
    * @see <a href="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J">XML
    * External Entity (XXE) Prevention</a>
    */
-  @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "By design.")
   private static String formatAsXml(String msg) {
     String feature;
     try {

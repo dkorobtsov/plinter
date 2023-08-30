@@ -52,7 +52,6 @@ tasks.named<Jar>("jar") {
 
 tasks.named<Test>("test") {
   useJUnit()
-  finalizedBy(tasks.jacocoTestReport)
 
   jacoco {
     toolVersion = "0.8.10"
