@@ -102,7 +102,7 @@ import static io.github.dkorobtsov.plinter.core.internal.Util.UTF_8;
  * <p>Because this class does not buffer the full response in memory, the application may not
  * re-read the bytes of the response. Use this one shot to read the entire response into memory with
  * {@link #bytes()} or {@link #string()}. Or stream the response with either {@link #source()},
- * {@link #byteStream()}, or charStream().
+ * or charStream().
  */
 @SuppressWarnings("PMD")
 public abstract class InterceptedResponseBody implements Closeable {
@@ -165,8 +165,8 @@ public abstract class InterceptedResponseBody implements Closeable {
   public abstract InterceptedMediaType contentType();
 
   /**
-   * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or
-   * -1 if unknown.
+   * Returns the number of bytes in that will returned by {@link #bytes}
+   * or -1 if unknown.
    */
   public abstract long contentLength();
 
