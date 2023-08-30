@@ -4,12 +4,12 @@ This library makes working with API's easy and convenient.
 Just attach interceptor to your favorite HTTP client and forward all requests and responses to any Java logger (or use
 default one).
 Simple as that.
-
+[codeql.yml](.github%2Fworkflows%2Fcodeql.yml)
 --------
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
-
+[![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
+[![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
 [![Reliability Rating
 ](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
