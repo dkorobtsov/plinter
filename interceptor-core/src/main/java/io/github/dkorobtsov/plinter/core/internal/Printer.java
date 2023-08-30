@@ -232,8 +232,8 @@ final class Printer {
       return EMPTY_STRING;
     }
 
-    if (interceptedResponse.originalBody == null ||
-      interceptedResponse.originalBody.contentLength() <= 0) {
+    if (interceptedResponse.originalBody == null
+      || interceptedResponse.originalBody.contentLength() <= 0) {
       return logLines(EMPTY_RESPONSE_BODY, true);
     }
 
@@ -251,7 +251,8 @@ final class Printer {
       logger.log(java.util.logging.Level.SEVERE, e.getMessage(), e);
     }
 
-    if (buffer == null || buffer.size() == 0L) {
+    if (buffer == null
+      || buffer.size() == 0L) {
       return logLines(EMPTY_RESPONSE_BODY, true);
     }
 

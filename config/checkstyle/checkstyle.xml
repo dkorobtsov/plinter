@@ -17,6 +17,7 @@
  -->
 
 <module name="Checker">
+    <!--    Comment to see all suppressed warnings -->
     <module name="SuppressWarningsFilter"/>
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="warning"/>
@@ -305,7 +306,7 @@
         </module>
         <module name="NonEmptyAtclauseDescription"/>
         <module name="InvalidJavadocPosition"/>
-        <module name="JavadocTagContinuationIndentation"/>
+        <!--        <module name="JavadocTagContinuationIndentation"/>-->
         <module name="SummaryJavadoc">
             <property name="forbiddenSummaryFragments"
                       value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )"/>

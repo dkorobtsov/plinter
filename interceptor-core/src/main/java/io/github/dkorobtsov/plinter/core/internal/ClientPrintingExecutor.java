@@ -19,12 +19,24 @@ public final class ClientPrintingExecutor {
   private ClientPrintingExecutor() {
   }
 
+  /**
+   * Prints the intercepted request using the provided logger configuration.
+   *
+   * @param loggerConfig the logger configuration
+   * @param request      the intercepted request to print
+   */
   public static void printRequest(LoggerConfig loggerConfig, InterceptedRequest request) {
     final Runnable printRequest = () -> Printer.printRequest(loggerConfig, request);
     final ExecutorService executor = (ExecutorService) loggerConfig.executor;
     sendCommandToPrinter(executor, printRequest);
   }
 
+  /**
+   * Prints the intercepted response using the provided logger configuration.
+   *
+   * @param loggerConfig the logger configuration
+   * @param response     the intercepted response to print
+   */
   public static void printResponse(LoggerConfig loggerConfig, InterceptedResponse response) {
     final Runnable printResponse = () -> Printer.printResponse(loggerConfig, response);
     final ExecutorService executor = (ExecutorService) loggerConfig.executor;

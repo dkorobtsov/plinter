@@ -47,7 +47,12 @@ import java.util.Map;
  * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
-@SuppressWarnings({"OverloadMethodsDeclarationOrder", "PMD"})
+@SuppressWarnings({
+  "OverloadMethodsDeclarationOrder",
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD",
+})
 public final class InterceptedHeaders {
 
   private final String[] namesAndValues;

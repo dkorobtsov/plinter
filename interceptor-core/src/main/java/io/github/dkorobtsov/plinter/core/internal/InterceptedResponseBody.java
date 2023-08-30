@@ -140,7 +140,8 @@ public abstract class InterceptedResponseBody implements Closeable {
    * Returns a new response body that transmits {@code content}.
    */
   public static InterceptedResponseBody create(final InterceptedMediaType contentType,
-                                               final long contentLength, final BufferedSource content) {
+                                               final long contentLength,
+                                               final BufferedSource content) {
     if (content == null) {
       throw new NullPointerException("source == null");
     }

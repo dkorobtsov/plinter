@@ -48,9 +48,13 @@ public class ResponseDetails {
    * @param mediaType    The media type of the intercepted response.
    * @param protocol     The protocol of the intercepted response.
    */
-  ResponseDetails(InterceptedResponseBody responseBody, InterceptedHeaders headers, int code,
-                  boolean isSuccessful, String message, InterceptedMediaType mediaType, Protocol protocol) {
-
+  ResponseDetails(InterceptedResponseBody responseBody,
+                  InterceptedHeaders headers,
+                  int code,
+                  boolean isSuccessful,
+                  String message,
+                  InterceptedMediaType mediaType,
+                  Protocol protocol) {
     this.responseBody = responseBody;
     this.isSuccessful = isSuccessful;
     this.mediaType = mediaType;
@@ -184,8 +188,15 @@ public class ResponseDetails {
      * @return The constructed ResponseDetails object.
      */
     public ResponseDetails build() {
-      return new ResponseDetails(responseBody, headers, code, isSuccessful, message, mediaType,
-        protocol);
+      return new ResponseDetails(
+        responseBody,
+        headers,
+        code,
+        isSuccessful,
+        message,
+        mediaType,
+        protocol
+      );
     }
 
     /**

@@ -7,14 +7,20 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 /**
- * Utility class intended to reduce code duplication Response converters code duplication.
+ * Utility class intended to reduce code Response converters code duplication.
  */
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD"
+})
 public final class ResponseHandler {
 
   private ResponseHandler() {
   }
 
-  public static InterceptedResponse interceptedResponse(ResponseDetails response, URL requestUrl,
+  public static InterceptedResponse interceptedResponse(ResponseDetails response,
+                                                        URL requestUrl,
                                                         Long chainMs) {
 
     final int code = response.code;

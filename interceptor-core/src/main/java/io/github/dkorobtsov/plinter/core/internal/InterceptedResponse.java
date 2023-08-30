@@ -7,6 +7,10 @@ import java.util.List;
  * clients and have more flexibility, interceptor-core is operating with custom request/response
  * objects.
  */
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+})
 public final class InterceptedResponse {
 
   @SuppressWarnings("unused")

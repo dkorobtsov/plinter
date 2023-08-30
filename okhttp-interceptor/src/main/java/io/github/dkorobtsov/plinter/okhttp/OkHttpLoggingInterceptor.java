@@ -15,14 +15,15 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Interceptor for OkHttp client requests and responses. Interceptor's behavior can be configured
- * using {@link LoggerConfig}
+ * Interceptor for OkHttp client requests and responses.
+ * Interceptor's behavior can be configured using {@link LoggerConfig}
  * <p>
  * Usage instructions:
  *
  * <pre>
  *
- * OkHttpLoggingInterceptor interceptor = new OkHttpLoggingInterceptor(LoggerConfig.builder().build());
+ * OkHttpLoggingInterceptor interceptor
+ * = new OkHttpLoggingInterceptor(LoggerConfig.builder().build());
  *
  * OkHttpClient okHttpClient = new OkHttpClient.Builder()
  * .addInterceptor(interceptor)
@@ -35,6 +36,11 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
   private final RequestConverter<Request> requestConverter;
   private final ResponseConverter<Response> responseConverter;
 
+  /**
+   * Constructs a new OkHttpLoggingInterceptor with the specified LoggerConfig.
+   *
+   * @param loggerConfig the LoggerConfig to configure the interceptor's behavior
+   */
   public OkHttpLoggingInterceptor(final LoggerConfig loggerConfig) {
     this.requestConverter = new OkHttpRequestConverter();
     this.responseConverter = new OkHttpResponseConverter();
@@ -42,8 +48,10 @@ public class OkHttpLoggingInterceptor extends AbstractInterceptor implements Int
   }
 
   /**
-   * Intercepts the OkHttp client request and response. This method is called by OkHttp's interceptor chain.
-   * It logs the request and response details according to the configured {@link LoggerConfig}.
+   * Intercepts the OkHttp client request and response.
+   * This method is called by OkHttp's interceptor chain.
+   * It logs the request and response details according
+   * to the configured {@link LoggerConfig}.
    *
    * @param chain The interceptor chain.
    * @return The intercepted response.

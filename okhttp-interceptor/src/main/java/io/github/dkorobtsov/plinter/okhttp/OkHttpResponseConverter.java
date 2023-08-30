@@ -110,8 +110,9 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
    * <p>
    * See <a href="https://github.com/square/okhttp">OkHttp3</a>
    */
-  private ResponseBody copyBody(final ResponseBody responseBody, final long byteCount)
-    throws IOException {
+  @SuppressWarnings("SameParameterValue")
+  private ResponseBody copyBody(final ResponseBody responseBody,
+                                final long byteCount) throws IOException {
 
     final BufferedSource source = responseBody.source();
     source.request(byteCount);

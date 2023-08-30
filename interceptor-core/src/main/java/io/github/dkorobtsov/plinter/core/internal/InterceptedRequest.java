@@ -32,7 +32,11 @@ import java.util.List;
  * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
-@SuppressWarnings("PMD")
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD"
+})
 public final class InterceptedRequest {
 
   private static final String URL_IS_NULL_ERROR = "url == null";
@@ -89,7 +93,6 @@ public final class InterceptedRequest {
         + '}';
   }
 
-  @SuppressWarnings("JavadocType")
   public static class Builder {
 
     private URL url;

@@ -45,6 +45,11 @@ import static java.util.Objects.isNull;
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD"
+}) // Resolved everything that made sense before suppression
 public final class Util {
 
   public static final String ACCEPT = "Accept";
@@ -93,8 +98,9 @@ public final class Util {
   }
 
   /**
-   * Returns the index of the first character in {@code input} that contains a character in {@code
-   * delimiters}. Returns limit if there is no such character.
+   * Returns the index of the first character in {@code input} that
+   * contains a character in {@code delimiters}.
+   * Returns limit if there is no such character.
    */
   public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
     for (int i = pos; i < limit; i++) {
@@ -106,8 +112,8 @@ public final class Util {
   }
 
   /**
-   * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns
-   * limit if there is no such character.
+   * Returns the index of the first character in {@code input} that
+   * is {@code delimiter}. Returns limit if there is no such character.
    */
   public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
     for (int i = pos; i < limit; i++) {
@@ -125,8 +131,8 @@ public final class Util {
     return String.format(Locale.US, format, args);
   }
 
-  public static Charset bomAwareCharset(BufferedSource source, Charset charset)
-    throws IOException {
+  public static Charset bomAwareCharset(BufferedSource source,
+                                        Charset charset) throws IOException {
     if (source.rangeEquals(0, UTF_8_BOM)) {
       source.skip(UTF_8_BOM.size());
       return UTF_8;
@@ -163,9 +169,9 @@ public final class Util {
    * <p>
    * --------------------------------------------------------------------------------------
    * <p>
-   * NB: Method copied with some small modifications from OkHttp3 client's HttpUrl. In order to
-   * remove hard dependency from OkHttp3 this library uses java native URL class. This method copied
-   * for convenience.
+   * NB: Method copied with some small modifications from OkHttp3 client's HttpUrl.
+   * In order to remove hard dependency from OkHttp3 this library uses java native URL class.
+   * This method copied for convenience.
    *
    * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
    */
@@ -177,7 +183,9 @@ public final class Util {
     final String urlString = url.toString();
     final String scheme = url.getProtocol();
     final int potentialPathStartIndex = urlString.indexOf('/', scheme.length() + 3);
-    final int pathStart = potentialPathStartIndex < 0 ? urlString.length() : potentialPathStartIndex;
+    final int pathStart = potentialPathStartIndex < 0
+      ? urlString.length()
+      : potentialPathStartIndex;
     final int pathEnd = delimiterOffset(urlString, pathStart, urlString.length(), "?#");
     final List<String> result = new ArrayList<>();
     for (int i = pathStart; i < pathEnd; ) {
@@ -195,8 +203,9 @@ public final class Util {
   }
 
   /**
-   * Returns true if the body in question probably contains human readable text. Uses a small sample
-   * of code points to detect unicode control characters commonly used in binary file signatures.
+   * Returns true if the body in question probably contains human readable text.
+   * Uses a small sample of code points to detect unicode control characters
+   * commonly used in binary file signatures.
    */
   static boolean isUtf8(Buffer buffer) {
     try (Buffer prefix = new Buffer()) {

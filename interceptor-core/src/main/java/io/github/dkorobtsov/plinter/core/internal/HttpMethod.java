@@ -23,30 +23,37 @@ package io.github.dkorobtsov.plinter.core.internal;
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
-@SuppressWarnings("PMD")
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD"
+})
 public final class HttpMethod {
 
-  //CHECKSTYLE:OFF
   private HttpMethod() {
   }
 
   public static boolean requiresRequestBody(String method) {
     return method.equals("POST")
-        || method.equals("PUT")
-        || method.equals("PATCH")
-        || method.equals("PROPPATCH") // WebDAV
-        || method.equals("REPORT");   // CalDAV/CardDAV (defined in WebDAV Versioning)
+      || method.equals("PUT")
+      || method.equals("PATCH")
+      // WebDAV
+      || method.equals("PROPPATCH")
+      // CalDAV/CardDAV (defined in WebDAV Versioning)
+      || method.equals("REPORT");
   }
 
   public static boolean permitsRequestBody(String method) {
     return requiresRequestBody(method)
-        || method.equals("OPTIONS")
-        || method.equals("DELETE")    // Permitted as spec is ambiguous.
-        || method.equals("PROPFIND")  // (WebDAV) without body: request <allprop/>
-        || method.equals("MKCOL")
-        // (WebDAV) may contain a body, but behaviour is unspecified
-        || method.equals("LOCK");     // (WebDAV) body: create lock, without body: refresh lock
+      || method.equals("OPTIONS")
+      // Permitted as spec is ambiguous.
+      || method.equals("DELETE")
+      // (WebDAV) without body: request <allprop/>
+      || method.equals("PROPFIND")
+      // (WebDAV) may contain a body, but behaviour is unspecified
+      || method.equals("MKCOL")
+      // (WebDAV) body: create lock, without body: refresh lock
+      || method.equals("LOCK");
   }
-  //CHECKSTYLE:ON
 
 }

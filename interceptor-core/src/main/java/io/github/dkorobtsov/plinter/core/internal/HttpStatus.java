@@ -59,24 +59,47 @@ public enum HttpStatus {
   private final int statusCode;
   private final String message;
 
+  /**
+   * Constructs a new HttpStatus enum with the specified status code and message.
+   *
+   * @param statusCode the HTTP status code
+   * @param message    the HTTP status message
+   */
   HttpStatus(int statusCode, String message) {
     this.statusCode = statusCode;
     this.message = message;
   }
 
+  /**
+   * Returns the HTTP status message associated with the given status code.
+   *
+   * @param code the HTTP status code
+   * @return the HTTP status message
+   * @throws IllegalArgumentException if the status code is not found
+   */
   public static String fromCode(int code) {
     return Arrays.stream(values())
-        .filter(httpStatusCode -> httpStatusCode.getStatusCode() == code)
-        .findFirst()
-        .orElseThrow(() -> new IllegalArgumentException(
-            String.format("Couldn't find %s http status code", code)))
-        .getMessage();
+      .filter(httpStatusCode -> httpStatusCode.getStatusCode() == code)
+      .findFirst()
+      .orElseThrow(() -> new IllegalArgumentException(
+        String.format("Couldn't find %s http status code", code)))
+      .getMessage();
   }
 
+  /**
+   * Returns the HTTP status code.
+   *
+   * @return the HTTP status code
+   */
   public int getStatusCode() {
     return statusCode;
   }
 
+  /**
+   * Returns the HTTP status message.
+   *
+   * @return the HTTP status message
+   */
   public String getMessage() {
     return message;
   }

@@ -13,13 +13,18 @@ import java.util.concurrent.TimeUnit;
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
- *
+ * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
-@SuppressWarnings("PMD")
+@SuppressWarnings({
+  "PMD",
+  "LocalVariableName",
+  "MemberName",
+  "ParameterName",
+  "JavadocTagContinuationIndentation"
+})
 public final class CacheControl {
 
-  //CHECKSTYLE:OFF
   private final boolean noCache;
   private final boolean noStore;
   private final int maxAgeSeconds;
@@ -35,10 +40,19 @@ public final class CacheControl {
 
   private String headerValue; // Lazily computed, null if absent.
 
-  private CacheControl(boolean noCache, boolean noStore, int maxAgeSeconds, int sMaxAgeSeconds,
-      boolean isPrivate, boolean isPublic, boolean mustRevalidate, int maxStaleSeconds,
-      int minFreshSeconds, boolean onlyIfCached, boolean noTransform, boolean immutable,
-      String headerValue) {
+  private CacheControl(boolean noCache,
+                       boolean noStore,
+                       int maxAgeSeconds,
+                       int sMaxAgeSeconds,
+                       boolean isPrivate,
+                       boolean isPublic,
+                       boolean mustRevalidate,
+                       int maxStaleSeconds,
+                       int minFreshSeconds,
+                       boolean onlyIfCached,
+                       boolean noTransform,
+                       boolean immutable,
+                       String headerValue) {
     this.noCache = noCache;
     this.noStore = noStore;
     this.maxAgeSeconds = maxAgeSeconds;
@@ -171,9 +185,9 @@ public final class CacheControl {
       headerValue = null;
     }
     return new CacheControl(noCache, noStore, maxAgeSeconds, sMaxAgeSeconds, isPrivate,
-        isPublic,
-        mustRevalidate, maxStaleSeconds, minFreshSeconds, onlyIfCached, noTransform, immutable,
-        headerValue);
+      isPublic,
+      mustRevalidate, maxStaleSeconds, minFreshSeconds, onlyIfCached, noTransform, immutable,
+      headerValue);
   }
 
   public boolean isPrivate() {
@@ -253,7 +267,7 @@ public final class CacheControl {
      * maxAge}, it will not be used and a network request will be made.
      *
      * @param maxAge a non-negative integer. This is stored and transmitted with {@link
-     * TimeUnit#SECONDS} precision; finer precision will be lost.
+     *               TimeUnit#SECONDS} precision; finer precision will be lost.
      */
     public Builder maxAge(int maxAge, TimeUnit timeUnit) {
       if (maxAge < 0) {
@@ -261,8 +275,8 @@ public final class CacheControl {
       }
       long maxAgeSecondsLong = timeUnit.toSeconds(maxAge);
       this.maxAgeSeconds = maxAgeSecondsLong > Integer.MAX_VALUE
-          ? Integer.MAX_VALUE
-          : (int) maxAgeSecondsLong;
+        ? Integer.MAX_VALUE
+        : (int) maxAgeSecondsLong;
       return this;
     }
 
@@ -271,7 +285,7 @@ public final class CacheControl {
      * maxStale}. If unspecified, stale cache responses will not be used.
      *
      * @param maxStale a non-negative integer. This is stored and transmitted with {@link
-     * TimeUnit#SECONDS} precision; finer precision will be lost.
+     *                 TimeUnit#SECONDS} precision; finer precision will be lost.
      */
     public Builder maxStale(int maxStale, TimeUnit timeUnit) {
       if (maxStale < 0) {
@@ -279,8 +293,8 @@ public final class CacheControl {
       }
       long maxStaleSecondsLong = timeUnit.toSeconds(maxStale);
       this.maxStaleSeconds = maxStaleSecondsLong > Integer.MAX_VALUE
-          ? Integer.MAX_VALUE
-          : (int) maxStaleSecondsLong;
+        ? Integer.MAX_VALUE
+        : (int) maxStaleSecondsLong;
       return this;
     }
 
@@ -290,7 +304,7 @@ public final class CacheControl {
      * used and a network request will be made.
      *
      * @param minFresh a non-negative integer. This is stored and transmitted with {@link
-     * TimeUnit#SECONDS} precision; finer precision will be lost.
+     *                 TimeUnit#SECONDS} precision; finer precision will be lost.
      */
     public Builder minFresh(int minFresh, TimeUnit timeUnit) {
       if (minFresh < 0) {
@@ -298,8 +312,8 @@ public final class CacheControl {
       }
       long minFreshSecondsLong = timeUnit.toSeconds(minFresh);
       this.minFreshSeconds = minFreshSecondsLong > Integer.MAX_VALUE
-          ? Integer.MAX_VALUE
-          : (int) minFreshSecondsLong;
+        ? Integer.MAX_VALUE
+        : (int) minFreshSecondsLong;
       return this;
     }
 
@@ -307,5 +321,4 @@ public final class CacheControl {
       return new CacheControl(this);
     }
   }
-  //CHECKSTYLE:ON
 }
