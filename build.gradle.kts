@@ -108,7 +108,8 @@ configure(subprojects) {
       ignoreFailures = false
       source = "src"
       include = listOf("**/*.java")
-      exclude = listOf("**/gen/**")
+      // Some pretty printing chars crash PMD scanner
+      exclude = listOf("**/gen/**", "**/Printer.java", "LoggerConfig.java")
     }
 
     lint {
