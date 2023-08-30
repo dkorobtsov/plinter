@@ -43,3 +43,21 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew sonar --debug
+
+      - name: Archive coverage data
+        uses: actions/upload-artifact@v2
+        with:
+          name: jacoco-coverage-data
+          path: ./interceptor-tests/build/reports/jacoco/test
+
+      - name: 'Qodana Scan'
+        uses: JetBrains/qodana-action@v2023.2
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          pr-mode: false
+          args: --apply-fixes
+          push-fixes: pull-request
+
+
