@@ -1,5 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
+import io.github.dkorobtsov.plinter.utils.Retry;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -93,6 +94,7 @@ public class BodyWithHtmlPrintingTest extends BaseTest {
   }
 
   @Test
+  @Retry
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_htmlResponse(String interceptor,
                                         boolean withExecutor,

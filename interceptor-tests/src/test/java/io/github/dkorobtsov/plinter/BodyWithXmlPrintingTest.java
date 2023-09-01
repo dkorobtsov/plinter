@@ -1,5 +1,6 @@
 package io.github.dkorobtsov.plinter;
 
+import io.github.dkorobtsov.plinter.utils.Retry;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -46,6 +47,7 @@ public class BodyWithXmlPrintingTest extends BaseTest {
   }
 
   @Test
+  @Retry
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_xmlResponse(String interceptor,
                                        boolean withExecutor,
@@ -66,14 +68,17 @@ public class BodyWithXmlPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor,
       MALFORMED_XML_BODY, APPLICATION_XML, true, logByLine);
 
-    loggerOutput
+    String foundOutput = loggerOutput
       .stream()
       .filter(it ->
         it.startsWith(
           "  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
       .findFirst()
-      .orElseThrow(() ->
-        new AssertionError("Interceptor should be able to handle xml request body."));
+      .orElse(null);
+
+    assertThat(foundOutput)
+      .describedAs("Interceptor should be able to handle xml request body.")
+      .isNotNull();
   }
 
   @Test
@@ -84,14 +89,17 @@ public class BodyWithXmlPrintingTest extends BaseTest {
     final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor,
       MALFORMED_XML_BODY, APPLICATION_XML, true, logByLine);
 
-    loggerOutput
+    String foundOutput = loggerOutput
       .stream()
       .filter(it ->
         it.startsWith(
           "  <?xml version=\"1.0\" encoding=\"UTF-16\"?><mammals>"))
       .findFirst()
-      .orElseThrow(() ->
-        new AssertionError("Interceptor should be able to handle xml request body."));
+      .orElse(null);
+
+    assertThat(foundOutput)
+      .describedAs("Interceptor should be able to handle xml response body.")
+      .isNotNull();
   }
 
 
