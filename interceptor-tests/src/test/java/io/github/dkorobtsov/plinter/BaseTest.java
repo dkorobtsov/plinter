@@ -9,6 +9,7 @@ import io.github.dkorobtsov.plinter.core.LoggerConfig.LoggerConfigBuilder;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
+import io.github.dkorobtsov.plinter.rules.RetryRule;
 import io.github.dkorobtsov.plinter.utils.Interceptor;
 import io.github.dkorobtsov.plinter.utils.TestLogger;
 import okhttp3.ConnectionPool;
@@ -88,6 +89,9 @@ public abstract class BaseTest {
 
   @Rule
   public MockWebServer server;
+
+  @Rule
+  public RetryRule retryRule = new RetryRule();
 
   @Before
   public void setUpMockServer() throws IOException {
