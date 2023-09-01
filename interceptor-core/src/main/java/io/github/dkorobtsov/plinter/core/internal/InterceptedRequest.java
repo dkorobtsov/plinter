@@ -23,16 +23,20 @@ import java.util.List;
 /**
  * An HTTP request. Instances of this class are immutable if their {@link #body} is null or itself
  * immutable.
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
- *
+ * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
-@SuppressWarnings("PMD")
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD"
+})
 public final class InterceptedRequest {
 
   private static final String URL_IS_NULL_ERROR = "url == null";
@@ -89,7 +93,6 @@ public final class InterceptedRequest {
         + '}';
   }
 
-  @SuppressWarnings("JavadocType")
   public static class Builder {
 
     private URL url;
@@ -196,7 +199,7 @@ public final class InterceptedRequest {
       if (method == null) {
         throw new NullPointerException("method == null");
       }
-      if (method.length() == 0) {
+      if (method.isEmpty()) {
         throw new IllegalArgumentException("method.length() == 0");
       }
       if (body != null && !HttpMethod.permitsRequestBody(method)) {

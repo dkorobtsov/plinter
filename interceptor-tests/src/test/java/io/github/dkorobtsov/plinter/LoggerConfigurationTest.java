@@ -24,6 +24,7 @@ import static org.junit.Assert.fail;
  * Test validating logger behavior when different configuration options are used.
  */
 @RunWith(JUnitParamsRunner.class)
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class LoggerConfigurationTest extends BaseTest {
 
   private static final Logger logger = LogManager

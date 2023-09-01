@@ -16,13 +16,14 @@
 
 package io.github.dkorobtsov.plinter.core.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import okio.BufferedSink;
 import okio.ByteString;
 import okio.Okio;
 import okio.Source;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 
 /**
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
@@ -146,12 +147,14 @@ public abstract class InterceptedRequestBody {
   /**
    * Returns the Content-Type header for this body.
    */
+  @SuppressWarnings("unused")
   public abstract InterceptedMediaType contentType();
 
   /**
    * Returns the number of bytes that will be written to {@code sink} in a call to {@link #writeTo},
    * or -1 if that count is unknown.
    */
+  @SuppressWarnings("unused")
   public long contentLength() throws IOException {
     return -1;
   }

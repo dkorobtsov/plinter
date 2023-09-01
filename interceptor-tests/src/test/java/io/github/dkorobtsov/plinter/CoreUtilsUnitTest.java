@@ -1,13 +1,14 @@
 package io.github.dkorobtsov.plinter;
 
 import io.github.dkorobtsov.plinter.core.internal.Util;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
  * Unit tests to validate that core utility methods are working as expected.

@@ -27,27 +27,32 @@ import java.util.Map;
  * The header fields of a single HTTP message. Values are uninterpreted strings; use {@code Request}
  * and {@code Response} for interpreted headers. This class maintains the order of the header fields
  * within the HTTP message.
- *
+ * <p>
  * This class tracks header values line-by-line. A field with multiple comma- separated values on
  * the same line will be treated as a field with a single value by this class. It is the caller's
  * responsibility to detect and split on commas if their field permits multiple values. This
  * simplifies use of single-valued fields whose values routinely contain commas, such as cookies or
  * dates.
- *
+ * <p>
  * This class trims whitespace from values. It never returns values with leading or trailing
  * whitespace.
- *
+ * <p>
  * Instances of this class are immutable. Use {@link Builder} to create instances.
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
- *
+ * <p>
  * See <a href="https://github.com/square/okhttp">OkHttp3</a>
  */
-@SuppressWarnings({"OverloadMethodsDeclarationOrder", "PMD"})
+@SuppressWarnings({
+  "OverloadMethodsDeclarationOrder",
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD",
+})
 public final class InterceptedHeaders {
 
   private final String[] namesAndValues;
@@ -94,7 +99,7 @@ public final class InterceptedHeaders {
     for (int i = 0; i < namesAndValues.length; i += 2) {
       final String name = namesAndValues[i];
       final String value = namesAndValues[i + 1];
-      if (name.length() == 0 || name.indexOf('\0') != -1 || value.indexOf('\0') != -1) {
+      if (name.isEmpty() || name.indexOf('\0') != -1 || value.indexOf('\0') != -1) {
         throw new IllegalArgumentException("Unexpected header: " + name + ": " + value);
       }
     }
@@ -119,7 +124,7 @@ public final class InterceptedHeaders {
       }
       final String name = header.getKey().trim();
       final String value = header.getValue().trim();
-      if (name.length() == 0 || name.indexOf('\0') != -1 || value.indexOf('\0') != -1) {
+      if (name.isEmpty() || name.indexOf('\0') != -1 || value.indexOf('\0') != -1) {
         throw new IllegalArgumentException("Unexpected header: " + name + ": " + value);
       }
       namesAndValues[i] = name;
@@ -172,8 +177,8 @@ public final class InterceptedHeaders {
       }
     }
     return result != null
-        ? Collections.unmodifiableList(result)
-        : Collections.<String>emptyList();
+      ? Collections.unmodifiableList(result)
+      : Collections.<String>emptyList();
   }
 
   public Builder newBuilder() {
@@ -204,14 +209,14 @@ public final class InterceptedHeaders {
    *   Content-Type: text/html
    *   Content-Length: 050
    * }</pre>
-   *
+   * <p>
    * Applications that require semantically equal headers should convert them into a canonical form
    * before comparing them for equality.
    */
   @Override
   public boolean equals(Object other) {
     return other instanceof InterceptedHeaders
-        && Arrays.equals(((InterceptedHeaders) other).namesAndValues, namesAndValues);
+      && Arrays.equals(((InterceptedHeaders) other).namesAndValues, namesAndValues);
   }
 
   @Override
@@ -282,9 +287,9 @@ public final class InterceptedHeaders {
       }
       for (int i = 0, length = name.length(); i < length; i++) {
         final char c = name.charAt(i);
-        if (c <= '\u0020' || c >= '\u007f') {
+        if (c <= ' ' || c >= '\u007f') {
           throw new IllegalArgumentException(Util.format(
-              "Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
+            "Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
         }
       }
       if (value == null) {
@@ -294,7 +299,7 @@ public final class InterceptedHeaders {
         final char c = value.charAt(i);
         if ((c <= '\u001f' && c != '\t') || c >= '\u007f') {
           throw new IllegalArgumentException(Util.format(
-              "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
+            "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
         }
       }
     }

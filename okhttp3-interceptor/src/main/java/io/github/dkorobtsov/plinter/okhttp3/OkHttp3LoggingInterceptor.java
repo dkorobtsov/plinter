@@ -7,20 +7,22 @@ import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
-import java.io.IOException;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import java.io.IOException;
+
 /**
  * Interceptor for OkHttp3 client requests and responses. Interceptor's behavior can be configured
  * using {@link LoggerConfig}
- *
+ * <p>
  * Usage instructions:
  *
  * <pre>
  *
- * OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(LoggerConfig.builder().build());
+ * OkHttp3LoggingInterceptor interceptor
+ * = new OkHttp3LoggingInterceptor(LoggerConfig.builder().build());
  *
  * OkHttpClient okHttpClient = new OkHttpClient.Builder()
  * .addInterceptor(interceptor)
@@ -33,6 +35,11 @@ public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements In
   private final RequestConverter<Request> requestConverter;
   private final ResponseConverter<Response> responseConverter;
 
+  /**
+   * Constructs a new OkHttp3LoggingInterceptor with the specified LoggerConfig.
+   *
+   * @param loggerConfig the LoggerConfig to be used for logging configuration
+   */
   public OkHttp3LoggingInterceptor(final LoggerConfig loggerConfig) {
     this.requestConverter = new OkHttp3RequestConverter();
     this.responseConverter = new OkHttp3ResponseConverter();
@@ -54,8 +61,8 @@ public class OkHttp3LoggingInterceptor extends AbstractInterceptor implements In
 
     final Response response = chain.proceed(request);
     final InterceptedResponse interceptedResponse = responseConverter
-        .from(response, interceptedRequest.url(),
-            response.receivedResponseAtMillis() - response.sentRequestAtMillis());
+      .from(response, interceptedRequest.url(),
+        response.receivedResponseAtMillis() - response.sentRequestAtMillis());
 
     ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
 

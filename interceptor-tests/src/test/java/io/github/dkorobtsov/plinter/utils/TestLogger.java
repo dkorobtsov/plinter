@@ -20,10 +20,11 @@ import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX
  * DefaultLogger double with additional methods for testing purposes. All published events are
  * registered and can be retrieved for validation.
  */
+@SuppressWarnings("PMD")
 public class TestLogger implements LogWriter {
 
   private static final org.apache.logging.log4j.Logger logger
-      = org.apache.logging.log4j.LogManager.getLogger(TestLogger.class.getName());
+    = org.apache.logging.log4j.LogManager.getLogger(TestLogger.class.getName());
 
   private static final String REGEX_LINE_SEPARATOR = "\r?\n";
   private static final int MAX_WAIT_TIME_MS = 3000;
@@ -33,6 +34,11 @@ public class TestLogger implements LogWriter {
   private final OutputStream logOut;
   private final Logger testLogger = Logger.getLogger(TestLogger.class.getName());
 
+  /**
+   * Constructs a TestLogger with the specified logging format.
+   *
+   * @param logFormatter The logging format to use.
+   */
   public TestLogger(LoggingFormat logFormatter) {
     testLogger.setUseParentHandlers(false);
 
@@ -51,6 +57,11 @@ public class TestLogger implements LogWriter {
     testLogger.addHandler(logOutputHandler);
   }
 
+  /**
+   * Logs the specified message and registers it as an event.
+   *
+   * @param msg The message to log.
+   */
   @Override
   public void log(String msg) {
     testLogger.info(msg);
@@ -58,15 +69,18 @@ public class TestLogger implements LogWriter {
   }
 
   /**
-   * @return Returns raw messages (in case we want to check content only and  don't care about
-   * format)
+   * Returns the raw messages published by the current logger.
+   *
+   * @return The raw messages.
    */
   private List<String> rawMessages() {
     return events;
   }
 
   /**
-   * @return Returns first formatted event published by current logger
+   * Returns the first formatted event published by the current logger.
+   *
+   * @return The first formatted event.
    */
   @SuppressWarnings("unused")
   public String firstRawEvent() {
@@ -74,7 +88,9 @@ public class TestLogger implements LogWriter {
   }
 
   /**
-   * @return Returns last formatted event published by current logger
+   * Returns the last formatted event published by the current logger.
+   *
+   * @return The last formatted event.
    */
   @SuppressWarnings("unused")
   String lastRawEvent() {
@@ -82,7 +98,9 @@ public class TestLogger implements LogWriter {
   }
 
   /**
-   * @return Returns all formatted events published by current logger as String
+   * Returns all formatted events published by the current logger as a string.
+   *
+   * @return The formatted output.
    */
   public String formattedOutput() {
     waitForPrinterThreadToFinish();
@@ -92,7 +110,7 @@ public class TestLogger implements LogWriter {
   }
 
   /**
-   * Method waits up to 3 s until any active Printer thread becomes idle.
+   * Waits until any active Printer thread becomes idle, up to a maximum of 3 seconds.
    */
   @SuppressWarnings("BusyWait") // by design
   private void waitForPrinterThreadToFinish() {
@@ -120,13 +138,24 @@ public class TestLogger implements LogWriter {
     }
   }
 
+  /**
+   * Checks if any Printer thread is running.
+   *
+   * @return {@code true} if a Printer thread is running, {@code false} otherwise.
+   */
   private boolean isPrinterThreadRunning() {
     return Thread.getAllStackTraces().keySet().stream()
-            .anyMatch(thread -> thread.getName().startsWith(PRINTING_THREAD_PREFIX) && thread.getState().equals(Thread.State.RUNNABLE));
+      .anyMatch(thread ->
+        thread.getName().startsWith(PRINTING_THREAD_PREFIX)
+          && thread.getState().equals(Thread.State.RUNNABLE));
   }
 
   /**
-   * @return Returns all formatted events published by current logger as String array
+   * Returns all formatted events published by the current logger as a list of strings.
+   *
+   * @param preserveTrailingSpaces {@code true} to preserve trailing spaces,
+   *                               {@code false} otherwise.
+   * @return The logger output.
    */
   public List<String> loggerOutput(boolean preserveTrailingSpaces) {
     if (preserveTrailingSpaces) {
@@ -134,29 +163,43 @@ public class TestLogger implements LogWriter {
     }
     return Arrays.stream(formattedOutput()
         .split(REGEX_LINE_SEPARATOR))
-        .map(String::trim)
-        .collect(Collectors.toList());
+      .map(String::trim)
+      .collect(Collectors.toList());
   }
 
   /**
-   * @return Returns first formatted event published by current logger
+   * Returns the first formatted event published by the current logger.
+   *
+   * @param preserveTrailingSpaces {@code true} to preserve trailing spaces,
+   *                               {@code false} otherwise.
+   * @return The first formatted event.
+   * @throws AssertionError If the output is empty.
    */
   public String firstFormattedEvent(boolean preserveTrailingSpaces) {
     return loggerOutput(preserveTrailingSpaces).stream()
-        .filter(it -> !it.isEmpty())
-        .findFirst()
-        .orElseThrow(()
-            -> new AssertionError("Output should not be empty."));
+      .filter(it -> !it.isEmpty())
+      .findFirst()
+      .orElseThrow(()
+        -> new AssertionError("Output should not be empty."));
   }
 
   /**
-   * @return Returns last formatted event published by current logger
+   * Returns the last formatted event published by the current logger.
+   *
+   * @param preserveTrailingSpaces {@code true} to preserve trailing spaces,
+   *                               {@code false} otherwise.
+   * @return The last formatted event.
    */
   public String lastFormattedEvent(boolean preserveTrailingSpaces) {
     return loggerOutput(preserveTrailingSpaces)
-        .get(loggerOutput(preserveTrailingSpaces).size() - 1);
+      .get(loggerOutput(preserveTrailingSpaces).size() - 1);
   }
 
+  /**
+   * Returns a string representation of the TestLogger.
+   *
+   * @return The string representation.
+   */
   @Override
   public String toString() {
     return "TestLogger";

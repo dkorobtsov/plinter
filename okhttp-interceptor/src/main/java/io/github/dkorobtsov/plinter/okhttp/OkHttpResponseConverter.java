@@ -1,8 +1,9 @@
 package io.github.dkorobtsov.plinter.okhttp;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
+import com.squareup.okhttp.Headers;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedHeaders;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
@@ -10,23 +11,26 @@ import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.ResponseDetails;
 import io.github.dkorobtsov.plinter.core.internal.ResponseHandler;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import okio.Buffer;
-import okio.BufferedSource;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * Helper class implementing conversion logic from OkHTTP client response to this library's internal
  * {@link InterceptedResponse}.
  */
-@SuppressWarnings("Duplicates")
+@SuppressWarnings({
+  "Duplicates",
+  "PMD"
+}) // PMD gives false positives here
 class OkHttpResponseConverter implements ResponseConverter<Response> {
 
   private static final Logger logger = Logger.getLogger(OkHttpResponseConverter.class.getName());
@@ -34,21 +38,37 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
   @Override
   public InterceptedResponse from(final Response response, final URL requestUrl, final Long ms) {
     return ResponseHandler
-        .interceptedResponse(responseDetails(response), requestUrl, ms);
+      .interceptedResponse(responseDetails(response), requestUrl, ms);
   }
 
   private ResponseDetails responseDetails(final Response response) {
     if (isNull(response)) {
       throw new IllegalStateException("httpResponse == null");
     } else {
-      return ResponseDetails.builder()
+      try (ResponseBody responseBody = response.body()) {
+        return ResponseDetails.builder()
           .code(response.code())
           .headers(interceptedHeaders(response.headers()))
           .isSuccessful(response.isSuccessful())
-          .mediaType(interceptedMediaType(response.body().contentType()))
+          .mediaType(interceptedMediaType(responseBody.contentType()))
           .message(response.message())
-          .responseBody(interceptedResponseBody(response.body()))
+          .responseBody(interceptedResponseBody(responseBody))
           .build();
+      } catch (IOException e) {
+        logger.log(Level.SEVERE, e.getMessage(), e);
+
+        InterceptedMediaType mediaType = InterceptedMediaType.parse("text/plain; charset=utf-8");
+        String errorMessage = "Error occurred: " + e.getMessage();
+
+        return ResponseDetails.builder()
+          .code(response.code())
+          .headers(interceptedHeaders(response.headers()))
+          .isSuccessful(response.isSuccessful())
+          .mediaType(mediaType)
+          .message(errorMessage)
+          .responseBody(InterceptedResponseBody.create(mediaType, errorMessage))
+          .build();
+      }
     }
   }
 
@@ -61,9 +81,9 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
   private InterceptedResponseBody interceptedResponseBody(final ResponseBody responseBody) {
     ResponseBody responseBodyCopy = null;
     try {
-      // Since body is readable only once, here we applying this hack to get a copy.
+      // Since body is readable only once, here we are applying this hack to get a copy.
       // NB: In general we are reading body only if it has "printable" content type, and those
-      // files are usually not too big so we are not limiting maximum size.
+      // files are usually not too big, so we are not limiting maximum size.
       responseBodyCopy = copyBody(responseBody, Long.MAX_VALUE);
     } catch (IOException e) {
       logger.log(Level.SEVERE, e.getMessage(), e);
@@ -77,7 +97,7 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
         logger.log(Level.SEVERE, e.getMessage(), e);
       }
       return InterceptedResponseBody
-          .create(interceptedMediaType(mediaType), responseBodyString);
+        .create(interceptedMediaType(mediaType), responseBodyString);
     } else {
       return null;
     }
@@ -85,7 +105,7 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
 
   private InterceptedMediaType interceptedMediaType(MediaType mediaType) {
     return mediaType == null ? InterceptedMediaType.parse("")
-        : InterceptedMediaType.parse(mediaType.toString());
+      : InterceptedMediaType.parse(mediaType.toString());
   }
 
   /**
@@ -98,16 +118,17 @@ class OkHttpResponseConverter implements ResponseConverter<Response> {
    *
    * <p><strong>Warning:</strong> this method loads the requested bytes into memory. Most
    * applications should set a modest limit on {@code byteCount}, such as 1 MiB.
-   *
+   * <p>
    * --------------------------------------------------------------------------------------
-   *
+   * <p>
    * NB: Method copied with some small modifications from OkHttp3 client's Response#peekBody
    * (removed deprecated method).
-   *
+   * <p>
    * See <a href="https://github.com/square/okhttp">OkHttp3</a>
    */
-  private ResponseBody copyBody(final ResponseBody responseBody, final long byteCount)
-      throws IOException {
+  @SuppressWarnings("SameParameterValue")
+  private ResponseBody copyBody(final ResponseBody responseBody,
+                                final long byteCount) throws IOException {
 
     final BufferedSource source = responseBody.source();
     source.request(byteCount);

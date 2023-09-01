@@ -16,7 +16,10 @@
 
 package io.github.dkorobtsov.plinter.core.internal;
 
-import static java.util.Objects.isNull;
+import okio.Buffer;
+import okio.BufferedSource;
+import okio.ByteString;
+import okio.GzipSink;
 
 import java.io.Closeable;
 import java.io.EOFException;
@@ -28,22 +31,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import okio.Buffer;
-import okio.BufferedSource;
-import okio.ByteString;
-import okio.GzipSink;
+
+import static java.util.Objects.isNull;
 
 /**
  * Junk drawer of utility methods.
- *
+ * <p>
  * --------------------------------------------------------------------------------------
- *
+ * <p>
  * NB: Class copied with some small modifications from OkHttp3 client (removed external dependencies
  * and unused methods). Idea was to remove hard dependency on OkHttp3, so request/response handling
  * logic was made a part of this library.
  *
  * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
  */
+@SuppressWarnings({
+  "MissingJavadocMethod",
+  "MissingJavadocType",
+  "PMD"
+}) // Resolved everything that made sense before suppression
 public final class Util {
 
   public static final String ACCEPT = "Accept";
@@ -92,8 +98,9 @@ public final class Util {
   }
 
   /**
-   * Returns the index of the first character in {@code input} that contains a character in {@code
-   * delimiters}. Returns limit if there is no such character.
+   * Returns the index of the first character in {@code input} that
+   * contains a character in {@code delimiters}.
+   * Returns limit if there is no such character.
    */
   public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
     for (int i = pos; i < limit; i++) {
@@ -105,8 +112,8 @@ public final class Util {
   }
 
   /**
-   * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns
-   * limit if there is no such character.
+   * Returns the index of the first character in {@code input} that
+   * is {@code delimiter}. Returns limit if there is no such character.
    */
   public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
     for (int i = pos; i < limit; i++) {
@@ -124,8 +131,8 @@ public final class Util {
     return String.format(Locale.US, format, args);
   }
 
-  public static Charset bomAwareCharset(BufferedSource source, Charset charset)
-      throws IOException {
+  public static Charset bomAwareCharset(BufferedSource source,
+                                        Charset charset) throws IOException {
     if (source.rangeEquals(0, UTF_8_BOM)) {
       source.skip(UTF_8_BOM.size());
       return UTF_8;
@@ -159,12 +166,12 @@ public final class Util {
    * <tr><td>{@code http://host/a/b/c}</td><td>{@code ["a", "b", "c"]}</td></tr>
    * <tr><td>{@code http://host/a/b%20c/d}</td><td>{@code ["a", "b%20c", "d"]}</td></tr>
    * </table>
-   *
+   * <p>
    * --------------------------------------------------------------------------------------
-   *
-   * NB: Method copied with some small modifications from OkHttp3 client's HttpUrl. In order to
-   * remove hard dependency from OkHttp3 this library uses java native URL class. This method copied
-   * for convenience.
+   * <p>
+   * NB: Method copied with some small modifications from OkHttp3 client's HttpUrl.
+   * In order to remove hard dependency from OkHttp3 this library uses java native URL class.
+   * This method copied for convenience.
    *
    * <p>See <a href="https://github.com/square/okhttp">OkHttp3</a>.
    */
@@ -176,7 +183,9 @@ public final class Util {
     final String urlString = url.toString();
     final String scheme = url.getProtocol();
     final int potentialPathStartIndex = urlString.indexOf('/', scheme.length() + 3);
-    final int pathStart = potentialPathStartIndex < 0 ? urlString.length() : potentialPathStartIndex;
+    final int pathStart = potentialPathStartIndex < 0
+      ? urlString.length()
+      : potentialPathStartIndex;
     final int pathEnd = delimiterOffset(urlString, pathStart, urlString.length(), "?#");
     final List<String> result = new ArrayList<>();
     for (int i = pathStart; i < pathEnd; ) {
@@ -190,16 +199,16 @@ public final class Util {
   }
 
   static boolean isEmpty(CharSequence str) {
-    return str == null || str.length() == 0;
+    return str == null || str.isEmpty();
   }
 
   /**
-   * Returns true if the body in question probably contains human readable text. Uses a small sample
-   * of code points to detect unicode control characters commonly used in binary file signatures.
+   * Returns true if the body in question probably contains human readable text.
+   * Uses a small sample of code points to detect unicode control characters
+   * commonly used in binary file signatures.
    */
   static boolean isUtf8(Buffer buffer) {
-    try {
-      final Buffer prefix = new Buffer();
+    try (Buffer prefix = new Buffer()) {
       final long size = buffer.size();
       final long byteCount = size < 64 ? size : 64;
       buffer.copyTo(prefix, 0, byteCount);
@@ -219,10 +228,10 @@ public final class Util {
     }
   }
 
+  @SuppressWarnings("PMD.CloseResource") // false positive, using try with resources already
   public static Buffer gzip(String string) {
-    try (Buffer data = new Buffer()) {
+    try (Buffer data = new Buffer(); Buffer sink = new Buffer()) {
       data.writeUtf8(string);
-      final Buffer sink = new Buffer();
       final GzipSink gzipSink = new GzipSink(sink);
       gzipSink.write(data, data.size());
       gzipSink.close();

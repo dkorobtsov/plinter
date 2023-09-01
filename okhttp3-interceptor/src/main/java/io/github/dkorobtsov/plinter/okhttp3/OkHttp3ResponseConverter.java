@@ -1,8 +1,5 @@
 package io.github.dkorobtsov.plinter.okhttp3;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedHeaders;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
@@ -11,20 +8,24 @@ import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.Protocol;
 import io.github.dkorobtsov.plinter.core.internal.ResponseDetails;
 import io.github.dkorobtsov.plinter.core.internal.ResponseHandler;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 /**
  * Helper class implementing conversion logic from OkHTTP3 client response to this library's
  * internal {@link InterceptedResponse}.
  */
-@SuppressWarnings("Duplicates")
+@SuppressWarnings({"Duplicates", "PMD"}) // PMD gives false positives here
 class OkHttp3ResponseConverter implements ResponseConverter<Response> {
 
   private static final Logger logger = Logger.getLogger(OkHttp3ResponseConverter.class.getName());
@@ -32,7 +33,7 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
   @Override
   public InterceptedResponse from(final Response response, final URL requestUrl, final Long ms) {
     return ResponseHandler
-        .interceptedResponse(responseDetails(response), requestUrl, ms);
+      .interceptedResponse(responseDetails(response), requestUrl, ms);
   }
 
   private ResponseDetails responseDetails(final Response response) {
@@ -40,17 +41,17 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
       throw new IllegalStateException("httpResponse == null");
     } else {
       return ResponseDetails.builder()
-          .code(response.code())
-          .protocol(Protocol.get(response.protocol().toString()))
-          .headers(interceptedHeaders(response.headers()))
-          .isSuccessful(response.isSuccessful())
-          .mediaType(interceptedMediaType(
-              isNull(response.body())
-                  ? null
-                  : response.body().contentType()))
-          .message(response.message())
-          .responseBody(interceptedResponseBody(response))
-          .build();
+        .code(response.code())
+        .protocol(Protocol.get(response.protocol().toString()))
+        .headers(interceptedHeaders(response.headers()))
+        .isSuccessful(response.isSuccessful())
+        .mediaType(interceptedMediaType(
+          isNull(response.body())
+            ? null
+            : response.body().contentType()))
+        .message(response.message())
+        .responseBody(interceptedResponseBody(response))
+        .build();
     }
   }
 
@@ -58,7 +59,7 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
     final InterceptedHeaders.Builder headersBuilder = new InterceptedHeaders.Builder();
 
     headers.toMultimap()
-        .forEach((name, values) -> values.forEach(it -> headersBuilder.add(name, it)));
+      .forEach((name, values) -> values.forEach(it -> headersBuilder.add(name, it)));
 
     return headersBuilder.build();
   }
@@ -79,11 +80,11 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
       final MediaType mediaType = responseBodyCopy.contentType();
       try {
         return InterceptedResponseBody
-            .create(interceptedMediaType(mediaType), responseBodyCopy.bytes());
+          .create(interceptedMediaType(mediaType), responseBodyCopy.bytes());
       } catch (IOException e) {
         logger.log(Level.SEVERE, e.getMessage(), e);
         return InterceptedResponseBody
-            .create(interceptedMediaType(mediaType), "");
+          .create(interceptedMediaType(mediaType), "");
       }
     } else {
       return null;
@@ -92,7 +93,7 @@ class OkHttp3ResponseConverter implements ResponseConverter<Response> {
 
   private InterceptedMediaType interceptedMediaType(final MediaType mediaType) {
     return mediaType == null ? InterceptedMediaType.parse("")
-        : InterceptedMediaType.parse(mediaType.toString());
+      : InterceptedMediaType.parse(mediaType.toString());
   }
 
 }

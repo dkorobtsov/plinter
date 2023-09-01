@@ -37,7 +37,7 @@ import java.util.Objects;
  * Test added as a proof that interceptors can be easily integrated with external logging
  * libraries.
  */
-@SuppressWarnings("PMD.ExcessiveImports")
+@SuppressWarnings("PMD")
 @RunWith(JUnitParamsRunner.class)
 public class Log4j2LoggerTest extends BaseTest {
 
@@ -150,7 +150,6 @@ public class Log4j2LoggerTest extends BaseTest {
     }
   }
 
-  @SuppressWarnings("ConstantConditions")
   private static void updateLoggers(final Appender appender, final Configuration config) {
     final Level level = null;
     final Filter filter = null;

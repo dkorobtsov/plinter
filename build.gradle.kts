@@ -1,4 +1,15 @@
+import com.vanniktech.code.quality.tools.CodeQualityToolsPluginExtension
 import java.nio.charset.StandardCharsets
+
+buildscript {
+  repositories {
+    mavenCentral()
+    google()
+  }
+  dependencies {
+    classpath("com.vanniktech:gradle-code-quality-tools-plugin:0.23.0")
+  }
+}
 
 val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
 
@@ -54,12 +65,116 @@ allprojects {
   dependencies {
     implementation(Dependency.okio)
   }
+
+  java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+  }
 }
 
 configure(subprojects) {
-  val project = this
-
   apply(plugin = "java-library")
+  apply(plugin = "com.vanniktech.code.quality.tools")
+
+  configure<CodeQualityToolsPluginExtension> {
+    // Collection of Code Quality Tools
+    //
+    // For details check:
+    // https://github.com/vanniktech/gradle-code-quality-tools-plugin
+    failEarly = true
+    xmlReports = true
+    htmlReports = false
+    textReports = false
+    ignoreProjects = listOf()
+
+    checkstyle {
+      // Performs code style checks on Java code
+      //
+      // For details check:
+      // https://docs.gradle.org/current/userguide/checkstyle_plugin.html
+      enabled = true
+      toolVersion = "10.12.3"
+      configFile = "../config/checkstyle/checkstyle.xml"
+      ignoreFailures = false
+      showViolations = true
+      source = "src"
+      include = listOf("**/*.java")
+      exclude = listOf("**/gen/**")
+    }
+
+    pmd {
+      // Performs quality checks on Java code
+      //
+      // For details check:
+      // https://docs.gradle.org/current/userguide/pmd_plugin.html
+      enabled = true
+      toolVersion = "6.55.0"
+      ruleSetFile = "../config/pmd/pmd.xml"
+      ignoreFailures = false
+      source = "src"
+      include = listOf("**/*.java")
+      // Some pretty printing chars crash PMD scanner
+      exclude = listOf("**/gen/**", "**/Printer.java", "LoggerConfig.java")
+    }
+
+    lint {
+      // Only works if one of the Android Plugins
+      // (com.android.application, com.android.library, etc.) are applied.
+      //
+      // For details check:
+      // https://developer.android.com/studio/write/lint
+      enabled = false
+      textReport = true
+      textOutput = "stdout"
+      abortOnError = null
+      warningsAsErrors = null
+      checkAllWarnings = null
+      baselineFileName = null
+      absolutePaths = null
+      lintConfig = null
+      checkReleaseBuilds = false
+      checkTestSources = null
+      checkDependencies = null
+    }
+
+    ktlint {
+      // Kotlin Linter / Formatter, let's keep for build scripts
+      //
+      // For details check:
+      // https://github.com/pinterest/ktlint
+      enabled = true
+      toolVersion = "0.32.0"
+      experimental = false
+    }
+
+    detekt {
+      // Static Code Analysis for Kotlin
+      //
+      // For details check:
+      // https://github.com/detekt/detekt
+      enabled = false
+      toolVersion = "1.0.0"
+      config = "code_quality_tools/detekt.yml"
+      baselineFileName = null
+      failFast = true
+    }
+
+    // Plugin for finding duplicate java code
+    //
+    // For details check:
+    // https://github.com/aaschmid/gradle-cpd-plugin
+    cpd {
+      enabled = true
+      source = sourceSets.main.get().allJava.toString()
+      language = "java"
+      ignoreFailures = false
+      minimumTokenCount = 50
+    }
+
+    kotlin {
+      allWarningsAsErrors = true
+    }
+  }
 
   tasks.withType(JavaCompile::class) {
     options.encoding = StandardCharsets.UTF_8.displayName()

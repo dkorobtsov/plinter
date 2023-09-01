@@ -1,24 +1,25 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    `kotlin-dsl`
-    kotlin("jvm") version "1.3.20"
+  `kotlin-dsl`
+  kotlin("jvm") version "1.9.0"
 }
 
 repositories {
-    jcenter()
+  mavenCentral()
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+  implementation(kotlin("stdlib"))
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
+tasks.withType<KotlinCompile> {
+  kotlinOptions {
+    jvmTarget = "11"
+  }
 }
 
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
+java {
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
 }

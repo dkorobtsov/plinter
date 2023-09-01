@@ -1,19 +1,10 @@
 package io.github.dkorobtsov.plinter.apache;
 
-import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
-import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_PLAIN;
-import static java.util.Objects.nonNull;
-
 import io.github.dkorobtsov.plinter.core.RequestConverter;
 import io.github.dkorobtsov.plinter.core.internal.HttpMethod;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequestBody;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -21,6 +12,16 @@ import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.message.BasicHeader;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
+import static io.github.dkorobtsov.plinter.core.internal.Util.TEXT_PLAIN;
+import static java.util.Objects.nonNull;
 
 /**
  * Helper class implementing conversion logic from Apache HTTP client request to this library's
@@ -48,6 +49,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
     return builder.build();
   }
 
+  @SuppressWarnings({"PMD", "CPD-START"}) // Ignore duplicate code here
   private InterceptedRequestBody interceptedRequestBody(final HttpRequest request) {
 
     if (request instanceof HttpRequestWrapper) {

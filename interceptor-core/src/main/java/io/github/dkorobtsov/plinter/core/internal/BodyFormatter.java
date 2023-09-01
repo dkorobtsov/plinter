@@ -1,10 +1,5 @@
 package io.github.dkorobtsov.plinter.core.internal;
 
-import java.io.IOException;
-import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,6 +9,12 @@ import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * Helper class for formatting printable requests and responses bodies.
@@ -26,6 +27,10 @@ final class BodyFormatter {
   private BodyFormatter() {
   }
 
+  @SuppressWarnings({
+    "PMD.AvoidLiteralsInIfCondition",
+    "PMD.DataflowAnomalyAnalysis"
+  }) //by design
   static String formattedBody(String printableBody) {
     String message;
     try {
@@ -56,14 +61,13 @@ final class BodyFormatter {
 
   /**
    * Method for pretty printing XML content.
-   *
+   * <p>
    * N.B. Default implementation was adjusted according to OWASP suggestions to mitigate possible
    * security risks. For detailed information check:
    *
    * @see <a href="https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J">XML
    * External Entity (XXE) Prevention</a>
    */
-  @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION", justification = "By design.")
   private static String formatAsXml(String msg) {
     String feature;
     try {
@@ -93,7 +97,7 @@ final class BodyFormatter {
 
       final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
       final DOMImplementationLS impl = (DOMImplementationLS) registry
-          .getDOMImplementation("LS");
+        .getDOMImplementation("LS");
 
       final LSSerializer writer = impl.createLSSerializer();
 
@@ -103,7 +107,7 @@ final class BodyFormatter {
       return writer.writeToString(document);
 
     } catch (IOException | InstantiationException | ParserConfigurationException
-        | IllegalAccessException | SAXException | ClassNotFoundException e) {
+             | IllegalAccessException | SAXException | ClassNotFoundException e) {
 
       // If failed to parse document - just showing as is.
       return msg;

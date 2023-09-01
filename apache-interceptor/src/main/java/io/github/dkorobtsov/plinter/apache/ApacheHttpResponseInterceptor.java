@@ -5,26 +5,29 @@ import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.ResponseConverter;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.logging.Logger;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.methods.HttpRequestWrapper;
 import org.apache.http.protocol.HttpContext;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Logger;
+
 /**
- * Interceptor for responses sent by Apache HttpClient. Intended to be used with request interceptor
- * {@link ApacheHttpRequestInterceptor}.
- *
+ * Interceptor for responses sent by Apache HttpClient.
+ * Intended to be used with request interceptor {@link ApacheHttpRequestInterceptor}.
+ * <p>
  * Interceptor's behavior can be configured using {@link LoggerConfig}
  *
  * Usage instructions:
  *
  * <pre>
  *
- *  ApacheRequestInterceptor requestInterceptor = new ApacheRequestInterceptor(LoggerConfig.builder().build());
- *  ApacheResponseInterceptor responseInterceptor = new ApacheResponseInterceptor(LoggerConfig.builder().build());
+ *  ApacheRequestInterceptor requestInterceptor
+ *  = new ApacheRequestInterceptor(LoggerConfig.builder().build());
+ *  ApacheResponseInterceptor responseInterceptor
+ *  = new ApacheResponseInterceptor(LoggerConfig.builder().build());
  *
  *  CloseableHttpClient client = HttpClientBuilder
  *      .create()
@@ -59,6 +62,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
     }
   }
 
+  @SuppressWarnings("PMD")
   URL urlFrom(final HttpContext context) {
     final HttpRequestWrapper request
         = (HttpRequestWrapper) context.getAttribute("http.request");

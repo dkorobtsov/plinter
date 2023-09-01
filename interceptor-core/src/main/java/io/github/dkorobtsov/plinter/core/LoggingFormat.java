@@ -6,7 +6,7 @@ import java.util.logging.SimpleFormatter;
 
 /**
  * Collection of Logger format configurations intended to be used with DefaultLogger.
- *
+ * <p>
  * Default format: {@link LoggingFormat#JUL_MESSAGE_ONLY}
  *
  * NB. Note that formatting options provided in this class will not work in case interceptor is
