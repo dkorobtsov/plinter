@@ -25,12 +25,12 @@ jobs:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          args: "--print-problems --apply-fixes"
           # Analyze ONLY changed files in a pull request.
           pr-mode: false
           # Use annotation to mark the results in the GitHub user interface.
           use-annotations: true
           # Post a comment with the Qodana results summary to the pull request.
           post-pr-comment: true
-          #Push Qodana fixes to the repository, can be none, branch to the current branch, or pull-request
-          push-fixes: pull-request
+          # Push Qodana fixes to the repository, can be none, branch to the
+          # current branch, or pull-request (disabled as it fails build)
+          # push-fixes: pull-request
