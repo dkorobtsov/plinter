@@ -1,22 +1,19 @@
-## What?
-<!--- Describe the issue or feature request you have -->
+### 💡 Feature Request
 
-## Why?
+<!--- Delete section if it's not relevant for your issue -->
+
+#### Proposed Solution
+
+<!--- A clear and concise description of what you want to happen -->
+
+#### Why it should be done?
 <!--- Explain why this issue or feature request is important -->
 
-### Type
-- [ ] Bug
-- [ ] Feature Request
+---[build_and_test.yml](workflows%2Fbuild_and_test.yml)
 
-## Checklist:
+### 🐞 Bug Report
 
-- [ ] I have checked if this issue or request is not already reported
-- [ ] I have provided any necessary information and steps to reproduce (for bugs) or described my new feature (for feature requests)
-
----
-
-### 🐞 For Bug Reports
-<!--- Delete section if it's not relevant for your issue -->
+<!--- Delete section that is not relevant for your issue -->
 #### Current Behavior
 <!--- A clear and concise description of current behavior -->
 
@@ -40,12 +37,11 @@
 
 ---
 
-### 💡 For Feature Requests
-<!--- Delete section if it's not relevant for your issue -->
-#### Proposed Solution
-<!--- A clear and concise description of what you want to happen -->
+## Checklist:
 
-## Optional GIF
-<!--- You can add a GIF to make your issue special! -->
-<!--- Can find gifs here: https://giphy.com/ -->
-<!--- ![Optional GIF](GIF_URL_HERE) -->
+<!--- Mark with X tasks that were done: [x] -->
+
+- [ ] I have checked if this bug or request is not already reported
+- [ ] I have provided any necessary information and steps to reproduce (for bugs) or described my new feature (for
+  feature requests)
+
