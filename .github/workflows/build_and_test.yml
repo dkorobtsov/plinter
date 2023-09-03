@@ -3,8 +3,16 @@ on:
   push:
     branches:
       - master
+    paths-ignore:
+      - '**/**.md'
+      - '.gitignore'
+      - '.github/CODEOWNERS'
   pull_request:
     types: [ opened, synchronize, reopened ]
+    paths-ignore:
+      - '**/**.md'
+      - '.gitignore'
+      - '.github/CODEOWNERS'
 
 jobs:
   build_and_test:
