@@ -8,8 +8,9 @@ Simple as that.
 --------
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
-[![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
+[![Build and Test](https://github.com/dkorobtsov/plinter/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/build_and_test.yml)
+
 [![Reliability Rating
 ](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
@@ -173,7 +174,7 @@ To start using interceptor with Apache Http client add following dependency to c
 
 ```kotlin
 dependencies {
-  implementation("io.github.dkorobtsov.plinter:apache-interceptor:$LATEST_VERSION")
+  implementation("io.github.d[qodana_code_quality.yml](.github%2Fworkflows%2Fqodana_code_quality.yml)korobtsov.plinter:apache-interceptor:$LATEST_VERSION")
 }
 ```
 
