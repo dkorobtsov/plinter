@@ -7,15 +7,14 @@ Simple as that.
 [codeql.yml](.github%2Fworkflows%2Fcodeql.yml)
 --------
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
-[![Build and Test](https://github.com/dkorobtsov/plinter/actions/workflows/build_and_test.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/build_and_test.yml)
+[![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 
-[![Reliability Rating
-](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 
 <p >
     <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/image1.png" alt="Console Logging Example"/>
