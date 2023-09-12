@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter.utils;
+package io.github.dkorobtsov.tests.utils;
 
 import org.junit.Assert;
 

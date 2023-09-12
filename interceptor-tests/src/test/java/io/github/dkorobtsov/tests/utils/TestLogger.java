@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter.utils;
+package io.github.dkorobtsov.tests.utils;
 
 import io.github.dkorobtsov.plinter.core.LogWriter;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
@@ -13,8 +13,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 import java.util.stream.Collectors;
-
-import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
 
 /**
  * DefaultLogger double with additional methods for testing purposes. All published events are
@@ -146,7 +144,7 @@ public class TestLogger implements LogWriter {
   private boolean isPrinterThreadRunning() {
     return Thread.getAllStackTraces().keySet().stream()
       .anyMatch(thread ->
-        thread.getName().startsWith(PRINTING_THREAD_PREFIX)
+        thread.getName().startsWith(TestUtil.PRINTING_THREAD_PREFIX)
           && thread.getState().equals(Thread.State.RUNNABLE));
   }
 

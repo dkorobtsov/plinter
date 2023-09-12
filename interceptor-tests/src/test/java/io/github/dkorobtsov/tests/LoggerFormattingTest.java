@@ -1,8 +1,8 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
-import io.github.dkorobtsov.plinter.utils.TestUtil;
+import io.github.dkorobtsov.tests.utils.TestLogger;
+import io.github.dkorobtsov.tests.utils.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 

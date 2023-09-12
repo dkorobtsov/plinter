@@ -1,8 +1,8 @@
-package io.github.dkorobtsov.plinter.integration;
+package io.github.dkorobtsov.tests.integration;
 
-import io.github.dkorobtsov.plinter.BaseTest;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
+import io.github.dkorobtsov.tests.BaseTest;
+import io.github.dkorobtsov.tests.utils.TestLogger;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.AfterClass;

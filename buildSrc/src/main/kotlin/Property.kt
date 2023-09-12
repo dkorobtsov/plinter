@@ -12,11 +12,11 @@ object Property {
     const val sonarHost = "https://sonarcloud.io"
     const val sonarOrganization = "dkorobtsov"
 
-    const val moduleNameInterceptorCore = "$projectGroup.interceptor-core"
-    const val moduleNameInterceptorTests = "$projectGroup.interceptor-tests"
-    const val moduleNameApacheInterceptor = "$projectGroup.apache-interceptor"
-    const val moduleNameOkHttpInterceptor = "$projectGroup.okhttp-interceptor"
-    const val moduleNameOkHttp3Interceptor = "$projectGroup.okhttp3-interceptor"
+  const val moduleNameInterceptorCore = "$projectGroup.core"
+  const val moduleNameInterceptorTests = "$projectGroup.tests"
+  const val moduleNameApacheInterceptor = "$projectGroup.apache"
+  const val moduleNameOkHttpInterceptor = "$projectGroup.okhttp"
+  const val moduleNameOkHttp3Interceptor = "$projectGroup.okhttp3"
 
     const val implementationTitleInterceptorCore = "Logging Interceptor Core"
     const val implementationTitleInterceptorTests = "Logging Interceptor Tests"

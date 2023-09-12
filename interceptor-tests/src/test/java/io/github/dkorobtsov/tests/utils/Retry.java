@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter.utils;
+package io.github.dkorobtsov.tests.utils;
 
-import io.github.dkorobtsov.plinter.rules.RetryRule;
+import io.github.dkorobtsov.tests.rules.RetryRule;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

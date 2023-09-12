@@ -1,7 +1,7 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.internal.HttpStatus;
-import io.github.dkorobtsov.plinter.utils.Interceptor;
+import io.github.dkorobtsov.tests.utils.Interceptor;
 import org.junit.Test;
 
 /**

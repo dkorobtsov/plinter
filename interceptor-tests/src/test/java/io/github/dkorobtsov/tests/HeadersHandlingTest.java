@@ -1,7 +1,7 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
+import io.github.dkorobtsov.tests.utils.TestLogger;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import okhttp3.mockwebserver.MockResponse;
