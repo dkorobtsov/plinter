@@ -561,7 +561,7 @@ public abstract class BaseTest {
   /**
    * Returns list of valid max line lengths. {@link LoggerConfig#maxLineLength}
    * <p>
-   * NB: In IDE current method shown as unused, but it's refereed
+   * NB: In IDE current method shown as unused, but it's referred
    * in @Parameters annotation in child classes.
    */
   @SuppressWarnings("unused")
