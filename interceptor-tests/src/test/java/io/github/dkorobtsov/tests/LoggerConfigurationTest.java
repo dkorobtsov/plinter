@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 public class LoggerConfigurationTest extends BaseTest {
 
   private static final Logger logger = LogManager
-      .getLogger(LoggerConfigurationTest.class.getName());
+    .getLogger(LoggerConfigurationTest.class.getName());
 
   @Test
   @Parameters(method = "interceptors")
@@ -37,12 +37,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .build());
+      .logger(testLogger)
+      .build());
 
     assertTrue("Logger should publish events using only default configuration",
-        testLogger.firstFormattedEvent(false)
-            .contains("Request"));
+      testLogger.firstFormattedEvent(false)
+        .contains("Request"));
   }
 
   @Test
@@ -52,13 +52,13 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .build());
+      .logger(testLogger)
+      .build());
 
     Assert.assertEquals("Logger with default format should publish message only",
-        "┌────── Request ───────────────────────────────────────────"
-            + "───────────────────────────────────────────────────",
-        testLogger.firstFormattedEvent(false));
+      "┌────── Request ───────────────────────────────────────────"
+        + "───────────────────────────────────────────────────",
+      testLogger.firstFormattedEvent(false));
   }
 
   @Test
@@ -68,12 +68,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .loggable(false)
-        .build());
+      .logger(testLogger)
+      .loggable(false)
+      .build());
 
     assertTrue("Logger output should be empty if debug mode is off.",
-        testLogger.formattedOutput().isEmpty());
+      testLogger.formattedOutput().isEmpty());
   }
 
   @Test
@@ -83,12 +83,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .build());
+      .logger(testLogger)
+      .build());
 
     assertTrue("Logger should publish intercepted events if debug mode is on.",
-        testLogger.firstFormattedEvent(true)
-            .contains("Request"));
+      testLogger.firstFormattedEvent(true)
+        .contains("Request"));
   }
 
   @Test
@@ -98,8 +98,8 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_DATE_LEVEL_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .build());
+      .logger(testLogger)
+      .build());
 
     final String logEntry = testLogger.firstFormattedEvent(true);
 
@@ -114,12 +114,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .level(Level.NONE)
-        .build());
+      .logger(testLogger)
+      .level(Level.NONE)
+      .build());
 
     assertTrue("Logger output should be empty if level set to None.",
-        testLogger.formattedOutput().isEmpty());
+      testLogger.formattedOutput().isEmpty());
   }
 
   @Test
@@ -129,12 +129,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .level(Level.BODY)
-        .build());
+      .logger(testLogger)
+      .level(Level.BODY)
+      .build());
 
     assertFalse("Headers should not be logged when level set to Body.",
-        testLogger.formattedOutput().contains("Headers"));
+      testLogger.formattedOutput().contains("Headers"));
   }
 
   @Test
@@ -144,12 +144,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .level(Level.HEADERS)
-        .build());
+      .logger(testLogger)
+      .level(Level.HEADERS)
+      .build());
 
     assertFalse("Body should not be logged when level set to Headers.",
-        testLogger.formattedOutput().contains("body"));
+      testLogger.formattedOutput().contains("body"));
   }
 
   @Test
@@ -159,30 +159,30 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .level(Level.BASIC)
-        .build());
+      .logger(testLogger)
+      .level(Level.BASIC)
+      .build());
 
     assertTrue("Request section should be present in logger output.",
-        testLogger.formattedOutput().contains("Request"));
+      testLogger.formattedOutput().contains("Request"));
 
     assertTrue("Response section should be present in logger output.",
-        testLogger.formattedOutput().contains("Response"));
+      testLogger.formattedOutput().contains("Response"));
 
     assertTrue("Url should be logged when level set to Basic.",
-        testLogger.formattedOutput().contains("URL"));
+      testLogger.formattedOutput().contains("URL"));
 
     assertTrue("Method should be logged when level set to Basic.",
-        testLogger.formattedOutput().contains("Method"));
+      testLogger.formattedOutput().contains("Method"));
 
     assertTrue("Headers should be logged when level set to Basic.",
-        testLogger.formattedOutput().contains("Headers"));
+      testLogger.formattedOutput().contains("Headers"));
 
     assertTrue("Status code should be logged when level set to Basic.",
-        testLogger.formattedOutput().contains("Status Code:"));
+      testLogger.formattedOutput().contains("Status Code:"));
 
     assertTrue("Body should be logged when level set to Basic.",
-        testLogger.formattedOutput().contains("body"));
+      testLogger.formattedOutput().contains("body"));
   }
 
   @Test
@@ -192,12 +192,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_THREAD_MESSAGE);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .executor(Executors.newSingleThreadExecutor())
-        .build());
+      .logger(testLogger)
+      .executor(Executors.newSingleThreadExecutor())
+      .build());
 
     assertTrue("User should be able to supply executor.",
-        testLogger.formattedOutput().contains("thread"));
+      testLogger.formattedOutput().contains("thread"));
   }
 
   @Test
@@ -207,12 +207,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .withThreadInfo(false)
-        .build());
+      .logger(testLogger)
+      .withThreadInfo(false)
+      .build());
 
     assertFalse("Thread info should not be logged if disabled.",
-        testLogger.formattedOutput().contains("Thread"));
+      testLogger.formattedOutput().contains("Thread"));
   }
 
   @Test
@@ -222,12 +222,12 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .withThreadInfo(true)
-        .build());
+      .logger(testLogger)
+      .withThreadInfo(true)
+      .build());
 
     assertTrue("Thread info should not be logged if disabled.",
-        testLogger.formattedOutput().contains("Thread"));
+      testLogger.formattedOutput().contains("Thread"));
   }
 
   @Test
@@ -237,11 +237,11 @@ public class LoggerConfigurationTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .build());
+      .logger(testLogger)
+      .build());
 
     assertFalse("Thread info should not be logged if disabled.",
-        testLogger.formattedOutput().contains("Thread"));
+      testLogger.formattedOutput().contains("Thread"));
   }
 
   @Test
@@ -251,7 +251,7 @@ public class LoggerConfigurationTest extends BaseTest {
 
     try {
       interceptWithConfig(interceptor, LoggerConfig.builder()
-          .build());
+        .build());
     } catch (Exception e) {
       fail("User should be able to use default logger.");
       logger.error(e);

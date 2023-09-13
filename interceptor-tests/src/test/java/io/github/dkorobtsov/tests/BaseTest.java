@@ -93,6 +93,51 @@ public abstract class BaseTest {
   @Rule
   public RetryRule retryRule = new RetryRule();
 
+  /**
+   * Method starts local web server for integration tests.
+   * <p>
+   * All resources from resources/files will be made available for get requests
+   */
+  protected static void startSparkServer() {
+    staticFiles.location("/files");
+    staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
+    staticFiles.registerMimeType("raml", "application/raml+yaml");
+    staticFiles.registerMimeType("yaml", "application/raml+yaml");
+
+    Spark.get("/mirror", (request, response) -> {
+      response.status(200);
+      request.headers()
+        .forEach(it -> response.header(it, request.headers(it)));
+
+      response.type("text/plain");
+      response.body("Mirrored response");
+      return response.body();
+    });
+
+    Spark.post("/mirror", (request, response) -> {
+      response.status(200);
+      response.type(request.contentType());
+      response.body(request.body());
+
+      // NB: multiple headers with same name won't be properly handled
+      request.headers()
+        .forEach(it -> response.header(it, request.headers(it)));
+      return response;
+    });
+
+    Spark.get("/*", (q, a) -> {
+      throw new NoSuchFileException("Not found");
+    });
+
+    exception(NoSuchFileException.class, (e, request, response) -> {
+      response.status(404);
+      response.body(RESOURCE_NOT_FOUND);
+    });
+
+    Spark.init();
+    awaitInitialization();
+  }
+
   @Before
   public void setUpMockServer() throws IOException {
     server = new MockWebServer();
@@ -188,7 +233,6 @@ public abstract class BaseTest {
 
     return testLogger.loggerOutput(preserveTrailingSpaces);
   }
-
 
   public LoggerConfig defaultLoggerConfig(final LogWriter logWriter) {
     return defaultLoggerConfig(logWriter, false, null, false);
@@ -464,51 +508,6 @@ public abstract class BaseTest {
         com.squareup.okhttp.MediaType.parse(mediaType), content));
     }
     return requestBuilder.build();
-  }
-
-  /**
-   * Method starts local web server for integration tests.
-   * <p>
-   * All resources from resources/files will be made available for get requests
-   */
-  protected static void startSparkServer() {
-    staticFiles.location("/files");
-    staticFiles.externalLocation(System.getProperty("java.io.tmpdir"));
-    staticFiles.registerMimeType("raml", "application/raml+yaml");
-    staticFiles.registerMimeType("yaml", "application/raml+yaml");
-
-    Spark.get("/mirror", (request, response) -> {
-      response.status(200);
-      request.headers()
-        .forEach(it -> response.header(it, request.headers(it)));
-
-      response.type("text/plain");
-      response.body("Mirrored response");
-      return response.body();
-    });
-
-    Spark.post("/mirror", (request, response) -> {
-      response.status(200);
-      response.type(request.contentType());
-      response.body(request.body());
-
-      // NB: multiple headers with same name won't be properly handled
-      request.headers()
-        .forEach(it -> response.header(it, request.headers(it)));
-      return response;
-    });
-
-    Spark.get("/*", (q, a) -> {
-      throw new NoSuchFileException("Not found");
-    });
-
-    exception(NoSuchFileException.class, (e, request, response) -> {
-      response.status(404);
-      response.body(RESOURCE_NOT_FOUND);
-    });
-
-    Spark.init();
-    awaitInitialization();
   }
 
   /**

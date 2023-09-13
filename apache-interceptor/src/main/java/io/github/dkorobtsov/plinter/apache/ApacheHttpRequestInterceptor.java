@@ -14,7 +14,7 @@ import org.apache.http.protocol.HttpContext;
  * Intended to be used with response interceptor {@link ApacheHttpResponseInterceptor}.
  * <p>
  * Interceptor's behavior can be configured using {@link LoggerConfig}
- *
+ * <p>
  * Usage instructions:
  *
  * <pre>
@@ -35,7 +35,7 @@ import org.apache.http.protocol.HttpContext;
  * </pre>
  */
 public class ApacheHttpRequestInterceptor extends AbstractInterceptor
-    implements HttpRequestInterceptor {
+  implements HttpRequestInterceptor {
 
   private final RequestConverter<HttpRequest> requestConverter;
 

@@ -56,7 +56,7 @@ public abstract class InterceptedRequestBody {
    * Returns a new request body that transmits {@code content}.
    */
   public static InterceptedRequestBody create(
-      final InterceptedMediaType contentType, final ByteString content) {
+    final InterceptedMediaType contentType, final ByteString content) {
     return new InterceptedRequestBody() {
       @Override
       public InterceptedMediaType contentType() {
@@ -79,7 +79,7 @@ public abstract class InterceptedRequestBody {
    * Returns a new request body that transmits {@code content}.
    */
   public static InterceptedRequestBody create(final InterceptedMediaType contentType,
-      final byte[] content) {
+                                              final byte[] content) {
     return create(contentType, content, 0, content.length);
   }
 
@@ -87,8 +87,8 @@ public abstract class InterceptedRequestBody {
    * Returns a new request body that transmits {@code content}.
    */
   public static InterceptedRequestBody create(final InterceptedMediaType contentType,
-      final byte[] content,
-      final int offset, final int byteCount) {
+                                              final byte[] content,
+                                              final int offset, final int byteCount) {
     if (content == null) {
       throw new NullPointerException("content == null");
     }
@@ -115,7 +115,7 @@ public abstract class InterceptedRequestBody {
    * Returns a new request body that transmits the content of {@code file}.
    */
   public static InterceptedRequestBody create(final InterceptedMediaType contentType,
-      final File file) {
+                                              final File file) {
     if (file == null) {
       throw new NullPointerException("content == null");
     }

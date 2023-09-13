@@ -25,5 +25,4 @@ object Property {
   const val implementationTitleApacheInterceptor = "Apache Logging Interceptor"
   const val implementationTitleOkHttpInterceptor = "OkHttp Logging Interceptor"
   const val implementationTitleOkHttp3Interceptor = "OkHttp3 Logging Interceptor"
-
 }

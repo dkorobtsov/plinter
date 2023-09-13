@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * Intended to be used with request interceptor {@link ApacheHttpRequestInterceptor}.
  * <p>
  * Interceptor's behavior can be configured using {@link LoggerConfig}
- *
+ * <p>
  * Usage instructions:
  *
  * <pre>
@@ -40,10 +40,10 @@ import java.util.logging.Logger;
  * </pre>
  */
 public class ApacheHttpResponseInterceptor extends AbstractInterceptor
-    implements HttpResponseInterceptor {
+  implements HttpResponseInterceptor {
 
   private static final Logger logger = Logger
-      .getLogger(ApacheHttpResponseInterceptor.class.getName());
+    .getLogger(ApacheHttpResponseInterceptor.class.getName());
 
   private final ResponseConverter<HttpResponse> responseConverter;
 
@@ -56,7 +56,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
   public void process(final HttpResponse response, final HttpContext context) {
     if (!skipLogging()) {
       final InterceptedResponse interceptedResponse = responseConverter.from(
-          response, urlFrom(context), null);
+        response, urlFrom(context), null);
 
       ClientPrintingExecutor.printResponse(loggerConfig, interceptedResponse);
     }
@@ -65,7 +65,7 @@ public class ApacheHttpResponseInterceptor extends AbstractInterceptor
   @SuppressWarnings("PMD")
   URL urlFrom(final HttpContext context) {
     final HttpRequestWrapper request
-        = (HttpRequestWrapper) context.getAttribute("http.request");
+      = (HttpRequestWrapper) context.getAttribute("http.request");
 
     try {
       return new URL(request.getOriginal().getRequestLine().getUri());

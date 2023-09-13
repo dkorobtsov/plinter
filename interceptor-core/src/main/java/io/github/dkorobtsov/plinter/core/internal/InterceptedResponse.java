@@ -26,8 +26,8 @@ public final class InterceptedResponse {
 
   @SuppressWarnings("PMD.ExcessiveParameterList")
   InterceptedResponse(List<String> segmentList, InterceptedHeaders headers, int code,
-      boolean isSuccessful, String message, InterceptedMediaType contentType, String url,
-      InterceptedResponseBody originalBody, long chainMs) {
+                      boolean isSuccessful, String message, InterceptedMediaType contentType,
+                      String url, InterceptedResponseBody originalBody, long chainMs) {
 
     this.isSuccessful = isSuccessful;
     this.originalBody = originalBody;
@@ -105,7 +105,7 @@ public final class InterceptedResponse {
 
     public InterceptedResponse build() {
       return new InterceptedResponse(segmentList, headers, code, isSuccessful, message,
-          contentType, url, originalBody, chainMs);
+        contentType, url, originalBody, chainMs);
     }
 
   }

@@ -18,7 +18,7 @@ public class CoreUtilsUnitTest extends BaseTest {
   @Test
   public void testNoPathSegmentsReturnedOnUrlWithNoPath() throws MalformedURLException {
     final List<String> noSlashInTheEndSegments = Util
-        .encodedPathSegments(new URL("https://google.com"));
+      .encodedPathSegments(new URL("https://google.com"));
 
     Assert.assertTrue("There should be no segments", noSlashInTheEndSegments.isEmpty());
   }
@@ -26,7 +26,7 @@ public class CoreUtilsUnitTest extends BaseTest {
   @Test
   public void testNoPathSegmentsWithSlashOnlyAfterDomain() throws MalformedURLException {
     final List<String> emptyPathSegment = Util
-        .encodedPathSegments(new URL("https://google.com/"));
+      .encodedPathSegments(new URL("https://google.com/"));
     final List<String> expectedPathSegments = Collections.singletonList("");
 
     Assert.assertEquals(emptyPathSegment, expectedPathSegments);
@@ -35,7 +35,7 @@ public class CoreUtilsUnitTest extends BaseTest {
   @Test
   public void testPathSegmentsReturnedOnUrlWithPath() throws MalformedURLException {
     final List<String> segmentsWithPath = Util
-        .encodedPathSegments(new URL("https://google.com/api/dev"));
+      .encodedPathSegments(new URL("https://google.com/api/dev"));
     final List<String> expectedPathSegments = Arrays.asList("api", "dev");
 
     Assert.assertEquals(segmentsWithPath, expectedPathSegments);
