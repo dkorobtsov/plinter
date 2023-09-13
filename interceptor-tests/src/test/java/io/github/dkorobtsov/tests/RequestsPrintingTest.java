@@ -101,6 +101,7 @@ public class RequestsPrintingTest extends BaseTest {
         it -> assertThat(it).hasSize(maxLength));
   }
 
+  @SuppressWarnings("unused")
   String[] httpMethods() {
     return new String[]{
       "PUT, Method: @PUT",
