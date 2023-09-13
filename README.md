@@ -1,11 +1,11 @@
 # Plinter (Pretty Logging Interceptor)
 
-This library makes working with API's easy and convenient.
+This library makes working with APIs easy and convenient.
 Just attach interceptor to your favorite HTTP client and forward all requests and responses to any Java logger (or use
 default one).
 Simple as that.
 --------
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![release-badge](https://img.shields.io/github/release/dkorobtsov/plinter.svg?style=flat)][release]
 [![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
 [![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
@@ -14,8 +14,11 @@ Simple as that.
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-<p >
+[release]: https://github.com/dkorobtsov/plinter/releases/latest "Latest release"
+
+<p>
     <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/image1.png" alt="Console Logging Example"/>
 </p>
 
@@ -29,7 +32,7 @@ Simple as that.
 - Can be used with Feign or Retrofit
 - Works with clients created by Swagger-codegen
 - Pretty prints all HTTP request and response details
-- Pretty prints JSON, XML and HTML bodies, etc (basically any readable content)
+- Pretty prints JSON, XML and HTML bodies, etc. (basically any readable content)
 
 ### Clients supported
 
@@ -43,43 +46,17 @@ Any Java or Kotlin logger - jul, log4j, slf4j, logback, log4j2 etc
 
 # Quickstart
 
-Interceptor should work as is - without any additional configuration, just need to add appropriate dependency.
-By default JUL logger will be used with INFO level and minimal format displaying message only.
+Interceptor should work as is - without any additional configuration, only need to add appropriate dependency.
+By default, JUL logger will be used with INFO level and minimal format displaying message only.
 
-**NB. Library is not yet deployed to Maven, at the moment can get sources only by adding [JitPack](https://jitpack.io/)
-to repositories list.**
+All artefacts are deployed to: https://repo.maven.apache.org/maven2/io/github/dkorobtsov/plinter/
 
-### Gradle (Groovy)
+### Gradle
 
-```groovy
- allprojects {
-    repositories {
-        maven { url 'https://jitpack.io' }
-    }
-}
 ```
-
-### Gradle (Kotlin DSL)
-
-```kotlin
-allprojects {
-  repositories {
-    maven { setUrl("https://jitpack.io") }
-  }
+repositories {
+    mavenCentral()
 }
-```
-
-### Maven:
-
-```xml
-
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-
 ```
 
 ## OkHttp
@@ -98,7 +75,7 @@ To start using interceptor with OkHttp client add following dependency to classp
 
 ### Gradle:
 
-```kotlin
+```
 dependencies {
   implementation("io.github.dkorobtsov.plinter:okhttp-interceptor:$LATEST_VERSION")
 }
@@ -135,7 +112,7 @@ To start using interceptor with OkHttp3 client add following dependency to class
 
 ### Gradle:
 
-```kotlin
+```
 dependencies {
   implementation("io.github.dkorobtsov.plinter:okhttp3-interceptor:$LATEST_VERSION")
 }
@@ -170,9 +147,9 @@ To start using interceptor with Apache Http client add following dependency to c
 
 ### Gradle:
 
-```kotlin
+```
 dependencies {
-  implementation("io.github.d[qodana_code_quality.yml](.github%2Fworkflows%2Fqodana_code_quality.yml)korobtsov.plinter:apache-interceptor:$LATEST_VERSION")
+  implementation("io.github.dkorobtsov.plinter:apache-interceptor:$LATEST_VERSION")
 }
 ```
 
@@ -349,6 +326,12 @@ provide more flexibility and support for native Java loggers. Support for OkHttp
 by [Andrew Zakordonets](https://github.com/azakordonets).
 Part of internal requests/responses handling logic based on [OkHttp3](https://github.com/square/okhttp) client's code
 with slight modifications to remove external dependencies.
+
+# Contribution Guidelines
+
+Contributions are welcome from everyone.
+To ensure a smooth collaboration, please refer to
+the [CONTRIBUTING.md](https://github.com/dkorobtsov/plinter/blob/master/CONTRIBUTING.md) file for detailed instructions.
 
 -----
 
