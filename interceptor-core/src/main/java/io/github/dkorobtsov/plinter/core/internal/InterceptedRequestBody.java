@@ -64,7 +64,7 @@ public abstract class InterceptedRequestBody {
       }
 
       @Override
-      public long contentLength() throws IOException {
+      public long contentLength() {
         return content.size();
       }
 
@@ -155,7 +155,7 @@ public abstract class InterceptedRequestBody {
    * or -1 if that count is unknown.
    */
   @SuppressWarnings("unused")
-  public long contentLength() throws IOException {
+  public long contentLength() {
     return -1;
   }
 

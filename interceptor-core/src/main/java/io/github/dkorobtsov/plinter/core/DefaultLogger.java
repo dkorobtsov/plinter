@@ -17,7 +17,7 @@ public class DefaultLogger implements LogWriter {
     logger.setUseParentHandlers(false);
 
     Arrays.stream(logger.getHandlers())
-      .filter(it -> it instanceof ConsoleHandler)
+      .filter(ConsoleHandler.class::isInstance)
       .forEach(it -> it.setFormatter(logFormatter.formatter));
   }
 
