@@ -208,9 +208,9 @@ public class BodyWithJsonPrintingTest extends BaseTest {
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_fileRequest(String interceptor, boolean withExecutor,
                                        boolean logByLine) {
-    final String gzippedBody = Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset());
+    final String file = Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset());
 
-    final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor, gzippedBody,
+    final List<String> loggerOutput = interceptedRequest(interceptor, withExecutor, file,
       APPLICATION_ZIP, true, logByLine)
       .stream()
       .map(String::stripTrailing)
@@ -224,9 +224,9 @@ public class BodyWithJsonPrintingTest extends BaseTest {
   @Parameters(method = "interceptorsWithExecutors")
   public void bodyHandling_fileResponse(String interceptor, boolean withExecutor,
                                         boolean logByLine) {
-    final String gzippedBody = Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset());
+    final String file = Util.gzip(PREFORMATTED_JSON_BODY).readString(Charset.defaultCharset());
 
-    final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor, gzippedBody,
+    final List<String> loggerOutput = interceptedResponse(interceptor, withExecutor, file,
       APPLICATION_ZIP, true, logByLine)
       .stream()
       .map(String::stripTrailing)

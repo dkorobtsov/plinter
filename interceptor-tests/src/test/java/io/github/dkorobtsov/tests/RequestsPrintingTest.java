@@ -38,7 +38,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Empty request body");
@@ -54,7 +57,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.formattedOutput())
       .contains(""
@@ -83,7 +89,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
       .printRequest(
         defaultLoggerConfig(testLogger, false, maxLength),
-        request);
+        request
+      );
 
     testLogger
       .loggerOutput(true)
@@ -117,16 +124,20 @@ public class RequestsPrintingTest extends BaseTest {
 
   @Test
   @Parameters(method = "httpMethods")
-  public void printRequest_withHttpMethod_shouldPrintCorrectLogMessage(String method, String expectedLogMessage) {
+  public void printRequest_shouldPrintMethod(String method, String expectedLogMessage) {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
       .method(method, getRequestBodyForMethod(method))
       .url(TEST_URL)
       .build();
 
-    ClientPrintingExecutor.printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+    ClientPrintingExecutor.printRequest(
+      defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+      request
+    );
 
-    assertThat(testLogger.loggerOutput(false)).contains(expectedLogMessage);
+    assertThat(testLogger.loggerOutput(false))
+      .contains(expectedLogMessage);
   }
 
   private InterceptedRequestBody getRequestBodyForMethod(String httpMethod) {
@@ -134,7 +145,10 @@ public class RequestsPrintingTest extends BaseTest {
       case "PUT":
       case "PATCH":
       case "POST":
-        return InterceptedRequestBody.create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON);
+        return InterceptedRequestBody.create(
+          InterceptedMediaType.parse(APPLICATION_JSON),
+          SIMPLE_JSON
+        );
       default:
         return null;
     }
@@ -149,7 +163,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("URL: " + TEST_URL + randomSeed);
@@ -165,7 +182,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Headers:")
@@ -183,7 +203,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Headers:")
@@ -206,7 +229,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Headers:")
