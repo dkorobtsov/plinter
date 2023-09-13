@@ -9,7 +9,7 @@
 #### Why it should be done?
 <!--- Explain why this issue or feature request is important -->
 
----[build_and_test.yml](workflows%2Fbuild_and_test.yml)
+---
 
 ### 🐞 Bug Report
 

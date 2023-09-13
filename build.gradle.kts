@@ -1,4 +1,5 @@
 import com.vanniktech.code.quality.tools.CodeQualityToolsPluginExtension
+import io.github.gradlenexus.publishplugin.NexusPublishExtension
 import java.nio.charset.StandardCharsets
 
 buildscript {
@@ -8,22 +9,34 @@ buildscript {
   }
   dependencies {
     classpath("com.vanniktech:gradle-code-quality-tools-plugin:0.23.0")
+    classpath("io.github.gradle-nexus:publish-plugin:1.3.0")
   }
 }
-
-val gradleScriptDir by extra(file("${rootProject.projectDir}/gradle"))
 
 plugins {
   id("java-library")
   id("project-report")
+  id(Dependency.sonatype) version Dependency.sonatypeVersion
   id(Dependency.sonarcubeId) version Dependency.sonarcubeVersion
   jacoco
+  signing
   `maven-publish`
 }
 
 java {
   sourceCompatibility = JavaVersion.VERSION_11
   targetCompatibility = JavaVersion.VERSION_11
+}
+
+configure<NexusPublishExtension> {
+  repositories.sonatype {
+    nexusUrl.set(
+      uri("https://s01.oss.sonatype.org/service/local/")
+    )
+    snapshotRepositoryUrl.set(
+      uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    )
+  }
 }
 
 sonar {
@@ -49,7 +62,7 @@ configure(listOf(rootProject)) {
 
 allprojects {
   group = Property.projectGroup
-  version = Property.projectVersion
+  version = version
 
   repositories {
     mavenLocal()
@@ -58,8 +71,7 @@ allprojects {
     maven { setUrl("https://repo1.maven.org/maven2/") }
   }
 
-  apply(plugin = "java")
-  apply(plugin = "maven-publish")
+  apply(plugin = "java-library")
   apply(plugin = "jacoco")
 
   dependencies {
@@ -70,10 +82,19 @@ allprojects {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
+
+  tasks.withType(JavaCompile::class) {
+    options.encoding = StandardCharsets.UTF_8.displayName()
+    options.isDebug = true
+    options.isDeprecation = false
+    options.compilerArgs.add("-nowarn")
+    options.compilerArgs.add("-Xlint:deprecation")
+  }
 }
 
 configure(subprojects) {
-  apply(plugin = "java-library")
+  apply(plugin = "signing")
+  apply(plugin = "maven-publish")
   apply(plugin = "com.vanniktech.code.quality.tools")
 
   configure<CodeQualityToolsPluginExtension> {
@@ -176,49 +197,90 @@ configure(subprojects) {
     }
   }
 
-  tasks.withType(JavaCompile::class) {
-    options.encoding = StandardCharsets.UTF_8.displayName()
-    options.isDebug = true
-    options.isDeprecation = false
-    options.compilerArgs.add("-nowarn")
-    options.compilerArgs.add("-Xlint:deprecation")
-  }
-
-  tasks.named<Jar>("jar") {
-    manifest {
-      attributes(
-        mapOf(
-          "Implementation-Version" to project.version,
-          "Implementation-Title" to project.name,
-          "Implementation-URL" to Property.projectUrl
-        )
-      )
-    }
-  }
-
-  tasks.withType(Javadoc::class) {
-    isFailOnError = true
-    options.outputLevel = JavadocOutputLevel.QUIET
-    (options as StandardJavadocDocletOptions)
-      .addStringOption("Xdoclint:none", "-nodeprecated")
-  }
-
-  val sourceJar by tasks.creating(Jar::class) {
-    from(project.the<SourceSetContainer>().getByName("main").allJava)
-    this.archiveClassifier.set("sources")
-  }
-
-  val javadocJar by tasks.creating(Jar::class) {
-    from(tasks.getByName("javadoc"))
-    this.archiveClassifier.set("javadoc")
-  }
-
-  artifacts.add("archives", sourceJar)
-  artifacts.add("archives", javadocJar)
-
   tasks.register<Copy>("getDependencies") {
     from(project.sourceSets["main"].runtimeClasspath)
     into("runtime/")
+  }
+
+  // No need to publish module with tests
+  if (!project.name.contains("tests")) {
+    tasks.named<Jar>("jar") {
+      manifest {
+        attributes(
+          mapOf(
+            "Implementation-Version" to project.version,
+            "Implementation-Title" to project.name,
+            "Implementation-URL" to Property.projectUrl
+          )
+        )
+      }
+    }
+
+    tasks.withType(Javadoc::class) {
+      isFailOnError = true
+      options.outputLevel = JavadocOutputLevel.QUIET
+      (options as StandardJavadocDocletOptions)
+        .addStringOption("Xdoclint:none", "-nodeprecated")
+    }
+
+    val sourceJar by tasks.creating(Jar::class) {
+      from(project.the<SourceSetContainer>().getByName("main").allJava)
+      this.archiveClassifier.set("sources")
+    }
+
+    val javadocJar by tasks.creating(Jar::class) {
+      from(tasks.getByName("javadoc"))
+      this.archiveClassifier.set("javadoc")
+    }
+
+    artifacts.add("archives", sourceJar)
+    artifacts.add("archives", javadocJar)
+
+    publishing {
+      publications {
+        create<MavenPublication>("maven") {
+          artifact(javadocJar)
+          artifact(sourceJar)
+          from(components["java"])
+
+          pom {
+            name.set(project.name)
+            description.set("Module ${project.name} of Pretty Logging Interceptor (Plinter)")
+            url.set(Property.projectUrl)
+            licenses {
+              license {
+                name.set("MIT")
+                url.set("https://opensource.org/licenses/MIT")
+              }
+            }
+            developers {
+              developer {
+                id.set("dkorobtsov")
+                name.set("Dmitri Korobtsov")
+                email.set("dmitri.korobtsov@gmail.com")
+              }
+            }
+            scm {
+              url.set(Property.projectUrl)
+              connection.set(Property.projectConnection)
+              developerConnection.set(Property.projectDevConnection)
+            }
+            issueManagement {
+              system.set("GitHub Issues")
+              url.set("${Property.projectUrl}/issues")
+            }
+          }
+        }
+      }
+    }
+
+    signing {
+      val signingKey = findProperty("signingKey").toString().trim()
+      val signingPassword = findProperty("signingPassword").toString().trim()
+
+      useInMemoryPgpKeys(signingKey, signingPassword)
+      sign(publishing.publications["maven"])
+    }
   }
 }
 

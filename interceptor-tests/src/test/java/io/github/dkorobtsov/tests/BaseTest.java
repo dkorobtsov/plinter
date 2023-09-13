@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 
 import io.github.dkorobtsov.plinter.apache.ApacheHttpRequestInterceptor;
@@ -9,9 +9,10 @@ import io.github.dkorobtsov.plinter.core.LoggerConfig.LoggerConfigBuilder;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.okhttp.OkHttpLoggingInterceptor;
 import io.github.dkorobtsov.plinter.okhttp3.OkHttp3LoggingInterceptor;
-import io.github.dkorobtsov.plinter.rules.RetryRule;
-import io.github.dkorobtsov.plinter.utils.Interceptor;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
+import io.github.dkorobtsov.tests.rules.RetryRule;
+import io.github.dkorobtsov.tests.utils.Interceptor;
+import io.github.dkorobtsov.tests.utils.TestLogger;
+import io.github.dkorobtsov.tests.utils.TestUtil;
 import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
 import okhttp3.MediaType;
@@ -52,7 +53,6 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import static io.github.dkorobtsov.plinter.core.internal.Util.CONTENT_TYPE;
-import static io.github.dkorobtsov.plinter.utils.TestUtil.PRINTING_THREAD_PREFIX;
 import static java.util.Objects.nonNull;
 import static org.junit.Assert.fail;
 import static spark.Spark.awaitInitialization;
@@ -233,7 +233,8 @@ public abstract class BaseTest {
 
       @Override
       public Thread newThread(@NotNull Runnable r) {
-        return new Thread(r, PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
+        return new Thread(r,
+          TestUtil.PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
       }
 
     });
@@ -560,7 +561,7 @@ public abstract class BaseTest {
   /**
    * Returns list of valid max line lengths. {@link LoggerConfig#maxLineLength}
    * <p>
-   * NB: In IDE current method shown as unused, but it's refereed
+   * NB: In IDE current method shown as unused, but it's referred
    * in @Parameters annotation in child classes.
    */
   @SuppressWarnings("unused")

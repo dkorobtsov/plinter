@@ -1,13 +1,13 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
 import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
-import io.github.dkorobtsov.plinter.utils.Retry;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
-import io.github.dkorobtsov.plinter.utils.TestUtil;
+import io.github.dkorobtsov.tests.utils.Retry;
+import io.github.dkorobtsov.tests.utils.TestLogger;
+import io.github.dkorobtsov.tests.utils.TestUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 

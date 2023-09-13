@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.Level;
 import io.github.dkorobtsov.plinter.core.LoggerConfig;

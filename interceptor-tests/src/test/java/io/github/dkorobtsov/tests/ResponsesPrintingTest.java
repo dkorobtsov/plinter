@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
@@ -9,8 +9,8 @@ import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponse;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedResponseBody;
 import io.github.dkorobtsov.plinter.core.internal.Util;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
-import io.github.dkorobtsov.plinter.utils.TestUtil;
+import io.github.dkorobtsov.tests.utils.TestLogger;
+import io.github.dkorobtsov.tests.utils.TestUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.assertj.core.api.Assertions;
@@ -230,8 +230,7 @@ public class ResponsesPrintingTest extends BaseTest {
           || it.charAt(0) == '└')
       .map(String::stripTrailing)
       .forEach(
-        it -> Assertions.assertThat(it.length())
-          .isEqualTo(maxLength));
+        it -> Assertions.assertThat(it).hasSize(maxLength));
   }
 
   @Test

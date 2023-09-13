@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
-import io.github.dkorobtsov.plinter.utils.Retry;
+import io.github.dkorobtsov.tests.utils.Retry;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;

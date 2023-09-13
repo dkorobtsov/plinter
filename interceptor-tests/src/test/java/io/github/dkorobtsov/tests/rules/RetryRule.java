@@ -1,6 +1,6 @@
-package io.github.dkorobtsov.plinter.rules;
+package io.github.dkorobtsov.tests.rules;
 
-import io.github.dkorobtsov.plinter.utils.Retry;
+import io.github.dkorobtsov.tests.utils.Retry;
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;

@@ -1,7 +1,7 @@
-package io.github.dkorobtsov.plinter.integration;
+package io.github.dkorobtsov.tests.integration;
 
-import io.github.dkorobtsov.plinter.BaseTest;
 import io.github.dkorobtsov.plinter.core.LogWriter;
+import io.github.dkorobtsov.tests.BaseTest;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import okhttp3.mockwebserver.MockResponse;

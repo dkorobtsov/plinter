@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter;
+package io.github.dkorobtsov.tests;
 
 import io.github.dkorobtsov.plinter.core.LoggerConfig;
 import io.github.dkorobtsov.plinter.core.LoggingFormat;
@@ -6,8 +6,8 @@ import io.github.dkorobtsov.plinter.core.internal.ClientPrintingExecutor;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedMediaType;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequest;
 import io.github.dkorobtsov.plinter.core.internal.InterceptedRequestBody;
-import io.github.dkorobtsov.plinter.utils.TestLogger;
-import io.github.dkorobtsov.plinter.utils.TestUtil;
+import io.github.dkorobtsov.tests.utils.TestLogger;
+import io.github.dkorobtsov.tests.utils.TestUtil;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
@@ -38,7 +38,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Empty request body");
@@ -54,7 +57,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.formattedOutput())
       .contains(""
@@ -83,7 +89,8 @@ public class RequestsPrintingTest extends BaseTest {
     ClientPrintingExecutor
       .printRequest(
         defaultLoggerConfig(testLogger, false, maxLength),
-        request);
+        request
+      );
 
     testLogger
       .loggerOutput(true)
@@ -98,132 +105,53 @@ public class RequestsPrintingTest extends BaseTest {
           || it.charAt(0) == '└')
       .map(String::stripTrailing)
       .forEach(
-        it -> assertThat(it.length())
-          .isEqualTo(maxLength));
+        it -> assertThat(it).hasSize(maxLength));
+  }
+
+  @SuppressWarnings("unused")
+  String[] httpMethods() {
+    return new String[]{
+      "PUT, Method: @PUT",
+      "POST, Method: @POST",
+      "DELETE, Method: @DELETE",
+      "PATCH, Method: @PATCH",
+      "TRACE, Method: @TRACE",
+      "OPTIONS, Method: @OPTIONS",
+      "HEAD, Method: @HEAD",
+      "CONNECT, Method: @CONNECT"
+    };
   }
 
   @Test
-  public void printRequest_putMethod() {
+  @Parameters(method = "httpMethods")
+  public void printRequest_shouldPrintMethod(String method, String expectedLogMessage) {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
     final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("PUT", InterceptedRequestBody
-        .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
+      .method(method, getRequestBodyForMethod(method))
       .url(TEST_URL)
       .build();
 
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+    ClientPrintingExecutor.printRequest(
+      defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+      request
+    );
 
     assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @PUT");
+      .contains(expectedLogMessage);
   }
 
-  @Test
-  public void printRequest_postMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("POST", InterceptedRequestBody
-        .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @POST");
-  }
-
-  @Test
-  public void printRequest_deleteMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("DELETE", InterceptedRequestBody
-        .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @DELETE");
-  }
-
-  @Test
-  public void printRequest_patchMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("PATCH", InterceptedRequestBody
-        .create(InterceptedMediaType.parse(APPLICATION_JSON), SIMPLE_JSON))
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @PATCH");
-  }
-
-  @Test
-  public void printRequest_traceMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("TRACE", null)
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @TRACE");
-  }
-
-  @Test
-  public void printRequest_optionsMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("OPTIONS", null)
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @OPTIONS");
-  }
-
-  @Test
-  public void printRequest_headMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("HEAD", null)
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @HEAD");
-  }
-
-  @Test
-  public void printRequest_connectMethod() {
-    final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
-    final InterceptedRequest request = new InterceptedRequest.Builder()
-      .method("CONNECT", null)
-      .url(TEST_URL)
-      .build();
-
-    ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
-
-    assertThat(testLogger.loggerOutput(false))
-      .contains("Method: @CONNECT");
+  private InterceptedRequestBody getRequestBodyForMethod(String httpMethod) {
+    switch (httpMethod) {
+      case "PUT":
+      case "PATCH":
+      case "POST":
+        return InterceptedRequestBody.create(
+          InterceptedMediaType.parse(APPLICATION_JSON),
+          SIMPLE_JSON
+        );
+      default:
+        return null;
+    }
   }
 
   @Test
@@ -235,7 +163,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("URL: " + TEST_URL + randomSeed);
@@ -251,7 +182,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Headers:")
@@ -269,7 +203,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Headers:")
@@ -292,7 +229,10 @@ public class RequestsPrintingTest extends BaseTest {
       .build();
 
     ClientPrintingExecutor
-      .printRequest(defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH), request);
+      .printRequest(
+        defaultLoggerConfig(testLogger, false, MAX_LINE_LENGTH),
+        request
+      );
 
     assertThat(testLogger.loggerOutput(false))
       .contains("Headers:")

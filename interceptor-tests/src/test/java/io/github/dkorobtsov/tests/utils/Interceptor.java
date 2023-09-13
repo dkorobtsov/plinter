@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter.utils;
+package io.github.dkorobtsov.tests.utils;
 
 /**
  * Supported interceptor types - intended to be used as parameter in data-driven jUnit tests.

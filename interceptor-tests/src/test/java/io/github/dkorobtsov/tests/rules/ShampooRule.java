@@ -1,4 +1,4 @@
-package io.github.dkorobtsov.plinter.rules;
+package io.github.dkorobtsov.tests.rules;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
