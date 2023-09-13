@@ -4,8 +4,6 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 /**
  * Utility class intended to reduce code Response converters code duplication.
  */
@@ -26,18 +24,17 @@ public final class ResponseHandler {
     final int code = response.code;
     final String message = response.message;
     final boolean isSuccessful = response.isSuccessful;
-    final InterceptedResponseBody responseBody = response.responseBody;
 
-    try (responseBody) {
-      final InterceptedMediaType contentType = isNull(responseBody)
-        ? null
-        : responseBody.contentType();
-      final List<String> segmentList = isNull(requestUrl)
-        ? Collections.emptyList()
-        : Util.encodedPathSegments(requestUrl);
-      final String url = isNull(requestUrl)
-        ? ""
-        : requestUrl.toString();
+    try (InterceptedResponseBody responseBody = response.responseBody) {
+      final InterceptedMediaType contentType = responseBody != null
+        ? responseBody.contentType()
+        : null;
+      final List<String> segmentList = requestUrl != null
+        ? Util.encodedPathSegments(requestUrl)
+        : Collections.emptyList();
+      final String url = requestUrl != null
+        ? requestUrl.toString()
+        : "";
       return InterceptedResponse.builder()
         .url(url)
         .code(code)
@@ -47,7 +44,7 @@ public final class ResponseHandler {
         .isSuccessful(isSuccessful)
         .headers(response.headers)
         .responseBody(responseBody)
-        .chainMs(isNull(chainMs) ? 0 : chainMs)
+        .chainMs(chainMs != null ? chainMs : 0)
         .build();
     }
   }
