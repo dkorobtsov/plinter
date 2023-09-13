@@ -7,7 +7,7 @@
 ## Checklist:
 
 - [ ] My changes are covered by automated tests
-- [ ] I have added added/updated documentation
+- [ ] I have added or updated documentation
 
 ## Optional GIF
 <!--- You can add a GIF to make your PR special! -->
