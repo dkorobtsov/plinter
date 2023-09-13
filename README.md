@@ -5,7 +5,10 @@ Just attach interceptor to your favorite HTTP client and forward all requests an
 default one).
 Simple as that.
 --------
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![release-badge](https://img.shields.io/github/release/dkorobtsov/plinter.svg?style=flat)][release]
+[![DOI](https://zenodo.org/badge/168243754.svg)](https://zenodo.org/badge/latestdoi/168243754)
+
 [![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
 [![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
@@ -14,7 +17,6 @@ Simple as that.
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 [release]: https://github.com/dkorobtsov/plinter/releases/latest "Latest release"
 
@@ -331,7 +333,8 @@ with slight modifications to remove external dependencies.
 
 Contributions are welcome from everyone.
 To ensure a smooth collaboration, please refer to
-the [CONTRIBUTING.md](https://github.com/dkorobtsov/plinter/blob/master/CONTRIBUTING.md) file for detailed instructions.
+the [CONTRIBUTING.md](https://github.com/dkorobtsov/plinter/blob/master/.github/CONTRIBUTING.md) file for detailed
+instructions.
 
 -----
 
