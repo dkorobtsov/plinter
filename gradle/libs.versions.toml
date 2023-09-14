@@ -18,7 +18,7 @@ apacheAsyncClientVer = "4.1.4"
 
 junitParamsVer = "1.1.1"
 juniVer = "4.12"
-assertJVer = "3.11.1"
+assertJVer = "3.24.2"
 sparcVer = "2.8.0"
 
 codeQualityVer = "0.23.0"
