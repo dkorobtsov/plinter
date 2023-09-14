@@ -1,13 +1,13 @@
 dependencies {
-  implementation(Dependency.json)
+  implementation(libs.json)
 }
 
 tasks.named<Jar>("jar") {
   manifest {
     attributes(
       mapOf(
-        "Implementation-Title" to Property.implementationTitleInterceptorCore,
-        "Automatic-Module-Name" to Property.moduleNameInterceptorCore
+        "Implementation-Title" to Property.Module.Core.title,
+        "Automatic-Module-Name" to Property.Module.Core.name
       )
     )
   }

@@ -4,48 +4,48 @@ buildscript {
   }
 
   dependencies {
-    classpath(Dependency.testLoggerPlugin)
+    classpath(libs.test.logger)
   }
 }
 
 plugins {
-  id(Dependency.testLoggerId) version Dependency.testLoggerVersion
+  alias(libs.plugins.test.logger.plugin)
 }
 
 dependencies {
-  testImplementation(project(Dependency.moduleCore))
-  testImplementation(project(Dependency.moduleApacheInterceptor))
-  testImplementation(project(Dependency.moduleOkHttpInterceptor))
-  testImplementation(project(Dependency.moduleOkHttp3Interceptor))
+  testImplementation(project(Property.Module.Core.refence))
+  testImplementation(project(Property.Module.Apache.refence))
+  testImplementation(project(Property.Module.OkHttp.refence))
+  testImplementation(project(Property.Module.OkHttp3.refence))
 
-  implementation(Dependency.moshi)
-  implementation(Dependency.moshiAdapters)
+  implementation(libs.moshi)
+  implementation(libs.moshi.adapters)
 
-  implementation(Dependency.retrofit)
-  implementation(Dependency.retrofitConverterXml)
-  implementation(Dependency.retrofitConverterJson)
-  implementation(Dependency.retrofitConverterScalars)
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.xml)
+  implementation(libs.retrofit.json)
+  implementation(libs.retrofit.scalars)
 
-  testImplementation(Dependency.apacheMime)
-  testImplementation(Dependency.apacheClient)
-  testImplementation(Dependency.apacheAsyncClient)
-  testImplementation(Dependency.mockWebServer)
-  testImplementation(Dependency.okHttp)
-  testImplementation(Dependency.log4j2_code)
-  testImplementation(Dependency.sparcCore)
-  testImplementation(Dependency.assertJ)
-  testImplementation(Dependency.junit)
-  testImplementation(Dependency.junitParams)
-  testImplementation(Dependency.okHttp3LoggingInterceptor)
+  testImplementation(libs.apache.mime)
+  testImplementation(libs.apache.client)
+  testImplementation(libs.apache.async.client)
+  testImplementation(libs.mock.webserver)
+  testImplementation(libs.okhttp)
+  testImplementation(libs.log4j2.core)
+  testImplementation(libs.sparc)
+  testImplementation(libs.assertj)
+  testImplementation(libs.junit)
+  testImplementation(libs.junit.params)
+  testImplementation(libs.okhttp3.interceptor)
 }
 
 tasks.named<Jar>("jar") {
   manifest {
     attributes(
       mapOf(
-        "Implementation-Title" to Property.implementationTitleInterceptorTests,
-        "Automatic-Module-Name" to Property.moduleNameInterceptorTests,
-      ),
+        "Implementation-Title" to Property.Module.Tests.title,
+        "Automatic-Module-Name" to Property.Module.Tests.name,
+      )
     )
   }
 }
@@ -54,13 +54,12 @@ tasks.named<Test>("test") {
   useJUnit()
 
   jacoco {
-    toolVersion = "0.8.10"
+    toolVersion = libs.versions.jacoco.get()
     enabled = true
     reports {
       html.required.set(true)
       junitXml.required.set(true)
     }
-
   }
 
   outputs.upToDateWhen {
@@ -87,7 +86,7 @@ tasks.jacocoTestReport {
   val allSourceDirs = files()
 
   // depend on interceptor-tests
-  dependsOn(":test")
+  dependsOn(Property.Module.Tests.refence)
   // we need to be sure that all sources were built before we collect coverage
   dependsOn(rootProject.subprojects.map { "${it.path}:build" })
 
