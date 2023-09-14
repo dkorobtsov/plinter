@@ -1,0 +1,37 @@
+name: "Dependencies Graph"
+on:
+  push:
+    branches:
+      - master # run the action on your projects default branch
+
+jobs:
+  graph:
+    name: Dependencies
+    runs-on: ubuntu-latest
+    permissions: # The Dependency Submission API requires write permission
+      contents: write
+      id-token: write
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+
+      - name: "Set up JDK"
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Root Gradle Dependency Submission
+        uses: mikepenz/gradle-dependency-submission@v0.9.0
+        with:
+          use-gradlew: true
+          sub-module-mode: INDIVIDUAL_DEEP
+          gradle-build-module: |-
+            :
+            :interceptor-core
+            :apache-interceptor
+            :okhttp-interceptor
+            :okhttp3-interceptor
+            :interceptor-tests
+          gradle-build-configuration: |-
+            compileClasspath
