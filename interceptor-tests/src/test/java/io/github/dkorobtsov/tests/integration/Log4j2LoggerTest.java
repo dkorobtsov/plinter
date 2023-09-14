@@ -57,15 +57,15 @@ public class Log4j2LoggerTest extends BaseTest {
 
       final LoggerConfig loggerConfig = new LoggerConfig(HTTP_LOGGER, Level.TRACE, false);
       final PatternLayout layout = PatternLayout
-          .newBuilder()
-          .withPattern(OK_HTTP_LOG_PATTERN)
-          .build();
+        .newBuilder()
+        .withPattern(OK_HTTP_LOG_PATTERN)
+        .build();
 
       final Appender appender = ConsoleAppender
-          .newBuilder()
-          .withName("OkHttpConsoleAppender")
-          .withLayout(layout)
-          .build();
+        .newBuilder()
+        .withName("OkHttpConsoleAppender")
+        .withLayout(layout)
+        .build();
 
       appender.start();
 
@@ -85,33 +85,9 @@ public class Log4j2LoggerTest extends BaseTest {
     initializeBaseLog4j2Configuration();
   }
 
-  @Test
-  @Parameters(method = "interceptors")
-  public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor) {
-    server.enqueue(new MockResponse().setResponseCode(200));
-
-    log.debug("Adding test double appender for output validation.");
-    addAppender(LOG_WRITER, "TestWriter", OK_HTTP_LOG_PATTERN);
-
-    interceptWithConfig(interceptor,
-        io.github.dkorobtsov.plinter.core.LoggerConfig.builder()
-            .logger(log4j2Writer)
-            .build());
-
-    log.debug("Retrieving logger output for validation.");
-    final String logOutput = LOG_WRITER.toString();
-
-    Assertions
-        .assertThat(logOutput)
-        .doesNotContain("DEBUG")
-        .contains("OkHTTP")
-        .contains("Request")
-        .contains("Response");
-  }
-
   private static void initializeBaseLog4j2Configuration() throws IOException {
     final ConfigurationBuilder<BuiltConfiguration> builder
-        = ConfigurationBuilderFactory.newConfigurationBuilder();
+      = ConfigurationBuilderFactory.newConfigurationBuilder();
 
     final AppenderComponentBuilder console = builder.newAppender("stdout", "Console");
     final LayoutComponentBuilder layout = builder.newLayout("PatternLayout");
@@ -136,7 +112,7 @@ public class Log4j2LoggerTest extends BaseTest {
 
     final PatternLayout layout = PatternLayout.newBuilder().withPattern(pattern).build();
     final Appender appender = WriterAppender
-        .createAppender(layout, null, writer, writerName, false, true);
+      .createAppender(layout, null, writer, writerName, false, true);
 
     appender.start();
     config.addAppender(appender);
@@ -157,6 +133,30 @@ public class Log4j2LoggerTest extends BaseTest {
       loggerConfig.addAppender(appender, level, filter);
     }
     config.getRootLogger().addAppender(appender, level, filter);
+  }
+
+  @Test
+  @Parameters(method = "interceptors")
+  public void interceptorCanBeConfiguredToPrintLogWithLog4j2(String interceptor) {
+    server.enqueue(new MockResponse().setResponseCode(200));
+
+    log.debug("Adding test double appender for output validation.");
+    addAppender(LOG_WRITER, "TestWriter", OK_HTTP_LOG_PATTERN);
+
+    interceptWithConfig(interceptor,
+      io.github.dkorobtsov.plinter.core.LoggerConfig.builder()
+        .logger(log4j2Writer)
+        .build());
+
+    log.debug("Retrieving logger output for validation.");
+    final String logOutput = LOG_WRITER.toString();
+
+    Assertions
+      .assertThat(logOutput)
+      .doesNotContain("DEBUG")
+      .contains("OkHTTP")
+      .contains("Request")
+      .contains("Response");
   }
 
 }

@@ -24,9 +24,9 @@ import static io.github.dkorobtsov.plinter.core.internal.Util.APPLICATION_JSON;
 public class OutputResizingTest extends BaseTest {
 
   private static final String TEST_JSON =
-      "{name: \"elolejipaqimacelogegejovonugiqomikakulekarixenirugudezebipuxuqohefu"
-          + "yepuxadopagakipilepaciliyejomanicalihebabebirosefuvegecuvufunikiyekalu"
-          + "kuziharaqocogovukuperibanikohijovatenutopelobokuxajasatahudagid\"}";
+    "{name: \"elolejipaqimacelogegejovonugiqomikakulekarixenirugudezebipuxuqohefu"
+      + "yepuxadopagakipilepaciliyejomanicalihebabebirosefuvegecuvufunikiyekalu"
+      + "kuziharaqocogovukuperibanikohijovatenutopelobokuxajasatahudagid\"}";
 
   @Test
   @Parameters(method = "interceptors")
@@ -35,42 +35,42 @@ public class OutputResizingTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, LoggerConfig.builder()
-        .logger(testLogger)
-        .maxLineLength(80)
-        .build(), TEST_JSON, APPLICATION_JSON, String.valueOf(server.url(MOCK_SERVER_PATH)));
+      .logger(testLogger)
+      .maxLineLength(80)
+      .build(), TEST_JSON, APPLICATION_JSON, String.valueOf(server.url(MOCK_SERVER_PATH)));
 
     Assertions.assertThat(testLogger.formattedOutput())
-        .contains(
-            "{\"name\": \"elolejipaqimacelogegejovonugiqomikakulekarixenirugudezebipuxuqohefuy");
+      .contains(
+        "{\"name\": \"elolejipaqimacelogegejovonugiqomikakulekarixenirugudezebipuxuqohefuy");
 
     Assertions.assertThat(testLogger.formattedOutput())
-        .contains(
-            "epuxadopagakipilepaciliyejomanicalihebabebirosefuvegecuvufunikiyekalukuziharaq");
+      .contains(
+        "epuxadopagakipilepaciliyejomanicalihebabebirosefuvegecuvufunikiyekalukuziharaq");
 
     Assertions.assertThat(testLogger.formattedOutput())
-        .contains(
-            "ocogovukuperibanikohijovatenutopelobokuxajasatahudagid\"}");
+      .contains(
+        "ocogovukuperibanikohijovatenutopelobokuxajasatahudagid\"}");
   }
 
   @Test(expected = IllegalArgumentException.class)
   @Parameters(method = "invalidMaxLineSizes")
   public void invalidOutputLengthHandling(String maxLineLength) {
     new OkHttp3LoggingInterceptor(
-        LoggerConfig.builder()
-            .maxLineLength(Integer.parseInt(maxLineLength))
-            .build());
+      LoggerConfig.builder()
+        .maxLineLength(Integer.parseInt(maxLineLength))
+        .build());
   }
 
   @Test
   @Parameters(method = "validMaxLineSizes")
   public void validOutputLengthHandling(String maxLineLength) {
     final OkHttp3LoggingInterceptor interceptor = new OkHttp3LoggingInterceptor(
-        LoggerConfig.builder()
-            .maxLineLength(Integer.parseInt(maxLineLength))
-            .build());
+      LoggerConfig.builder()
+        .maxLineLength(Integer.parseInt(maxLineLength))
+        .build());
 
     Assert.assertEquals(Integer.parseInt(maxLineLength),
-        interceptor.loggerConfig().maxLineLength);
+      interceptor.loggerConfig().maxLineLength);
   }
 
 }

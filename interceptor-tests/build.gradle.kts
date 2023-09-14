@@ -92,7 +92,8 @@ tasks.jacocoTestReport {
   dependsOn(rootProject.subprojects.map { "${it.path}:build" })
 
   rootProject.subprojects.forEach { subproject ->
-    val subprojectSourceSet = subproject.extensions.findByType(SourceSetContainer::class.java)!!["main"]
+    val subprojectSourceSet =
+      subproject.extensions.findByType(SourceSetContainer::class.java)!!["main"]
     allClassDirs.from(subprojectSourceSet.output.classesDirs)
     allSourceDirs.from(subprojectSourceSet.allJava.srcDirs)
   }

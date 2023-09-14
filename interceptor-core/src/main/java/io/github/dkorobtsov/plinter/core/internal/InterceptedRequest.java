@@ -85,12 +85,12 @@ public final class InterceptedRequest {
   @Override
   public String toString() {
     return "Request{method="
-        + method
-        + ", url="
-        + url
-        + ", tag="
-        + (tag != this ? tag : null)
-        + '}';
+      + method
+      + ", url="
+      + url
+      + ", tag="
+      + (tag != this ? tag : null)
+      + '}';
   }
 
   public static class Builder {
@@ -204,11 +204,11 @@ public final class InterceptedRequest {
       }
       if (body != null && !HttpMethod.permitsRequestBody(method)) {
         throw new IllegalArgumentException(
-            "method " + method + " must not have a request body.");
+          "method " + method + " must not have a request body.");
       }
       if (body == null && HttpMethod.requiresRequestBody(method)) {
         throw new IllegalArgumentException(
-            "method " + method + " must have a request body.");
+          "method " + method + " must have a request body.");
       }
       this.method = method;
       this.body = body;

@@ -38,7 +38,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
 
     final Header[] headersMap = apacheHttpRequest.getAllHeaders();
     Arrays.stream(headersMap)
-        .forEach(header -> builder.addHeader(header.getName(), header.getValue()));
+      .forEach(header -> builder.addHeader(header.getName(), header.getValue()));
 
     final String method = apacheHttpRequest.getRequestLine().getMethod();
     if (HttpMethod.permitsRequestBody(method)) {
@@ -66,31 +66,31 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
           } catch (IOException e) {
             logger.log(Level.SEVERE, e.getMessage(), e);
             return InterceptedRequestBody
-                .create(InterceptedMediaType
-                        .parse(TEXT_PLAIN),
-                    "[LoggingInterceptorError] : could not parse body");
+              .create(InterceptedMediaType
+                  .parse(TEXT_PLAIN),
+                "[LoggingInterceptorError] : could not parse body");
           }
 
           final HttpEntity newEntity = ApacheEntityUtil
-              .recreateHttpEntityFromByteArray(byteArray, entity);
+            .recreateHttpEntityFromByteArray(byteArray, entity);
 
           ((HttpEntityEnclosingRequestBase) ((HttpRequestWrapper) request).getOriginal())
-              .setEntity(newEntity);
+            .setEntity(newEntity);
 
           final Header contentTypeHeader = Arrays
-              .stream(((HttpRequestWrapper) request).getOriginal().getAllHeaders())
-              .filter(header -> header.getName().equals(CONTENT_TYPE))
-              .findFirst()
-              .orElse(new BasicHeader(CONTENT_TYPE, TEXT_PLAIN));
+            .stream(((HttpRequestWrapper) request).getOriginal().getAllHeaders())
+            .filter(header -> header.getName().equals(CONTENT_TYPE))
+            .findFirst()
+            .orElse(new BasicHeader(CONTENT_TYPE, TEXT_PLAIN));
 
           return InterceptedRequestBody
-              .create(InterceptedMediaType
-                  .parse(contentTypeHeader.getValue()), byteArray);
+            .create(InterceptedMediaType
+              .parse(contentTypeHeader.getValue()), byteArray);
         }
       }
     }
     return InterceptedRequestBody
-        .create(InterceptedMediaType.parse(TEXT_PLAIN), "");
+      .create(InterceptedMediaType.parse(TEXT_PLAIN), "");
   }
 
   private String interceptedUrl(final HttpRequest request) {
@@ -98,7 +98,7 @@ public class ApacheRequestConverter implements RequestConverter<HttpRequest> {
     final String portString = target.getPort() == -1 ? "" : ":" + target.getPort();
     final URI uri = ((HttpRequestWrapper) request).getURI();
     return String.format("%s://%s%s%s",
-        target.getSchemeName(), target.getHostName(), portString, uri);
+      target.getSchemeName(), target.getHostName(), portString, uri);
   }
 
 }

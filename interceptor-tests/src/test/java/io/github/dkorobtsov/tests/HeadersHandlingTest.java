@@ -27,15 +27,15 @@ public class HeadersHandlingTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, defaultLoggerConfig(testLogger),
-        String.valueOf(server.url(MOCK_SERVER_PATH)),
-        Arrays.asList(
-            new SimpleEntry<>("Header1", "Value1"),
-            new SimpleEntry<>("Header1", "Value2")));
+      String.valueOf(server.url(MOCK_SERVER_PATH)),
+      Arrays.asList(
+        new SimpleEntry<>("Header1", "Value1"),
+        new SimpleEntry<>("Header1", "Value2")));
 
     assertThat(testLogger.formattedOutput())
-        .containsIgnoringCase("Header1")
-        .contains("Value2")
-        .contains("Value1");
+      .containsIgnoringCase("Header1")
+      .contains("Value2")
+      .contains("Value1");
   }
 
   @Test
@@ -45,14 +45,14 @@ public class HeadersHandlingTest extends BaseTest {
     final TestLogger testLogger = new TestLogger(LoggingFormat.JUL_MESSAGE_ONLY);
 
     interceptWithConfig(interceptor, defaultLoggerConfig(testLogger),
-        String.valueOf(server.url(MOCK_SERVER_PATH)),
-        Arrays.asList(
-            new SimpleEntry<>("Header1", "Value1"),
-            new SimpleEntry<>("Header2", "Value1")));
+      String.valueOf(server.url(MOCK_SERVER_PATH)),
+      Arrays.asList(
+        new SimpleEntry<>("Header1", "Value1"),
+        new SimpleEntry<>("Header2", "Value1")));
 
     assertThat(testLogger.formattedOutput())
-        .containsIgnoringCase("Header1: Value1")
-        .containsIgnoringCase("Header2: Value1");
+      .containsIgnoringCase("Header1: Value1")
+      .containsIgnoringCase("Header2: Value1");
   }
 
 }

@@ -5,10 +5,11 @@ Just attach interceptor to your favorite HTTP client and forward all requests an
 default one).
 Simple as that.
 --------
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![release-badge](https://img.shields.io/github/release/dkorobtsov/plinter.svg?style=flat)][release]
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.dkorobtsov.plinter/okhttp3-interceptor.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.github.dkorobtsov.plinter%22%20AND%20a:%22okhttp3-interceptor%22)
 [![DOI](https://zenodo.org/badge/168243754.svg)](https://zenodo.org/badge/latestdoi/168243754)
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
 [![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
@@ -19,6 +20,7 @@ Simple as that.
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 
 [release]: https://github.com/dkorobtsov/plinter/releases/latest "Latest release"
+
 
 <p>
     <img src="https://raw.githubusercontent.com/dkorobtsov/plinter/master/images/image1.png" alt="Console Logging Example"/>

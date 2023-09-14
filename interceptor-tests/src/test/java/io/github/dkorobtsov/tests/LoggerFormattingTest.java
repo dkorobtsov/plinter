@@ -21,7 +21,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertLogEntryElementsCount(
-        testLogger.lastFormattedEvent(true), 1);
+      testLogger.lastFormattedEvent(true), 1);
   }
 
   @Test
@@ -31,7 +31,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertEquals("Logger output should contain message only",
-        TEST_MESSAGE, testLogger.lastFormattedEvent(false));
+      TEST_MESSAGE, testLogger.lastFormattedEvent(false));
   }
 
   @Test
@@ -41,7 +41,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertLogEntryElementsCount(
-        testLogger.lastFormattedEvent(true), 4);
+      testLogger.lastFormattedEvent(true), 4);
   }
 
   @Test
@@ -51,8 +51,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include thread name.",
-        testLogger.lastFormattedEvent(true)
-            .contains(Thread.currentThread().getName()));
+      testLogger.lastFormattedEvent(true)
+        .contains(Thread.currentThread().getName()));
   }
 
   @Test
@@ -62,8 +62,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include message text.",
-        testLogger.lastFormattedEvent(true)
-            .contains(TEST_MESSAGE));
+      testLogger.lastFormattedEvent(true)
+        .contains(TEST_MESSAGE));
   }
 
   @Test
@@ -73,8 +73,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include logging level.",
-        testLogger.lastFormattedEvent(true)
-            .contains("INFO"));
+      testLogger.lastFormattedEvent(true)
+        .contains("INFO"));
   }
 
   @Test
@@ -84,7 +84,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertEntryStartsWithParsableDate(
-        testLogger.lastFormattedEvent(true));
+      testLogger.lastFormattedEvent(true));
   }
 
   @Test
@@ -94,7 +94,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertLogEntryElementsCount(
-        testLogger.lastFormattedEvent(true), 2);
+      testLogger.lastFormattedEvent(true), 2);
   }
 
   @Test
@@ -104,8 +104,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include message text.",
-        testLogger.lastFormattedEvent(true)
-            .contains(TEST_MESSAGE));
+      testLogger.lastFormattedEvent(true)
+        .contains(TEST_MESSAGE));
   }
 
   @Test
@@ -115,7 +115,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertEntryStartsWithParsableDate(
-        testLogger.lastFormattedEvent(true));
+      testLogger.lastFormattedEvent(true));
   }
 
   @Test
@@ -125,7 +125,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertLogEntryElementsCount(testLogger
-        .lastFormattedEvent(true), 3);
+      .lastFormattedEvent(true), 3);
   }
 
   @Test
@@ -135,8 +135,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include message text.",
-        testLogger.lastFormattedEvent(true)
-            .contains(TEST_MESSAGE));
+      testLogger.lastFormattedEvent(true)
+        .contains(TEST_MESSAGE));
   }
 
   @Test
@@ -146,8 +146,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include logging level.",
-        testLogger.lastFormattedEvent(true)
-            .contains("INFO"));
+      testLogger.lastFormattedEvent(true)
+        .contains("INFO"));
   }
 
   @Test
@@ -157,7 +157,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertEntryStartsWithParsableDate(
-        testLogger.lastFormattedEvent(true));
+      testLogger.lastFormattedEvent(true));
   }
 
   @Test
@@ -167,7 +167,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertLogEntryElementsCount(
-        testLogger.lastFormattedEvent(true), 2);
+      testLogger.lastFormattedEvent(true), 2);
   }
 
   @Test
@@ -177,8 +177,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include message text.",
-        testLogger.lastFormattedEvent(true)
-            .contains(TEST_MESSAGE));
+      testLogger.lastFormattedEvent(true)
+        .contains(TEST_MESSAGE));
   }
 
   @Test
@@ -188,8 +188,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include logging level.",
-        testLogger.lastFormattedEvent(true)
-            .contains("INFO"));
+      testLogger.lastFormattedEvent(true)
+        .contains("INFO"));
   }
 
   @Test
@@ -199,7 +199,7 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     TestUtil.assertLogEntryElementsCount(
-        testLogger.lastFormattedEvent(true), 2);
+      testLogger.lastFormattedEvent(true), 2);
   }
 
   @Test
@@ -209,8 +209,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include message text.",
-        testLogger.lastFormattedEvent(true)
-            .contains(TEST_MESSAGE));
+      testLogger.lastFormattedEvent(true)
+        .contains(TEST_MESSAGE));
   }
 
   @Test
@@ -220,8 +220,8 @@ public class LoggerFormattingTest {
     testLogger.log(TEST_MESSAGE);
 
     Assert.assertTrue("Logger output should include thread name.",
-        testLogger.lastFormattedEvent(true)
-            .contains(Thread.currentThread().getName()));
+      testLogger.lastFormattedEvent(true)
+        .contains(Thread.currentThread().getName()));
   }
 
 }

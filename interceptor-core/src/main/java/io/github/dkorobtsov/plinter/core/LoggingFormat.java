@@ -8,7 +8,7 @@ import java.util.logging.SimpleFormatter;
  * Collection of Logger format configurations intended to be used with DefaultLogger.
  * <p>
  * Default format: {@link LoggingFormat#JUL_MESSAGE_ONLY}
- *
+ * <p>
  * NB. Note that formatting options provided in this class will not work in case interceptor is
  * configured to use custom {@link LogWriter} implementation.
  */
@@ -19,10 +19,10 @@ public enum LoggingFormat {
     @Override
     public synchronized String format(LogRecord lr) {
       return String.format("[%1$tF %1$tT][%2$s][%3$-7s] %4$s %n",
-          new Date(lr.getMillis()),
-          Thread.currentThread().getName(),
-          lr.getLevel().getLocalizedName(),
-          lr.getMessage()
+        new Date(lr.getMillis()),
+        Thread.currentThread().getName(),
+        lr.getLevel().getLocalizedName(),
+        lr.getMessage()
       );
     }
   }),
@@ -31,8 +31,8 @@ public enum LoggingFormat {
     @Override
     public synchronized String format(LogRecord lr) {
       return String.format("[%1$tF %1$tT] %2$s %n",
-          new Date(lr.getMillis()),
-          lr.getMessage()
+        new Date(lr.getMillis()),
+        lr.getMessage()
       );
     }
   }),
@@ -41,9 +41,9 @@ public enum LoggingFormat {
     @Override
     public synchronized String format(LogRecord lr) {
       return String.format("[%1$tF %1$tT] [%2$-7s] %3$s %n",
-          new Date(lr.getMillis()),
-          lr.getLevel().getLocalizedName(),
-          lr.getMessage()
+        new Date(lr.getMillis()),
+        lr.getLevel().getLocalizedName(),
+        lr.getMessage()
       );
     }
   }),
@@ -52,8 +52,8 @@ public enum LoggingFormat {
     @Override
     public synchronized String format(LogRecord lr) {
       return String.format("[%1$s] %2$s %n",
-          lr.getLevel().getLocalizedName(),
-          lr.getMessage()
+        lr.getLevel().getLocalizedName(),
+        lr.getMessage()
       );
     }
   }),
@@ -62,8 +62,8 @@ public enum LoggingFormat {
     @Override
     public synchronized String format(LogRecord lr) {
       return String.format("[%1$s] %2$s %n",
-          Thread.currentThread().getName(),
-          lr.getMessage()
+        Thread.currentThread().getName(),
+        lr.getMessage()
       );
     }
   }),
@@ -72,7 +72,7 @@ public enum LoggingFormat {
     @Override
     public synchronized String format(LogRecord lr) {
       return String.format("%1$s %n",
-          lr.getMessage()
+        lr.getMessage()
       );
     }
   });
@@ -84,5 +84,3 @@ public enum LoggingFormat {
   }
 
 }
-
-
