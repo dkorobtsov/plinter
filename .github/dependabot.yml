@@ -5,14 +5,12 @@
 
 version: 2
 updates:
-    - package-ecosystem: "gradle"
-      directory: "/gradle"
-      schedule:
-          interval: "weekly"
-      rebase-strategy: "disabled"
+  - package-ecosystem: "gradle"
+    directory: "/gradle"
+    schedule:
+      interval: "daily"
 
-    - package-ecosystem: "github-actions"
-      directory: "/"
-      schedule:
-          interval: "weekly"
-      rebase-strategy: "disabled"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
