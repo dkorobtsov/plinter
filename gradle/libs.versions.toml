@@ -9,17 +9,17 @@ jsonVer = "20230618"
 log4j2Ver = "2.20.0"
 
 sonatypeVersion = "1.3.0"
-sonarcubeVersion = "4.3.0.3225"
+sonarcubeVersion = "4.3.1.3277"
 testLoggerVersion = "3.2.0"
 
-apacheMimeVer = "4.5.6"
-apacheClientVer = "4.5.1"
-apacheAsyncClientVer = "4.1.4"
+apacheMimeVer = "4.5.14"
+apacheClientVer = "4.5.14"
+apacheAsyncClientVer = "4.1.5"
 
 junitParamsVer = "1.1.1"
 juniVer = "4.13.2"
 assertJVer = "3.24.2"
-sparcVer = "2.8.0"
+sparcVer = "2.9.4"
 
 codeQualityVer = "0.23.0"
 detekt = "1.0.0"
