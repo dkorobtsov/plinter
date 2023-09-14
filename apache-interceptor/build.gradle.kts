@@ -1,16 +1,16 @@
 dependencies {
-  api(project(Dependency.moduleCore))
-  implementation(Dependency.apacheMime)
-  implementation(Dependency.apacheClient)
-  implementation(Dependency.apacheAsyncClient)
+  api(project(Property.Module.Core.refence))
+  implementation(libs.apache.mime)
+  implementation(libs.apache.client)
+  implementation(libs.apache.async.client)
 }
 
 tasks.named<Jar>("jar") {
   manifest {
     attributes(
       mapOf(
-        "Implementation-Title" to Property.implementationTitleApacheInterceptor,
-        "Automatic-Module-Name" to Property.moduleNameApacheInterceptor
+        "Implementation-Title" to Property.Module.Apache.title,
+        "Automatic-Module-Name" to Property.Module.Apache.name
       )
     )
   }
