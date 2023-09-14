@@ -86,7 +86,7 @@ tasks.jacocoTestReport {
   val allSourceDirs = files()
 
   // depend on interceptor-tests
-  dependsOn(Property.Module.Tests.refence)
+  dependsOn(":test")
   // we need to be sure that all sources were built before we collect coverage
   dependsOn(rootProject.subprojects.map { "${it.path}:build" })
 
