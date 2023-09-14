@@ -8,16 +8,16 @@ buildscript {
     google()
   }
   dependencies {
-    classpath("com.vanniktech:gradle-code-quality-tools-plugin:0.23.0")
-    classpath("io.github.gradle-nexus:publish-plugin:1.3.0")
+    classpath(libs.code.quality)
+    classpath(libs.nexus)
   }
 }
 
 plugins {
   id("java-library")
   id("project-report")
-  id(Dependency.sonatype) version Dependency.sonatypeVersion
-  id(Dependency.sonarcubeId) version Dependency.sonarcubeVersion
+  alias(libs.plugins.sonatype)
+  alias(libs.plugins.sonarcube)
   jacoco
   signing
   `maven-publish`
@@ -38,12 +38,12 @@ sonar {
   properties {
     property("sonar.dynamicAnalysis", "reuseReports")
     property("sonar.language", "java")
-    property("sonar.projectKey", Property.sonarProjectKey)
-    property("sonar.organization", Property.sonarOrganization)
-    property("sonar.host.url", Property.sonarHost)
-    property("sonar.coverage.exclusions", SonarConfig.coverageExclusions())
-    property("sonar.cpd.exclusions", SonarConfig.duplicationExclusions())
-    property("sonar.exclusions", SonarConfig.sonarExclusions())
+    property("sonar.projectKey", Property.Sonar.projectKey)
+    property("sonar.organization", Property.Sonar.org)
+    property("sonar.host.url", Property.Sonar.host)
+    property("sonar.coverage.exclusions", Property.Sonar.Exclusions.coverage)
+    property("sonar.cpd.exclusions", Property.Sonar.Exclusions.duplication)
+    property("sonar.exclusions", Property.Sonar.Exclusions.scan)
     property(
       "sonar.coverage.jacoco.xmlReportPaths",
       "${project.rootDir}/interceptor-tests/build/reports/jacoco/test/jacocoTestReport.xml"
@@ -52,11 +52,11 @@ sonar {
 }
 
 configure(listOf(rootProject)) {
-  description = Property.projectDescription
+  description = Property.Project.description
 }
 
 allprojects {
-  group = Property.projectGroup
+  group = Property.Project.group
   version = version
 
   repositories {
@@ -70,7 +70,7 @@ allprojects {
   apply(plugin = "jacoco")
 
   dependencies {
-    implementation(Dependency.okio)
+    implementation(rootProject.libs.okio)
   }
 
   java {
@@ -109,7 +109,7 @@ configure(subprojects) {
       // For details check:
       // https://docs.gradle.org/current/userguide/checkstyle_plugin.html
       enabled = true
-      toolVersion = "10.12.3"
+      toolVersion = rootProject.libs.versions.checkstyle.get()
       configFile = "../config/checkstyle/checkstyle.xml"
       ignoreFailures = false
       showViolations = true
@@ -124,7 +124,7 @@ configure(subprojects) {
       // For details check:
       // https://docs.gradle.org/current/userguide/pmd_plugin.html
       enabled = true
-      toolVersion = "6.55.0"
+      toolVersion = rootProject.libs.versions.pmd.get()
       ruleSetFile = "../config/pmd/pmd.xml"
       ignoreFailures = false
       source = "src"
@@ -159,7 +159,7 @@ configure(subprojects) {
       // For details check:
       // https://github.com/pinterest/ktlint
       enabled = true
-      toolVersion = "0.32.0"
+      toolVersion = rootProject.libs.versions.ktlint.get()
       experimental = false
     }
 
@@ -169,7 +169,7 @@ configure(subprojects) {
       // For details check:
       // https://github.com/detekt/detekt
       enabled = false
-      toolVersion = "1.0.0"
+      toolVersion = rootProject.libs.versions.detekt.get()
       config = "code_quality_tools/detekt.yml"
       baselineFileName = null
       failFast = true
@@ -203,9 +203,9 @@ configure(subprojects) {
       manifest {
         attributes(
           mapOf(
-            "Implementation-Version" to project.version,
-            "Implementation-Title" to project.name,
-            "Implementation-URL" to Property.projectUrl
+            "Implementation-Version" to rootProject.version,
+            "Implementation-Title" to Property.Project.name,
+            "Implementation-URL" to Property.Project.url
           )
         )
       }
@@ -241,7 +241,7 @@ configure(subprojects) {
           pom {
             name.set(project.name)
             description.set("Module ${project.name} of Pretty Logging Interceptor (Plinter)")
-            url.set(Property.projectUrl)
+            url.set(Property.Project.url)
             licenses {
               license {
                 name.set("MIT")
@@ -256,13 +256,13 @@ configure(subprojects) {
               }
             }
             scm {
-              url.set(Property.projectUrl)
-              connection.set(Property.projectConnection)
-              developerConnection.set(Property.projectDevConnection)
+              url.set(Property.Project.url)
+              connection.set(Property.Project.connection)
+              developerConnection.set(Property.Project.devConnection)
             }
             issueManagement {
               system.set("GitHub Issues")
-              url.set("${Property.projectUrl}/issues")
+              url.set("${Property.Project.url}/issues")
             }
           }
         }

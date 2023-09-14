@@ -1,14 +1,14 @@
 dependencies {
-  api(project(Dependency.moduleCore))
-  implementation(Dependency.okHttpLoggingInterceptor)
+  api(project(Property.Module.Core.refence))
+  implementation(libs.okhttp.interceptor)
 }
 
 tasks.named<Jar>("jar") {
   manifest {
     attributes(
       mapOf(
-        "Implementation-Title" to Property.implementationTitleOkHttpInterceptor,
-        "Automatic-Module-Name" to Property.moduleNameOkHttpInterceptor
+        "Implementation-Title" to Property.Module.OkHttp.title,
+        "Automatic-Module-Name" to Property.Module.OkHttp.name
       )
     )
   }
