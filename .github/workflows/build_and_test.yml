@@ -50,4 +50,7 @@ jobs:
           # Needed to get PR information, if any
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        # Sonar fails for dependabot triggered workflows
+        # Let's disable it (we don't expect any code changes anyway)
+        if: ${{ github.actor != 'dependabot[bot]' }}
         run: ./gradlew sonar
