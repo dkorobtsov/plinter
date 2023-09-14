@@ -4,7 +4,7 @@ moshiVer = "1.8.0"
 okHttpVer = "2.7.5"
 okHttp3Ver = "3.9.1"
 mockServerVer = "4.11.0"
-retrofitVer = "2.5.0"
+retrofitVer = "2.9.0"
 jsonVer = "20180130"
 log4j2Ver = "2.11.0"
 
