@@ -2,7 +2,7 @@
 okioVer = "3.5.0"
 moshiVer = "1.15.0"
 okHttpVer = "2.7.5"
-okHttp3Ver = "3.9.1"
+okHttp3Ver = "4.11.0"
 mockServerVer = "4.11.0"
 retrofitVer = "2.9.0"
 jsonVer = "20230618"
