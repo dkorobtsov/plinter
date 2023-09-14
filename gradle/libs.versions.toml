@@ -12,7 +12,7 @@ sonatypeVersion = "1.3.0"
 sonarcubeVersion = "4.3.1.3277"
 testLoggerVersion = "3.2.0"
 
-apacheMimeVer = "4.5.6"
+apacheMimeVer = "4.5.14"
 apacheClientVer = "4.5.14"
 apacheAsyncClientVer = "4.1.5"
 
