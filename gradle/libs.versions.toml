@@ -5,7 +5,7 @@ okHttpVer = "2.7.5"
 okHttp3Ver = "4.11.0"
 mockServerVer = "4.11.0"
 retrofitVer = "2.9.0"
-jsonVer = "20230618"
+jsonVer = "20231013"
 log4j2Ver = "2.20.0"
 
 sonatypeVersion = "1.3.0"
