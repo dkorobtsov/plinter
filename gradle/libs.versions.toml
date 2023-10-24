@@ -10,7 +10,7 @@ log4j2Ver = "2.21.0"
 
 sonatypeVersion = "1.3.0"
 sonarcubeVersion = "4.4.1.3373"
-testLoggerVersion = "3.2.0"
+testLoggerVersion = "4.0.0"
 
 apacheMimeVer = "4.5.14"
 apacheClientVer = "4.5.14"
