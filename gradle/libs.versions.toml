@@ -21,7 +21,7 @@ juniVer = "4.13.2"
 assertJVer = "3.24.2"
 sparcVer = "2.9.4"
 
-codeQualityVer = "0.23.0"
+codeQualityVer = "0.24.0"
 detekt = "1.0.0"
 ktlint = "0.32.0"
 pmd = "6.55.0"
