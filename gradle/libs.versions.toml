@@ -1,6 +1,6 @@
 [versions]
 okioVer = "3.7.0"
-moshiVer = "1.15.0"
+moshiVer = "1.15.1"
 okHttpVer = "2.7.5"
 okHttp3Ver = "4.12.0"
 mockServerVer = "4.12.0"
