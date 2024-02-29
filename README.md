@@ -11,7 +11,6 @@ Simple as that.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![CodeQL](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/codeql.yml)
-[![Qodana](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml/badge.svg)](https://github.com/dkorobtsov/plinter/actions/workflows/qodana_code_quality.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
 
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dkorobtsov_plinter&metric=coverage)](https://sonarcloud.io/summary/new_code?id=dkorobtsov_plinter)
