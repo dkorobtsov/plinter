@@ -8,7 +8,7 @@ retrofitVer = "2.11.0"
 jsonVer = "20240303"
 log4j2Ver = "2.23.1"
 
-sonatypeVersion = "1.3.0"
+sonatypeVersion = "2.0.0"
 sonarcubeVersion = "5.0.0.4638"
 testLoggerVersion = "4.0.0"
 
