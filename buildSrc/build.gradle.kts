@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   `kotlin-dsl`
-  kotlin("jvm") version "1.9.23"
+  kotlin("jvm") version "1.9.24"
 }
 
 repositories {
