@@ -1,5 +1,5 @@
 [versions]
-okioVer = "3.9.1"
+okioVer = "3.10.2"
 moshiVer = "1.15.2"
 okHttpVer = "2.7.5"
 okHttp3Ver = "4.12.0"
@@ -18,7 +18,7 @@ apacheAsyncClientVer = "4.1.5"
 
 junitParamsVer = "1.1.1"
 juniVer = "4.13.2"
-assertJVer = "3.26.3"
+assertJVer = "3.27.2"
 sparcVer = "2.9.4"
 
 codeQualityVer = "0.23.0"
