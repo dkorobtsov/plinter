@@ -44,10 +44,13 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -265,23 +268,54 @@ public abstract class BaseTest {
     }
 
     if (withExecutor) {
-      builder.executor(loggingExecutor());
+      Map.Entry<ExecutorService, Thread> executorEntry = loggingExecutor();
+      builder.executor(executorEntry.getKey());
     }
 
     return builder.build();
   }
 
-  protected ExecutorService loggingExecutor() {
-    return Executors.newCachedThreadPool(new ThreadFactory() {
+  /**
+   * Provides an executor service that executes tasks in a separate thread.
+   * Also returns the thread instance itself for management purposes (like interruption).
+   *
+   * @return A Map.Entry containing the ExecutorService and the Thread it uses.
+   */
+  protected Map.Entry<ExecutorService, Thread> loggingExecutor() {
+    final AtomicReference<Thread> threadRef = new AtomicReference<>();
+    final ThreadFactory threadFactory = new ThreadFactory() {
       private final AtomicInteger threadNumber = new AtomicInteger(1);
+      private final String namePrefix = TestUtil.PRINTING_THREAD_PREFIX + "-";
 
       @Override
       public Thread newThread(@NotNull Runnable r) {
-        return new Thread(r,
-          TestUtil.PRINTING_THREAD_PREFIX + "-" + threadNumber.getAndIncrement());
+        final Thread t = new Thread(r, namePrefix + threadNumber.getAndIncrement());
+        t.setDaemon(false);
+        t.setPriority(Thread.NORM_PRIORITY);
+        threadRef.set(t);
+        return t;
       }
+    };
 
-    });
+    final ExecutorService executor = Executors.newSingleThreadExecutor(threadFactory);
+    
+    // Submit a dummy task to ensure thread creation
+    executor.submit(() -> {});
+    try {
+      // Short sleep to allow thread factory to execute and set the reference
+      Thread.sleep(50);
+    } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
+      throw new IllegalStateException("Interrupted while waiting for executor thread creation.", e);
+    }
+
+    Thread createdThread = threadRef.get();
+    if (createdThread == null) {
+      executor.shutdownNow();
+      throw new IllegalStateException("Could not capture the executor thread in time.");
+    }
+
+    return new SimpleEntry<>(executor, createdThread);
   }
 
   /**
