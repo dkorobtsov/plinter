@@ -1,5 +1,5 @@
 [versions]
-okioVer = "3.14.0"
+okioVer = "3.15.0"
 moshiVer = "1.15.2"
 okHttpVer = "2.7.5"
 okHttp3Ver = "4.12.0"
