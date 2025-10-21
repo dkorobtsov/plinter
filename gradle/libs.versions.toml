@@ -9,7 +9,7 @@ jsonVer = "20250517"
 log4j2Ver = "2.25.2"
 
 sonatypeVersion = "2.0.0"
-sonarcubeVersion = "6.3.1.5724"
+sonarcubeVersion = "7.0.0.6105"
 testLoggerVersion = "4.0.0"
 
 apacheMimeVer = "4.5.14"
