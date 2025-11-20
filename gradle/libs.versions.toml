@@ -1,15 +1,15 @@
 [versions]
-okioVer = "3.16.0"
+okioVer = "3.16.2"
 moshiVer = "1.15.2"
 okHttpVer = "2.7.5"
-okHttp3Ver = "5.1.0"
+okHttp3Ver = "5.2.1"
 mockServerVer = "5.1.0"
 retrofitVer = "3.0.0"
 jsonVer = "20250517"
 log4j2Ver = "2.25.2"
 
 sonatypeVersion = "2.0.0"
-sonarcubeVersion = "6.3.1.5724"
+sonarcubeVersion = "7.0.1.6134"
 testLoggerVersion = "4.0.0"
 
 apacheMimeVer = "4.5.14"
@@ -18,7 +18,7 @@ apacheAsyncClientVer = "4.1.5"
 
 junitParamsVer = "1.1.1"
 juniVer = "4.13.2"
-assertJVer = "3.27.4"
+assertJVer = "3.27.6"
 sparcVer = "2.9.4"
 
 codeQualityVer = "0.23.0"
