@@ -6,7 +6,7 @@ okHttp3Ver = "5.2.1"
 mockServerVer = "5.3.2"
 retrofitVer = "3.0.0"
 jsonVer = "20250517"
-log4j2Ver = "2.25.2"
+log4j2Ver = "2.25.3"
 
 sonatypeVersion = "2.0.0"
 sonarcubeVersion = "7.1.0.6387"
